@@ -1,0 +1,136 @@
+.daily-summary-popup {
+    position: absolute; /* Changed from fixed to absolute */
+    top: 50%; /* Center vertically */
+    left: 75%; /* Changed to 75% as requested */
+    transform: translate(-50%, -50%); /* Adjust for element's own size */
+    width: 235px;
+    height: 128px;
+    background-color: white;
+    border-radius: 20px;
+    border: 1px solid #FFBBC1; /* Added border */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 100; /* Ensure it's above other elements */
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.popup-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #383838;
+}
+
+.popup-header button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #A0A0A0;
+}
+
+.popup-content {
+    font-size: 14px;
+    color: #5a5a5a;
+    display: flex; /* Use flexbox for chips and health card */
+    flex-direction: row; /* Arrange chips wrapper and health card side-by-side */
+    gap: 10px; /* Space between chips wrapper and health card */
+    align-items: flex-start; /* Align items to the top */
+}
+
+.summary-chips-wrapper {
+    display: flex;
+    flex-direction: column; /* Stack chips vertically */
+    gap: 5px; /* Space between chips */
+}
+
+.summary-chip {
+    width: 94px;
+    height: 37px;
+    background-color: #fafafa;
+    border: 1px solid #E1E7EF;
+    border-radius: 20px; /* Changed border-radius to 20px */
+    display: flex;
+    align-items: flex-end; /* Bottom align content */
+    justify-content: flex-start; /* Align content to the start */
+    gap: 5px; /* Add a small gap between elements */
+    padding: 5px 10px; /* Add some padding inside the chip */
+    box-sizing: border-box; /* Include padding in width/height */
+}
+
+.chip-label {
+    color: #383838;
+    font-size: 10px;
+    font-weight: 300; /* Light font weight */
+    line-height: 1; /* Ensure consistent line height for alignment */
+}
+
+.chip-data {
+    font-size: 15px;
+    color: #383838; /* Assuming same color as label for now, can be changed if specified */
+    font-weight: 500; /* Slightly bolder for data */
+    line-height: 1; /* Ensure consistent line height for alignment */
+}
+
+.health-card {
+    width: 100px;
+    height: 80px;
+    background-color: #fafafa;
+    border: 1px solid #E1E7EF;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Re-add to center children horizontally */
+    justify-content: center; /* Center content vertically */
+    padding: 5px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.graph-and-text-wrapper {
+    display: flex;
+    flex-direction: row; /* Arrange graph and text horizontally */
+    align-items: center; /* Center items vertically within this wrapper */
+    justify-content: center; /* Center items horizontally within this wrapper */
+    width: 100%; /* Take full width of parent */
+    margin-bottom: 5px; /* Space between this wrapper and the label */
+}
+
+.health-card .pedometer-graph-wrapper {
+    width: 45px; /* Slightly smaller size for the graph wrapper */
+    height: 45px;
+    margin-top: 0; /* Reset margin-top */
+    position: relative; /* Ensure text is positioned relative to this */
+    margin-bottom: 0; /* Reset margin-bottom */
+    margin-right: 5px; /* Space between graph and text */
+}
+
+.health-card .pedometer-graph-text {
+    position: relative; /* Change to relative positioning */
+    top: auto; /* Remove top positioning */
+    left: auto; /* Remove left positioning */
+    transform: none; /* Remove transform */
+    font-size: 11px; /* Set font size to 11px */
+    line-height: 1.2; /* Adjust line height for better alignment */
+    margin: 0; /* Remove all margins */
+    text-align: left; /* Align text to left within its own box */
+}
+
+.health-card .pedometer-graph-text .calorie-value {
+    font-size: 11px; /* Set font size to 11px */
+}
+
+.health-card-label {
+    font-size: 10px; /* Set font size to 10px */
+    color: #383838;
+    font-weight: 300;
+    margin: 0;
+    margin-top: 5px; /* Move slightly down */
+    text-align: center; /* Center the text */
+}

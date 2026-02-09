@@ -1,0 +1,19 @@
+html, body, #root {
+  height: 100%;
+  margin: 0; /* Ensure no default margin */
+}
+
+html, body {
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Pretendard', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

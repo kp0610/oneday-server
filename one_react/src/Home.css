@@ -1,0 +1,59 @@
+.home-container {
+  display: grid; /* Changed to grid */
+  grid-template-rows: auto 1fr; /* Two rows: auto for ViewToggle, 1fr for content */
+  grid-template-columns: 1fr; /* Single column */
+  gap: 20px; /* Gap between rows */
+  padding: 30px; /* Increased padding for softer look */
+  width: 100%;
+  height: 90%; /* Reduced height by 10% */
+  box-sizing: border-box;
+  margin-bottom: 30px; /* Added bottom margin */
+}
+
+.calendar-dashboard-wrapper {
+  display: flex; /* To maintain side-by-side layout */
+  gap: 20px; /* Space between calendar and dashboard */
+  flex-grow: 1; /* Allow it to take remaining vertical space */
+  grid-column: 1 / -1; /* Span all columns */
+  align-items: stretch; /* Ensure children stretch to equal height */
+  height: 100%; /* Take full height of parent */
+}
+
+.calendar-area {
+  /* flex: 1; Removed as fixed height is required */
+  height: 600px; /* Fixed height */
+  overflow: hidden; /* Contain calendar content */
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-area {
+  flex: 1; /* Allow to grow and shrink */
+  height: 100%; /* Take full height of parent */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Contain dashboard content within its height */
+}
+
+/* Add styles for ViewToggle to span all columns */
+.home-container > .view-toggle-container { /* Target ViewToggle directly */
+  grid-column: 1 / -1; /* Span all columns */
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  color: #c0c0c0;
+  font-size: 20px;
+}
+
+.tab.active {
+  color: #7c8083;
+  border-bottom-color: #7c8083;
+}

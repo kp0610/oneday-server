@@ -1,0 +1,222 @@
+.calendar-wrapper {
+  background-color: white;
+  border-radius: 20px;
+  padding: 5px 20px 20px 20px; /* Adjusted top padding to 5px */
+  width: 100%;
+  max-width: 100%; /* Added to ensure it doesn't exceed parent width */
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #E1E7EF;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0px; /* Removed margin to eliminate space with calendar grid */
+}
+
+.view-toggle {
+  display: flex;
+  background-color: #f1f3f5;
+  border-radius: 18px;
+  padding: 4px;
+}
+
+.view-toggle button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #868e96;
+  transition: all 0.2s;
+}
+
+.view-toggle button.active {
+  background-color: #ff6f61;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.month-year-container {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.month-text {
+  font-weight: 600;
+  font-size: 25px;
+  color: #4B4B4B;
+  font-family: 'Pretendard', sans-serif; /* Set font to Pretendard */
+}
+
+.year-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: #868e96;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px; /* Move buttons down */
+}
+
+.nav-btn {
+  background: none; /* Remove background color */
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #adb5bd;
+  border-radius: 10px; /* Keep rounding for the button container */
+  outline: none;
+}
+
+.nav-btn svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  /* Removed transform: scale(0.8, 1.2); */
+}
+
+.nav-btn:hover {
+  color: #495057;
+}
+
+.calendar-grid {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 10px;
+  background-color: #E1E7EF; /* Light grey background */
+  padding: 8px 0; /* Removed horizontal padding */
+  border-radius: 8px; /* Rounded corners */
+}
+
+.weekday {
+  text-align: center;
+  font-weight: bold;
+  font-size: 11px;
+  color: white;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 81px); /* Set fixed width for columns */
+  grid-template-rows: repeat(5, auto);
+  gap: 0px; /* Reduced gap between day cells to 0px */
+  flex-grow: 1;
+}
+
+.day-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align items to the top */
+  padding: 8px; /* Restored padding */
+  font-size: 11px;
+  color: #343a40;
+  cursor: pointer;
+  border-radius: 6px;
+  position: relative;
+  height: 90px; /* Increased height by 7px */
+  overflow: hidden; /* Clip overflowing content */
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+}
+
+.day-number-wrapper {
+  height: 18px; /* A fixed height to contain the day number */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* Prevent it from shrinking */
+  z-index: 1; /* Ensure day number is above indicator */
+}
+
+.day-cell.today p {
+  color: #ff6f61;
+}
+
+.selected-day-indicator {
+  position: relative; /* For pseudo-element positioning */
+  width: 6px;
+  height: 6px;
+  background-color: #ff6f61;
+  border-radius: 50%;
+  margin: 2px auto 0;
+}
+
+.day-cell.selected p {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.day-cell.drag-selected {
+  background-color: #e6f7ff;
+}
+
+/* Removed .calendar-grid.week-view .calendar-days */
+
+.events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow-y: auto; /* Enable vertical scrolling */
+  /* Hide scrollbar for Webkit browsers */
+  &::-webkit-scrollbar {
+      display: none;
+  }
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide scrollbar for Internet Explorer/Edge */
+  -ms-overflow-style: none;
+  margin-top: 7px; /* Increased gap between day number and first event */
+}
+
+.event {
+  background-color: #f0f0f0; /* Default background */
+  color: #333; /* Default text color */
+  border-radius: 3px;
+  padding: 2px 4px; /* Reverted padding-left to 4px */
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0; /* Prevent event items from shrinking */
+  box-sizing: border-box;
+  width: calc(100% - 4px); /* Adjust width to account for left border */
+  /* margin-top: 2px; Removed */
+}
+
+.calendar-grid.week-view .day-cell {
+  height: auto; /* Allow height to expand based on content */
+  min-height: 60px; /* Maintain a minimum height */
+  overflow: visible; /* Ensure all content is visible */
+}
+
+.calendar-grid.week-view .day-cell .events-container {
+  overflow-y: visible; /* Allow events to push the day-cell height */
+}
+.day-cell.other-month {
+    color: #D3D3D3; /* Light gray color */
+}

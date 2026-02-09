@@ -1,0 +1,370 @@
+/* Styles for Diet.js */
+
+.meal-cards-wrapper {
+    display: flex;
+    gap: 20px; /* Increased gap */
+    overflow-x: auto;
+    overflow-y: visible; /* Allow content to be visible on y-axis */
+    padding-top: 25px; /* Add padding to prevent clipping of selector */
+    padding-bottom: 10px; /* Space for scrollbar */
+    -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
+    scrollbar-width: none; /* Firefox */
+    flex-wrap: nowrap; /* Prevent wrapping */
+    width: 100%; /* Ensure it does not overflow its parent */
+    align-items: flex-start; /* Prevent cards from stretching to match height */
+
+}
+
+/* Hide scrollbar for Webkit browsers */
+.meal-cards-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.meal-card {
+    flex-shrink: 0;
+    width: 233px; /* Updated width as per user request */
+    min-height: 92px; /* Changed height to min-height to allow expansion */
+    background-color: #fff; /* White background as per user request */
+    border-radius: 20px; /* Updated border-radius as per user request */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Keep existing shadow */
+    padding: 0px 0 0; /* Updated padding as per user request */
+    position: relative;
+    border: 1px solid #E1E7EF; /* Updated border as per user request */
+    transition: border-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    display: flex; /* Use flexbox for internal layout */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: space-between; /* Push footer to bottom */
+    align-items: center; /* Center align items horizontally within the card */
+}
+
+/* Add a pastel border for selected card */
+.meal-card.selected {
+    border-color: #a2d2ff; /* Pastel blue border */
+    transform: translateY(-3px); /* Lift on selection */
+    z-index: 10; /* Ensure selected card is above others */
+}
+
+.meal-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Vertically center align items */
+    margin-bottom: 0px; /* Updated to 0px as per user request */
+    height: 0px; /* Set height to 0 so it doesn't take space */
+    position: relative; /* Needed for z-index on children if any */
+}
+
+.meal-category-selector {
+    position: absolute;
+    top: -1px; /* Adjust to place on the border */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 152px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    z-index: 20; /* Increased z-index to ensure visibility */
+}
+
+.meal-category-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border: 1px solid #FF7581;
+    border-radius: 30px;
+    z-index: 1;
+}
+
+.meal-category-options {
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    gap: 11px;
+    padding: 0 10px; /* Add some padding to not have text at the very edge */
+    z-index: 2;
+}
+
+.meal-category-option {
+    font-size: 10px;
+    color: #383838;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.meal-category-option.selected {
+    font-size: 13px;
+    color: #FF7581;
+    font-weight: bold;
+}
+
+/* Positioning for the X (delete meal card) button */
+.delete-meal-card-btn {
+    position: absolute;
+    top: -5px; /* Adjust to be outside the card */
+    right: -5px; /* Adjust to be outside the card */
+    background-color: #ffeff1; /* Light pastel pink */
+    border: none;
+    font-size: 13px; /* Slightly larger */
+    color: #ff9aa2; /* Softer pink */
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Make it circular */
+    transition: background-color 0.2s, color 0.2s;
+    z-index: 10;
+}
+
+.delete-meal-card-btn:hover {
+    background-color: #ffdbde; /* Darker pastel pink on hover */
+    color: #f07e8a;
+}
+
+
+.meal-card-body {
+    padding: 0px; /* Updated padding as per user request */
+    flex-grow: 1; /* Updated flex-grow as per user request */
+    display: flex; /* Updated display as per user request */
+    flex-direction: column; /* Updated flex-direction as per user request */
+    align-items: center; /* Center align items horizontally within the body */
+}
+
+.food-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 1px; /* Updated margin-bottom as per user request */
+}
+
+.food-list li {
+    display: flex;
+    align-items: center;
+    width: 170px; /* Added width as per user request */
+    gap: 5px; /* Added gap as per user request */
+    padding: 5px 5px 5px 10px; /* Adjusted padding to move content slightly right */
+    margin-bottom: 8px; /* Keep existing margin */
+    background-color: #f8fafd; /* Keep existing background */
+    border: 1px solid #e0e6ed; /* Keep existing border */
+    border-radius: 15px; /* Keep existing border-radius */
+    font-size: 11px; /* Keep existing font-size */
+    color: #5a5a5a; /* Keep existing color */
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03); /* Keep existing shadow */
+}
+
+.food-name {
+    flex-grow: 1;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 400; /* Updated font-weight as per user request */
+    font-size: 10px; /* Updated font-size as per user request */
+    color: #4a4a4a;
+}
+
+.food-qty {
+    width: 25px; /* Updated width as per user request */
+    text-align: center;
+    border: 1px solid #e0e6ed;
+    border-radius: 8px;
+    padding: 1px 6px; /* Updated padding as per user request */
+    /* Removed margin-left: 10px; as gap will handle spacing */
+    font-size: 11px; /* Updated font-size as per user request */
+    color: #5a5a5a;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.food-qty:focus {
+    outline: none;
+    border-color: #a2d2ff;
+    box-shadow: 0 0 0 3px rgba(162, 210, 255, 0.3);
+}
+
+.food-cal {
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 400; /* Updated font-weight as per user request */
+    font-size: 10px; /* Updated font-size as per user request */
+    color: #8c9eff;
+    white-space: nowrap;
+}
+
+.remove-food-btn {
+    background-color: white; /* White background */
+    border: none;
+    font-size: 12px; /* Keep font size for 'x' */
+    cursor: pointer;
+    width: 18px; /* For circle */
+    height: 18px; /* For circle */
+    border-radius: 50%; /* Perfect circle */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center 'x' */
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2); /* Light gray shadow */
+    transition: background-color 0.2s, color 0.2s; /* Keep transitions */
+    /* Removed margin-left: 10px; */
+}
+
+.remove-food-btn:hover {
+    background-color: #ffdbde;
+    color: #f07e8a;
+}
+
+.food-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 170px; /* Updated width as per user request */
+    height: 25px; /* Updated height as per user request */
+    border: none; /* No border as per user request */
+    background-color: #f8fafd; /* Keep existing background */
+    box-shadow: 0px 0px 2.01px rgba(0, 0, 0, 0.25); /* Updated shadow as per user request */
+    border-radius: 15px; /* Keep existing border-radius */
+    padding: 0 10px; /* Adjusted padding-left to 10px */
+}
+
+.food-search-input {
+    flex-grow: 1;
+    border: none;
+    background: none;
+    font-size: 10px; /* Updated font-size as per user request */
+    color: #5a5a5a;
+    outline: none;
+    height: 100%; /* Fill wrapper height */
+    box-sizing: border-box;
+}
+
+.food-search-input::placeholder {
+    color: #9ab4cc; /* Softer placeholder color */
+}
+
+.add-food-btn-component {
+    background: #baffc9; /* Pastel green background */
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; /* Larger button */
+    height: 30px;
+    border-radius: 50%; /* Circular */
+    transition: background-color 0.2s, transform 0.1s;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.add-food-btn-component:hover {
+    background-color: #92e6a7;
+    transform: translateY(-1px);
+}
+
+
+.add-food-icon {
+    width: 20px; /* Adjusted size to fit button */
+    height: 20px;
+    position: relative;
+    transform: scale(1); /* No scaling, let button control size */
+    pointer-events: none;
+}
+
+.add-food-icon-plus-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    top: 0;
+    background-color: transparent; /* Ensure transparent background */
+}
+
+.add-food-icon-plus-bg.bottom {
+    display: none; /* Only need one plus for simplicity */
+}
+
+.add-food-icon-ellipse {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(0deg); /* No rotation needed for simple plus */
+}
+.add-food-icon-ellipse img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: none; /* Remove filter for simplicity, assuming a white or transparent image */
+}
+
+.add-food-icon-plus-text {
+    position: absolute;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: #383838;
+    transform: rotate(0deg);
+    line-height: 1; /* Adjust line height for better centering */
+}
+
+
+.meal-card-footer {
+    border-top: 0px solid #e0e6ed; /* Updated border-top as per user request */
+    padding-top: 10px;
+    margin-top: auto;
+    text-align: right;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #5a5a5a;
+}
+
+.meal-card-total-calories {
+    font-weight: 700;
+    font-size: 13px;
+    color: #ff9aa2; /* Pastel accent */
+}
+
+
+/* Autocomplete portal styling */
+.autocomplete-results {
+    background-color: #ffffff;
+    border: 1px solid #e0e6ed;
+    border-radius: 15px; /* Updated border-radius as per user request */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-height: 80px; /* Updated max-height as per user request */
+    overflow-y: auto;
+    z-index: 1100;
+}
+
+.autocomplete-item {
+    padding: 8px 12px; /* More padding */
+    cursor: pointer;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 11px; /* Updated font-size as per user request */
+    color: #5a5a5a;
+    transition: background-color 0.2s;
+}
+
+.autocomplete-item:hover {
+    background-color: #f0f4f8; /* Light pastel background on hover */
+}
+
+.diet-dashboard-section {
+    gap: 0px; /* Gap between header and meal cards */
+}
+
+.diet-section-header {
+    margin-bottom: 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0px;
+}
+
+.diet-section-header h3 {
+    margin-bottom: 0px;
+    padding: 0;
+    line-height: 1;
+}

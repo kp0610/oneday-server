@@ -1,0 +1,116 @@
+.collection-header-wrapper {
+    display: flex;
+    justify-content: space-between; /* Distribute space between children */
+    align-items: center; /* Align items vertically */
+    width: 100%; /* Take full width */
+    padding: 0 20px; /* Match horizontal padding of content wrapper */
+    box-sizing: border-box;
+    margin-top: 22px; /* Keep the existing margin-top from collection-buttons-wrapper */
+}
+
+.collection-buttons-wrapper {
+    display: flex;
+    gap: 16px; /* Spacing between buttons */
+    /* Position 64px below "OneDay" text - assuming "OneDay" is part of main-header,
+       this needs to be positioned relative to its container. For now,
+       I'll use margin-top. Actual positioning might require adjusting parent containers. */
+    margin-top: 0px; /* Handled by parent collection-header-wrapper */
+    align-items: center; /* Align buttons on the same y-value */
+    /* justify-content: center; */ /* Handled by parent collection-header-wrapper */
+    /* width: 100%; */ /* Handled by parent collection-header-wrapper */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.collection-view-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center buttons and content wrappers */
+    width: 100%;
+    height: 100%; /* Ensure container takes full height */
+    overflow: auto; /* Enable scrolling if content overflows */
+}
+
+.collection-content-wrapper {
+    display: flex;
+    gap: 23px; /* Gap between left and right box */
+    margin-top: 20px; /* Adjust as needed for spacing below buttons */
+    justify-content: center; /* Center the boxes horizontally */
+    width: 100%; /* Take full width of its parent to allow centering */
+    padding: 0 20px; /* Add some horizontal padding */
+    box-sizing: border-box;
+}
+
+.collection-left-box {
+    width: 612px;
+    height: 599px;
+    border-radius: 20px;
+    background-color: white;
+    border: 1px solid #E1E7EF;
+    box-sizing: border-box;
+    padding: 0 20px; /* Adjusted padding to allow centering of daily cards */
+    flex-shrink: 0; /* Prevent shrinking */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center the daily cards horizontally */
+    justify-content: flex-start; /* Align children to the start of the cross axis */
+}
+
+.collection-right-box {
+    width: 485px;
+    height: 599px;
+    border-radius: 20px; /* Assuming same border-radius as left box for consistency, if not specified */
+    background-color: white; /* Added background color */
+    border: 1px solid #E1E7EF; /* Added border */
+    box-sizing: border-box;
+    padding: 0px; /* Set padding to 0px for internal boxes to fill */
+    flex-shrink: 0; /* Prevent shrinking */
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
+    justify-content: flex-start; /* Align children to the start of the cross axis */
+    overflow: auto; /* Enable scrolling if content overflows */
+}
+
+/* New box styles */
+.collection-right-box-top {
+    width: 413px;
+    min-height: 250px; /* Changed from height to min-height */
+    border-radius: 20px;
+    border: 1px solid #E1E7EF;
+    background-color: white;
+    box-sizing: border-box;
+    margin-top: 20px; /* Initial margin from the top of the parent box */
+}
+
+.collection-right-box-bottom {
+    width: 413px;
+    /* height: 284px; */ /* Removed fixed height to allow content to dictate height, or scroll if content overflows */
+    min-height: 284px; /* Ensure a minimum height is maintained */
+    border-radius: 20px;
+    border: 1px solid #E1E7EF;
+    background-color: white;
+    box-sizing: border-box;
+    margin-top: 13px; /* 13px below the top box */
+    overflow-y: auto; /* Enable scrolling for the bottom box content */
+    position: relative; /* Added for absolute positioning of children */
+    padding-top: 20px; /* Add some padding to not overlap with absolute positioned date */
+    padding-left: 20px;
+}
+
+.collection-date-display {
+    position: absolute;
+    top: 20px; /* Aligned with padding-top of parent */
+    left: 20px; /* Aligned with padding-left of parent */
+    color: #FF7581;
+    font-size: 20px;
+    font-weight: 600; /* Added for emphasis, similar to other dates */
+    z-index: 10; /* Ensure it's above other content */
+}
+
+/* Individual collection content styling within boxes might be needed */
+.collection-left-box > div,
+.collection-right-box > div {
+    /* height: 100%; */ /* Removed this as inner boxes have fixed height */
+    /* width: 100%; */ /* Removed this as inner boxes have fixed width */
+}

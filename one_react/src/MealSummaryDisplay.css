@@ -1,0 +1,130 @@
+.meal-summary-container {
+    padding-top: 50px; /* Space from date display */
+    padding-left: 20px; /* Align with date display */
+    padding-right: 20px;
+    display: flex;
+    flex-direction: column; /* Stack meal chips list and macros box vertically */
+    gap: 20px; /* Gap between meal chips list and macros box */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+.meal-chips-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Gap between meal chips */
+    width: 100%; /* Take full width */
+}
+
+.meal-item-chip {
+    height: 25.35px;
+    border-radius: 17.07px;
+    background-color: rgba(191, 191, 191, 0.3); /* BFBFBF with 30% opacity */
+    border: 0.57px solid #BFBFBF;
+    color: #383838;
+    font-size: 11.39px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px; /* Adjust padding for text */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.meal-summary-container .macros-box {
+    display: flex;
+    justify-content: space-between; /* Align summary and items-container */
+    align-items: center; /* Vertically center content */
+    /* flex-wrap: wrap; Removed as direct children will be summary and items-container */
+    gap: 20px; /* Gap between summary and items-container */
+    margin-top: 10px;
+    padding: 13px;
+    border-radius: 20px;
+    background-color: white;
+    border: 1px solid #E1E7EF;
+    width: 100%;
+    box-sizing: border-box;
+    height: 115px; /* Added fixed height */
+}
+
+.meal-summary-container .macros-summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.meal-summary-container .macros-summary .total-calories-label {
+    color: #7E7E7E;
+    font-size: 11px;
+    margin-bottom: 0px;
+}
+
+.meal-summary-container .macros-summary .total-calories-value {
+    display: flex;
+    align-items: baseline;
+    margin-top: 5px;
+}
+
+.meal-summary-container .macros-summary .calorie-number {
+    color: #383838;
+    font-size: 25px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.meal-summary-container .macros-summary .calorie-unit {
+    color: #7E7E7E;
+    font-size: 11px;
+}
+
+.meal-summary-container .macro-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Gap between macro items */
+    width: 200px; /* Adjust width to fit */
+    /* No progress bars, so simpler layout */
+}
+
+.meal-summary-container .macro-items-container .macro-item {
+    display: flex;
+    align-items: center; /* Align label and value */
+    justify-content: space-between; /* Space out label and value */
+    /* Removed gap: 3px; as it's space-between now */
+}
+
+.meal-summary-container .macro-items-container .macro-label {
+    color: #7D8084;
+    font-size: 13px; /* Slightly larger for visibility */
+    white-space: nowrap;
+}
+
+.meal-summary-container .macro-items-container .macro-value {
+    color: #6A6A6A;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.empty-meal-summary {
+    font-size: 14px;
+    color: #A0A0A0;
+    text-align: center;
+    width: 100%; /* Take full width to center text */
+    padding-top: 50px;
+}
+
+.meal-summary-container .macro-bar {
+    width: 100px; /* Adjust width as needed for display */
+    height: 8px; /* Height of the bar */
+    background-color: #F3F3F3; /* Background color of the bar track */
+    border-radius: 4px; /* Half of height for rounded ends */
+    overflow: hidden; /* Ensure progress bar is clipped */
+}
+
+.meal-summary-container .macro-bar-progress {
+    height: 100%;
+    background-color: #FF7581; /* Pink progress bar color */
+    border-radius: 4px; /* Half of height for rounded ends */
+    transition: width 0.5s ease-in-out;
+    box-shadow: 1px 1px 4px rgba(255, 117, 129, 0.29); /* Subtle shadow */
+}

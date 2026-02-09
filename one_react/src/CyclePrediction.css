@@ -1,0 +1,388 @@
+/* one_day_fe_react/src/CyclePrediction.css */
+
+.cycle-prediction-wrapper {
+    /* General wrapper styles if needed */
+}
+
+.healthcare-content-box {
+    background-color: #ffffff; /* White box */
+    border-radius: 10px; /* Example: slightly rounded corners */
+    padding: 15px; /* Example: some internal padding */
+    margin-top: 10px; /* Example: space below "월경 예정일" header */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Optional: subtle shadow */
+}
+
+/* Styles for elements inside the healthcare-content-box */
+.cycle-prediction-body {
+    /* Styles for the body if necessary */
+}
+
+.cycle-dates-wrapper {
+    display: flex;
+    justify-content: space-around; /* Distribute space evenly */
+    align-items: center; /* Align items to the center vertically */
+    gap: 16px; /* Increased gap */
+    margin-top: 5px; /* Reduced margin */
+    position: relative; /* For positioning the dashed line */
+    z-index: 0;
+}
+
+/* Dashed line connecting the boxes */
+.cycle-dates-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 60%; /* Adjust vertical position to align with the boxes center */
+    left: 60px; /* Shifted left by reducing this value */
+    right: 72px; /* Compensated on the right to keep overall shift */
+    height: 1px;
+    background-image: linear-gradient(to right, #E1E7EF 3px, transparent 3px);
+    background-size: 6px 1px; /* 3px dash + 3px gap */
+    background-repeat: repeat-x;
+    z-index: -1; /* Place behind the boxes */
+    transform: translateY(-50%);
+}
+
+.date-label-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px; /* Space between label and box */
+}
+
+.date-label {
+    font-size: 12px;
+    color: #7D8084;
+    margin: 0;
+    font-weight: 470;
+}
+
+.date-box {
+    text-align: center;
+    padding: 0px; /* Changed from 5px to 0px */
+    background-color: #F4F4F4; /* Updated background color */
+    border-radius: 11px; /* Updated border radius */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    width: 58px; /* Updated width */
+    height: 66px; /* Updated height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Added for pseudo-element positioning */
+}
+
+.date-info-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.date-info-box .date-mmdd {
+    font-size: 18px;
+    font-weight: 500;
+    color: #383838;
+    display: block;
+}
+
+.date-info-box .date-day {
+    font-size: 12px;
+    color: #B1B7C0;
+    display: block;
+    font-weight: 200;
+}
+
+.d-day-box {
+    text-align: center;
+    background-color: #ffffff;
+    border-radius: 3px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 49px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.d-day-text {
+    font-size: 0.9em; /* Adjusted font-size to fit */
+    font-weight: 700; /* Bold font */
+    color: #ff6b7e; /* Bold pink color */
+    line-height: 1;
+}
+
+/* Modal Styles */
+#cycle-edit-modal {
+    /* Position and overlay */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    backdrop-filter: blur(5px); /* Blurred background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#cycle-edit-modal .modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 28px 37px;
+    border-radius: 20px;
+    width: 342px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    border: 1px solid #E1E7EF;
+}
+
+#cycle-edit-modal .schedule-modal-header {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-bottom: 0px;
+    position: relative;
+}
+
+#cycle-edit-modal .schedule-modal-title {
+    font-size: 14px;
+    color: #4a4a4a;
+    margin-bottom: 10px;
+    text-align: left;
+    font-weight: 700;
+    position: relative;
+}
+
+#cycle-edit-modal .modal-close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #E1E7EF;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+    color: #383838;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 0;
+    line-height: 1;
+}
+
+#cycle-edit-modal .modal-close-btn:hover {
+    background-color: #f0f0f0;
+    color: #383838;
+}
+
+#cycle-edit-modal .cycle-input-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#cycle-edit-modal .cycle-input-form label {
+    font-size: 13px;
+    color: #6a7480;
+    font-weight: 500;
+}
+
+#cycle-edit-modal .cycle-input-form input[type="date"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+#cycle-edit-modal .cycle-input-form button {
+    background-color: #ff758112;
+    color: #9f9f9f;
+    padding: 7px 14px;
+    border: 1px solid #ff7581;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+#cycle-edit-modal .modal-actions {
+    text-align: right;
+}
+
+#cycle-edit-modal .modal-actions button {
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Past records list */
+#past-cycles-list ul {
+    list-style: none;
+    padding: 0;
+    height: 90px;
+    overflow-y: auto;
+    border: 1px solid #e0e6ed;
+    border-radius: 14.4px;
+    padding: 12px 4px; /* Further increased vertical padding */
+    background-color: #f8fafd;
+    display: flex;
+    flex-direction: column;
+}
+
+#past-cycles-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0; /* Removed vertical padding */
+    border-bottom: 1px solid #eee;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#past-cycles-list li span {
+    padding-left: 5px;
+}
+
+#past-cycles-list li:last-child {
+    border-bottom: none;
+}
+
+#past-cycles-list .record-actions button {
+    background-color: #F4F4F4;
+    color: #5a5a5a;
+    padding: 7px 11px; /* Updated padding */
+    border: 1px solid #E1E7EF;
+    border-radius: 14px; /* Updated border-radius */
+    cursor: pointer;
+    font-size: 13px; /* Added font-size */
+}
+
+#past-cycles-list .record-actions {
+    display: flex;
+    gap: 0px;
+    position: relative;
+    right: 2px;
+}
+
+#past-cycles-list .record-actions .delete-record-btn {
+    background-color: #ffffff;
+    margin-left: -5px;
+}
+
+#past-cycles-list .record-actions .edit-record-btn {
+    margin-left: 5px;
+}
+
+/* Custom styles for the edit button */
+.edit-btn {
+    /* White circle */
+    background-color: #ffffff;
+    border: none; /* No border for the button itself */
+    border-radius: 50%; /* Make it a circle */
+    width: 20px;   /* Fixed width for the circle */
+    height: 20px;  /* Fixed height for the circle */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    
+    /* Light gray shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle light gray shadow */
+
+    padding: 0; /* Remove default button padding */
+    line-height: 1; /* Adjust line height for icon centering */
+    transition: box-shadow 0.2s ease-in-out; /* Smooth transition for hover */
+}
+
+.edit-btn > svg {
+    width: 10px; /* Slightly smaller than button size to fit nicely */
+    height: 10px;
+    stroke: #FF7581; /* The requested pink color */
+    stroke-width: 1.4px; /* The requested line thickness */
+    fill: none; /* Ensure fill is transparent for line icons */
+}
+
+.edit-btn:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Slightly darker shadow on hover */
+}
+
+/* Hide the text "수정" if we are using an icon directly in the button */
+/* This will be done by replacing the text with the icon in JS, but for CSS if text is present, hide it */
+.edit-btn span {
+    display: none;
+}
+
+.cycle-prediction-wrapper .section-header {
+    border-bottom: none; /* Remove the gray line */
+    padding-bottom: 0;   /* Remove padding associated with the line */
+    margin-bottom: 0;    /* Remove margin associated with the line */
+}
+
+/* Specific styles that were previously in HealthcareTab.css for CyclePrediction */
+.healthcare-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.prediction-main-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.prediction-main-info p {
+    font-size: 16px;
+    color: #777;
+    margin-bottom: 5px;
+}
+
+.d-day-display {
+    font-size: 4em; /* Very large D-Day */
+    font-weight: 800;
+    color: #ff9aa2; /* Pastel pink accent */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.08);
+    margin-top: 0;
+}
+
+.predicted-dates-grid {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    gap: 15px;
+    padding: 10px 0;
+    border-top: 1px dashed #e0e6ed;
+    border-bottom: 1px dashed #e0e6ed;
+    margin-bottom: 20px;
+}
+
+.predicted-date-item p {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.large-date {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #5a5a5a;
+}
+.date-box.start-date::before {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: #FF7581; /* Key color */
+    border-radius: 50%;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}

@@ -1,0 +1,805 @@
+.home-tab-content {
+    font-family: 'Pretendard', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Gap between combined-content-box and modals */
+    /* flex-grow: 1; Removed as fixed height is applied */
+    height: 543px; /* Fixed height for home tab content */
+    overflow-y: auto; /* Enable internal scrolling */
+}
+
+.combined-content-box {
+    background-color: #ffffff;
+    border: 0px solid #E1E7EF;
+    border-top: none;
+    /* border-radius is now dynamic based on active tab */
+    padding: 20px; /* Overall padding for the combined box */
+    display: flex;
+    flex-direction: column;
+    gap: 0px; /* Gap between sections inside the combined box */
+    flex-grow: 1; /* Allow it to fill available space */
+}
+
+/* Dynamic border-radius for the content box based on the active tab */
+.content-for-home-tab .combined-content-box {
+    border-radius: 0 20px 20px 20px;
+}
+.content-for-records-tab .combined-content-box {
+    border-radius: 0 0 20px 20px;
+    border-bottom: none; /* Removed the line below the tabs */
+}
+.content-for-healthcare-tab .combined-content-box {
+    border-radius: 20px 0 20px 20px;
+}
+
+.home-section-grid {
+    display: grid;
+    grid-template-columns: 282fr 20px 143fr;
+    position: relative;
+    gap: 10px;
+    margin-top: -10px;
+}
+
+.schedule-section-grid {
+    margin-top: 16px;
+}
+
+.todo-section-grid {
+    margin-top: 20px;
+}
+
+.home-section-grid > .dashboard-section:first-child::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: #8A8A8A;
+    border-radius: 50%;
+    top: 8%;
+    left: calc(100% + 9px); /* 100% of the element width + half the gap */
+    transform: translate(-50%, -50%); /* Center the pseudo-element */
+}
+
+.home-section-grid > .dashboard-section:first-child::before {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 112px;
+    background-image: repeating-linear-gradient(to bottom, #eeeeee 0, #eeeeee 4px, transparent 4px, transparent 11px); /* dash 4, gap 7 */
+    top: calc(28% - 3px); /* Start below the circle */
+    left: calc(100% + 9px);
+    transform: translateX(-50%);
+}
+
+
+
+.dashboard-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.home-section-grid .dashboard-section:first-child {
+    height: 157px; /* Set height to match add-schedule-section */
+}
+
+.add-schedule-section {
+    width: 143px;
+    height: 157px;
+    margin-left: 10px;
+}
+
+.add-todo-section {
+    margin-left: -20px;
+    width: 143px;
+    height: 157px;
+}
+
+.home-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* No border or padding needed as it's a standalone element */
+}
+
+.home-card-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #383838;
+    white-space: nowrap;
+}
+
+.home-section-grid > .dashboard-section:first-child .home-card-title {
+    font-weight: 500;
+}
+
+.home-add-btn {
+    color: #888;
+    background-color: #ffffff;
+    border: 0.5px solid #ccc;
+    outline: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    margin-left: 15px;
+}
+
+.add-schedule-section .home-add-btn {
+    margin-left: auto;
+    margin-right: 3px; /* 3px로 변경 */
+    margin-top: 28px; /* 2px 위로 이동 */
+}
+
+.add-todo-section .home-add-btn {
+    margin-left: auto; /* auto로 변경 */
+    margin-right: 3px;
+    margin-top: 28px;
+}
+
+.home-add-btn:hover {
+    background-color: #E9ECEF;
+}
+
+/* The home-card now only contains the body, no box styling */
+.home-card {
+    /* Removed background-color, border-radius, padding, box-shadow */
+    padding: 0; /* Ensure no extra padding */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.home-card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #E1E7EF;
+    max-height: 120px; /* Set a max-height for internal scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    /* Hide scrollbar for Webkit browsers */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for Firefox */
+    scrollbar-width: none;
+    /* Hide scrollbar for Internet Explorer/Edge */
+    -ms-overflow-style: none;
+}
+
+.add-schedule-section .home-card-body,
+.add-todo-section .home-card-body {
+    /* padding-top: 10px; */
+}
+
+.add-schedule-section .home-card-body,
+.add-todo-section .home-card-body {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+/* --- Rest of the styles are mostly the same, just need to ensure they work with the new structure --- */
+
+.schedule-item, .todo-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 0;
+    position: relative; /* For absolute positioning of delete button */
+    transition: transform 0.3s ease-out; /* Smooth swipe animation */
+}
+
+.schedule-item.swiped {
+    transform: translateX(-32px); /* Adjusted for new button width */
+}
+
+.item-checkbox-container {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-checkbox {
+    border: 1px solid #D8D8D8;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.item-checkbox.circle {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: transparent;
+    aspect-ratio: 1; /* Ensure a perfect circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-checkbox.circle.completed {
+    background-color: white;
+    border: 1px solid #FFC5C5;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-checkbox.square {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+}
+
+.item-checkbox.square.completed {
+    background-color: white;
+    border: 1px solid #FFC5C5;
+    position: relative;
+}
+
+.checkmark-icon {
+    color: #F1F1F1;
+    font-size: 14px;
+    font-weight: bold;
+    stroke-width: 3.5px;
+    transform: scaleX(0.8);
+}
+
+
+.item-title {
+    flex-grow: 1;
+    font-size: 14px;
+    font-weight: 400; /* Changed to regular */
+    color: #383838;
+    transition: color 0.2s, text-decoration 0.2s;
+    display: flex; /* Make it a flex container */
+    align-items: center; /* Align content vertically */
+}
+
+.item-title::after {
+    content: '';
+    flex-grow: 1; /* Fill available space */
+    height: 1px;
+    background-image: repeating-linear-gradient(to right, #eeeeee 0, #eeeeee 4px, transparent 4px, transparent 11px);
+    background-size: 11px 1px;
+    background-repeat: repeat-x;
+    margin: 0 5px 0 10px; /* Space around the line */
+}
+
+.item-title.completed {
+    text-decoration: line-through;
+    color: #A0A0A0;
+}
+
+.item-time {
+    font-size: 14px; /* Changed font size */
+    font-weight: 400; /* Changed to regular */
+    color: #FFA3A3;
+    width: 30px; /* Fixed width for time slot */
+    flex-shrink: 0; /* Prevent shrinking */
+    display: flex; /* Make it a flex container */
+    justify-content: flex-end; /* Right-align its content */
+    align-items: center; /* Vertically center content */
+}
+
+.empty-message {
+    text-align: center;
+    color: #A0A0A0;
+    font-size: 14px;
+    padding: 20px 0;
+    margin: auto;
+}
+
+.schedule-item {
+    position: relative;
+    padding-right: 0;
+}
+
+.delete-schedule-btn {
+    position: absolute;
+    right: -37px; /* Initially off-screen, adjusted for new width */
+    top: 50%;
+    transform: translateY(-50%);
+    background: #FF5353; /* New red background color */
+    color: white; /* Trash can emoji color */
+    border: none;
+    border-radius: 10px; /* New border-radius */
+    width: 32px; /* New width */
+    height: 23px; /* New height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: right 0.3s ease-out; /* Smooth transition for button */
+    z-index: -1; /* Behind the item initially */
+    font-size: 12px; /* Adjust font size for emoji */
+}
+
+.schedule-item.swiped .delete-schedule-btn {
+    right: -30px; /* Bring button into view */
+    z-index: 1; /* Bring button to front */
+}
+
+.delete-todo-btn {
+    position: absolute;
+    right: -37px; /* Initially off-screen, adjusted for new width */
+    top: 50%;
+    transform: translateY(-50%);
+    background: #FF5353; /* New red background color */
+    color: white; /* Trash can emoji color */
+    border: none;
+    border-radius: 10px; /* New border-radius */
+    width: 32px; /* New width */
+    height: 23px; /* New height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: right 0.3s ease-out; /* Smooth transition for button */
+    z-index: -1; /* Behind the item initially */
+    font-size: 12px; /* Adjust font size for emoji */
+}
+
+.todo-item.swiped .delete-todo-btn {
+    right: -30px; /* Bring button into view */
+    z-index: 1; /* Bring button to front */
+}
+
+
+/* Overriding Template Button Styles */
+.template-tag {
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+    border-radius: 22px !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    font-weight: 500 !important;
+    position: relative; /* Add this */
+}
+
+.tag-yellow { border-color: #FFE79D !important; color: #A38B46 !important; background-color: rgba(255, 231, 157, 0.5) !important; }
+.tag-blue { border-color: #9DDBFF !important; color: #4593C0 !important; background-color: rgba(157, 219, 255, 0.5) !important; }
+.tag-gray { border-color: #A5A5A5 !important; color: #6E6E6E !important; background-color: rgba(165, 165, 165, 0.5) !important; }
+.tag-green { border-color: #9DFFA7 !important; color: #1C9128 !important; background-color: rgba(157, 255, 167, 0.5) !important; }
+.tag-orange { border-color: #FFA544 !important; color: #D78B3A !important; background-color: rgba(255, 165, 68, 0.5) !important; }
+
+
+.reminder-section {
+    margin-top: 20px;
+}
+.reminder-body {
+    display: flex;
+    flex-direction: row;
+    gap: 9px; /* 카드 사이의 간격을 9px로 변경 */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    padding-bottom: 5px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    white-space: nowrap;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+}
+
+/* Hide scrollbar for Webkit browsers */
+.reminder-body::-webkit-scrollbar {
+    display: none;
+}
+
+.reminder-card {
+    flex-shrink: 0;
+    width: 133px; /* 가로 133px로 변경 */
+    height: 85px; /* 세로 85px */
+    padding: 15px;
+    border: 1px solid #E1E7EF; /* 테두리 색상 변경 */
+    border-radius: 20px; /* round를 20으로 변경 */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.reminder-card:hover {
+    transform: translateY(-3px);
+}
+
+.delete-reminder-btn {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background: none;
+    border: none;
+    color: #C0C0C0;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.reminder-card:hover .delete-reminder-btn {
+    opacity: 1;
+}
+
+.reminder-dday-badge {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6E6E6E;
+    background-color: #F1F1F1;
+    border-radius: 4px;
+    padding: 4px 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Drop shadow with x=0, y=0 */
+}
+
+.reminder-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #383838;
+}
+
+
+
+.reminder-card.urgency-high {
+    background-color: #FF7581; /* 카드 배경색을 키 컬러로 변경 */
+}
+
+.reminder-card.urgency-high .reminder-dday-badge {
+    background-color: white; /* 뱃지 배경색을 흰색으로 변경 */
+    color: #FF7581; /* 뱃지 텍스트 색상을 키 컬러로 변경 */
+}
+
+.reminder-card.urgency-high .reminder-title {
+    color: white; /* 리마인더 제목 텍스트를 흰색으로 변경 */
+}
+
+.reminder-card.urgency-medium .reminder-title,
+.reminder-card.urgency-low .reminder-title {
+    color: #6E7279;
+}
+
+.schedule-modal-header {
+    display: flex;
+    align-items: baseline; /* Align text baselines */
+    gap: 5px; /* Space between title and date */
+    margin-bottom: 0px; /* Space below the header */
+    position: relative; /* To position the close button absolutely */
+}
+
+.schedule-modal-title {
+    font-size: 13px;
+    color: #4a4a4a;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 500;
+    position: relative;
+}
+
+
+
+
+
+.schedule-modal-date {
+    font-size: 12px;
+    color: var(--primary-color); /* Assuming --primary-color is your key color */
+    font-weight: 500;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 10px; /* Adjusted to be inside padding */
+    right: 10px; /* Adjusted to be inside padding */
+    background-color: white; /* From .close-profile-button */
+    border: 1px solid #E1E7EF; /* From .close-profile-button */
+    border-radius: 50%; /* From .close-profile-button */
+    width: 17px; /* Changed to 17px */
+    height: 17px; /* Changed to 17px */
+    display: flex; /* From .close-profile-button */
+    justify-content: center; /* From .close-profile-button */
+    align-items: center; /* From .close-profile-button */
+    font-size: 10px; /* Adjusted font size for 'x' */
+    cursor: pointer; /* Already present */
+    color: #383838; /* From .close-profile-button */
+    z-index: 10; /* From .close-profile-button */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* From .close-profile-button */
+    padding: 0; /* Already present */
+    line-height: 1; /* Already present */
+}
+
+.modal-close-btn:hover {
+    background-color: #f0f0f0; /* From .close-profile-button:hover */
+    color: #383838; /* Keep the color consistent with the normal state */
+}
+
+.schedule-title-input {
+    width: 100%;
+    height: 31px;
+    padding: 19px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    background-color: #ffffff;
+    font-size: 14px;
+    filter: drop-shadow(0px 2px 2.5px rgba(0, 0, 0, 0.1));
+}
+
+.chip-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0;
+    vertical-align: middle;
+    cursor: pointer;
+    outline: none; /* Remove outline on focus */
+    -webkit-tap-highlight-color: transparent; /* Prevent gray background on mobile taps */
+    /* margin-right: 8px; */
+}
+
+
+
+.chip-checkbox-label input[type="checkbox"] {
+    /* Hide default checkbox */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+}
+
+.chip-checkbox-label span {
+    display: flex;
+    align-items: center;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background-color: #ECECEC;
+    color: #515151;
+    border: 0.7px solid #BFBFBF;
+    font-size: 12px;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, padding-left 0.2s;
+    position: relative;
+}
+
+.chip-checkbox-label:hover span {
+    background-color: #dcdcdc; /* Darken the background on hover */
+}
+
+/* Style for when checkbox is checked */
+.chip-checkbox-label input[type="checkbox"]:checked + span {
+    background-color: #FFE1E3;
+    color: #FF7581;
+    border-color: #FF7581; /* New border color when checked */
+    padding-left: 20px; /* Make space for the circle */
+}
+
+.chip-checkbox-label input[type="checkbox"]:checked + span::before {
+    content: '';
+    position: absolute;
+    left: 8px; /* Position the circle to the left */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px; /* Size of the circle */
+    height: 6px; /* Size of the circle */
+    border-radius: 50%;
+    background-color: #FF7581; /* Requested circle color */
+}
+
+.chip-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow chips to wrap to the next line if space is limited */
+    gap: 13px;
+    margin-bottom: 3px; /* Space below the chip container */
+    margin-top: 15px;
+}
+
+.template-color-picker {
+    display: flex;
+    gap: 10px;
+    margin-top: 1px;
+    margin-bottom: 10px;
+}
+
+.color-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid transparent;
+}
+
+.color-circle:hover {
+    transform: scale(1.1);
+}
+
+.color-circle.selected {
+    border: 2px solid #d3d3d3; /* Light gray border for selected state */
+}
+
+.custom-color-circle {
+    border: 1px dashed #ccc;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.plus-icon {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #f0f0f0; /* Default background for the plus button itself */
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    line-height: 12px;
+    color: #888;
+    border: 1px solid #ccc;
+}
+.plus-icon::before {
+    content: '+';
+}
+
+.delete-template-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #f0f0f0; /* Same as plus-icon */
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    line-height: 12px;
+    color: #888;
+    border: 1px solid #ccc;
+    cursor: pointer; /* Indicate it's clickable */
+    z-index: 1; /* Ensure it's above the template tag content */
+}
+
+.empty-template-message {
+    text-align: center;
+    color: #A0A0A0;
+    font-size: 14px;
+    padding: 20px 0;
+    margin: auto;
+}
+
+.add-todo-modal .empty-template-message,
+.add-schedule-modal-content .empty-template-message {
+    padding: 0;
+}
+
+/* New styles for schedule option boxes */
+.schedule-option-box {
+    background-color: white;
+    border: 1px solid #E1E7EF;
+    border-radius: 20px;
+    padding: 4px 13px; /* Add some padding inside the box */
+    margin-bottom: 0px; /* Add margin to create gap between boxes */
+    display: flex; /* Use flex to arrange content inside */
+    flex-direction: column; /* Stack content vertically */
+    gap: 10px; /* Gap between children inside the box */
+    margin-top: 10px;
+    /* Removed margin-left */
+}
+
+.todo-day-picker-option-box {
+    /* Removed margin-left */
+}
+
+.days-of-week-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow days to wrap */
+    gap: 5px; /* Gap between day labels */
+}
+
+.schedule-option-box input[type="time"], .schedule-option-box input[type="date"] {
+    width: 100%;
+    padding: 1px 15px;
+    box-sizing: border-box;
+    border: 0px solid #E1E7EF;
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #5a5a5a;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    vertical-align: middle; /* Added for better vertical alignment */
+}
+
+.schedule-option-box input[type="time"]:focus,
+.schedule-option-box input[type="date"]:focus {
+    border-color: #a2d2ff; /* Highlight on focus */
+    box-shadow: 0 0 0 3px rgba(162, 210, 255, 0.3);
+}
+
+.days-of-week-container label {
+    color: #5a5a5a;
+}
+
+.schedule-option-box > div > label {
+    color: #5a5a5a;
+    font-size: 11px;
+    position: relative;
+    top: -1px;
+    margin-right: 1px;
+}
+
+.end-date-container label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap; /* Prevent wrapping */
+}
+
+.todo-day-picker-wrapper {
+    display: flex;
+    align-items: center; /* Align items to the center vertically */
+    gap: 10px; /* Space between the chip and the option box */
+    margin-bottom: 0px; /* Reduced spacing by 10px */
+    flex-wrap: nowrap; /* Ensure children stay on one line */
+}
+.add-todo-modal .home-add-btn {
+    margin-left: 0;
+}
+
+.add-schedule-section .home-card-title,
+.add-todo-section .home-card-title {
+    font-size: 14px;
+    margin-top: 3px;
+    font-weight: 500;
+}
+.item-title.no-time::after {
+    content: none;
+}
+.item-checkbox.square.completed .checkmark-icon,
+.item-checkbox.circle.completed .checkmark-icon {
+    color: #FF7581;
+}
+.todo-item.swiped {
+    transform: translateX(-32px); /* Adjusted for new button width */
+}

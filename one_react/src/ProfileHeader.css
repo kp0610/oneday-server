@@ -1,0 +1,48 @@
+/* ProfileHeader.css */
+
+.profile-header-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Adjusted gap */
+    cursor: pointer;
+}
+
+.profile-image-wrapper {
+    width: 40px; /* Increased size */
+    height: 40px; /* Increased size */
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #e9ecef;
+    flex-shrink: 0;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-image-default {
+    width: 100%;
+    height: 100%;
+    background-color: #ced4da; /* A simple placeholder background */
+    border: 1px solid #E1E7EF;
+}
+
+.profile-nickname {
+    font-size: 17px; /* Changed font size */
+    font-weight: bold; /* Applied bold font-weight */
+    color: #212529; /* Darker color */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px; /* Adjust as needed */
+    margin-top: 5px; /* Move text down by 5px */
+}
+
+/* Skeleton loader style */
+.profile-header-container.skeleton {
+    background-color: #e0e0e0;
+    width: 150px; /* Example width */
+    height: 55px;
+}

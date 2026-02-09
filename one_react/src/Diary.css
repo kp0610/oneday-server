@@ -1,0 +1,374 @@
+/* Styles for Diary.js */
+
+.diary-page-container {
+    padding: 0 10px 10px 10px; /* Reduced top padding from 10px to 0px */
+    font-family: 'Pretendard', sans-serif;
+    background-color: transparent; /* Changed to transparent */
+    height: 100%; /* Changed from min-height */
+    display: flex; /* Added for flex layout */
+    flex-direction: column; /* Arrange children vertically */
+    align-items: center; /* Center children horizontally */
+}
+
+.dashboard-section { /* Reusing existing dashboard-section style */
+    background-color: #ffffff;
+    border-radius: 16px; /* 동글동글 */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 0px; /* Reduced padding to minimize spacing */
+    position: relative; /* Re-added for positioning context */
+}
+
+.section-header h3 { /* Reusing existing h3 style */
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #383838;
+}
+
+.save-btn { /* Reusing existing save-btn style */
+    background-color: #FF7581; /* Primary pastel color */
+    color: white;
+    border: none;
+    border-radius: 8px; /* 동글동글 */
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: absolute;
+    bottom: 15px; /* Reverted */
+    right: 15px; /* Reverted */
+    z-index: 20; /* Ensure it's above canvas elements */
+}
+
+.save-btn:hover {
+    background-color: #ff606e;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+#diary-editor {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0px; /* Further reduced gap */
+    align-items: center; /* Center title, toolbar, and canvas */
+}
+
+#diary-title {
+    width: 418.84px; /* Strictly fixed width */
+    min-width: 418.84px;
+    max-width: 418.84px;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    border: 1px solid #E9ECEF; /* Soft border */
+    border-radius: 8px; /* 동글동글 */
+    font-size: 13px; /* Changed from 12px to 13px */
+    font-weight: 600;
+    color: #383838;
+    background-color: #ffffff; /* Light pastel background */
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#diary-title::placeholder {
+    color: #9a9a9a; /* Softer placeholder */
+}
+
+#diary-title:focus {
+    border-color: #FF7581;
+    box-shadow: 0 0 0 2px rgba(255,117,129,0.2);
+}
+
+.diary-toolbar {
+    display: flex;
+    /* flex-wrap: wrap; /* Removed to force single line */
+    gap: 5px; /* Reduced gap */
+    padding: 5px 26px; /* Adjusted to 5px 26px */
+    background-color: #ffffff; /* Changed from #F8F9FA to white */
+    border-radius: 12px; /* 동글동글 */
+    border: 1px solid #E9ECEF;
+    box-shadow: 0 0px 3px rgba(0,0,0,0.05);
+    align-items: center;
+    box-sizing: border-box; /* Ensure padding is included in the total width */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent items from wrapping */
+    width: 418.84px; /* Strictly fixed width */
+    min-width: 418.84px;
+    max-width: 418.84px;
+}
+
+.drawing-tools {
+    display: flex;
+    /* flex-wrap: wrap; /* Removed to force single line */
+    gap: 5px; /* Reduced gap */
+    align-items: center;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.tool-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.tool-btn {
+    background-color: #ffffff;
+    border: 1px solid #E9ECEF;
+    border-radius: 8px; /* 동글동글 */
+    width: 24px; /* Reduced width */
+    height: 24px; /* Reduced height */
+    display: flex; /* Use flexbox to center content */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    cursor: pointer;
+    font-size: 16px; /* Keep font size for text elements */
+    color: #8E95A2; /* Soft grey */
+    transition: all 0.2s;
+    line-height: 1; /* Ensure consistent line height */
+    margin: 0; /* Remove default margins */
+    padding: 0; /* Remove default padding */
+}
+
+.tool-btn > svg {
+    width: 18px; /* Control SVG size */
+    height: 18px;
+    stroke: currentColor; /* Ensure SVG stroke uses the button's text color */
+    stroke-width: 1.4px; /* For "medium-bold" effect */
+    fill: none; /* Ensure fill is transparent for line icons */
+}
+
+.tool-btn.active, .tool-btn:hover {
+    background-color: #FFE1E3; /* Pastel pink */
+    border-color: #FF7581; /* Primary pastel color */
+    color: #FF7581;
+}
+
+.tool-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #f0f0f0;
+    color: #c0c0c0;
+    border-color: #ddd;
+}
+
+.color-palette-wrapper {
+    position: relative;
+}
+
+.color-palette {
+    display: flex;
+    gap: 8px; /* Increased gap to prevent overlap */
+    margin-left: 2px; /* Reduced margin */
+    align-items: center; /* Vertically center items */
+}
+
+.color-box {
+    width: 20px; /* Restored base size */
+    height: 20px; /* Restored base size */
+    border-radius: 50%; /* 동글동글 */
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.color-palette .color-box {
+    width: 16px; /* Only reduce size for palette items */
+    height: 16px;
+}
+
+.color-box.active {
+    border: 1.5px solid #D2D2D2; /* Only border change, no scale */
+    box-shadow: none;
+}
+
+.color-box.more-colors-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #6E7279;
+    border: 1px solid #E9ECEF;
+    background-color: #ffffff;
+}
+
+.color-box.current-selected-color-indicator {
+    border: 1.5px solid #D2D2D2;
+    transition: all 0.2s ease-in-out;
+}
+
+/* For the expanded color palette, also increase gap */
+.expanded-color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Increased gap to prevent overlap */
+    padding: 10px; /* Increased padding */
+    margin-top: 5px;
+    background-color: #ffffff; /* Changed to white */
+    border-radius: 12px; /* 동글동글 */
+    border: 1px solid #E9ECEF;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* More prominent shadow for the popup */
+    position: absolute; /* Position relative to its parent container */
+    z-index: 100; /* Ensure it appears above other elements */
+    top: 45px; /* Adjusted position to be closer to the toolbar */
+    right: 0; /* Align with the right side of the toolbar */
+    width: auto; /* Allow content to dictate width */
+}
+
+/* Resize the color picker library component */
+.expanded-color-palette .react-colorful {
+    width: 160px;
+    height: 160px;
+}
+
+/* Reduce pointer size */
+.expanded-color-palette .react-colorful__pointer {
+    width: 16px;
+    height: 16px;
+}
+
+.size-controls {
+    display: flex;
+    gap: 2px; /* Reduced gap */
+    margin-left: 2px; /* Reduced margin */
+    border-left: 1px solid #E9ECEF; /* Soft divider */
+    padding-left: 2px; /* Reduced padding */
+    align-items: center;
+}
+
+.size-btn {
+    /* No longer used, replaced by text-size-input */
+}
+
+.size-input {
+    width: 40px; /* Adjust width as needed */
+    height: 24px; /* Match other tool heights */
+    border: 1px solid #E9ECEF;
+    border-radius: 8px;
+    padding: 0 4px;
+    font-size: 13px;
+    text-align: center;
+    -moz-appearance: none; /* Remove conflicting style */
+    appearance: auto; /* Explicitly enable spinners */
+}
+
+/* Re-enable Chrome, Safari, Edge, Opera number input arrows */
+.size-input::-webkit-outer-spin-button,
+.size-input::-webkit-inner-spin-button {
+  -webkit-appearance: auto; /* Explicitly enable spinners */
+  margin: 0;
+}
+
+.size-label {
+    font-size: 13px;
+    color: #6E7279;
+    margin-left: 2px;
+}
+
+.text-tool-message { /* Style for "Double-click on the canvas to add text." message */
+    padding: 10px;
+    text-align: center;
+    background-color: #fff7e6; /* Light pastel yellow */
+    border: 1px solid #ffedb3;
+    border-radius: 8px;
+    margin: 8px 0;
+    color: #b08d4b;
+    font-size: 14px;
+}
+
+.canvas-wrapper {
+    position: relative;
+    width: 418.84px; /* Strictly fixed width */
+    min-width: 418.84px;
+    max-width: 418.84px;
+    margin: 0; /* Align left or adjust as needed, removed auto centering */
+    border: 1px solid #E9ECEF; /* Soft border */
+    border-radius: 12px; /* 동글동글 */
+    background-color: #ffffff; /* White canvas background */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow: hidden; /* Ensure content stays within bounds */
+    /* flex-grow: 1; Removed to keep width constant */
+    overflow-y: auto; /* Enable vertical scrolling for the wrapper */
+}
+
+#diary-canvas.pen-tool { cursor: crosshair; }
+#diary-canvas.eraser-tool { cursor: cell; }
+#diary-canvas.text-tool { cursor: text; }
+
+.diary-text-box {
+    position: absolute;
+    cursor: move;
+    border: 1px dashed transparent; /* Default transparent border */
+    padding: 2px;
+    border-radius: 4px; /* Slight rounding for text boxes */
+    transition: border-color 0.2s;
+}
+
+.diary-text-box.selected {
+    border-color: transparent; /* Removed accent for selected text */
+}
+
+.diary-text-box.editing {
+    border-color: transparent; /* Removed border when editing */
+    border-style: none;
+}
+
+.diary-text-box textarea {
+    font-size: 16px;
+    font-family: 'Pretendard', sans-serif;
+    border: none;
+    background: transparent;
+    width: auto;
+    height: auto;
+    resize: none;
+    outline: none;
+    /* color: #383838; /* Removed to allow dynamic color inheritance */
+    line-height: 1.5;
+}
+
+.hidden-input {
+    display: none;
+}
+
+/* Common button styles for resize/delete on items */
+.item-action-btn {
+    position: absolute;
+    background: #FF7581; /* Pastel red */
+    color: white;
+    border: none;
+    border-radius: 50%; /* 동글동글 */
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-size: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    z-index: 50;
+}
+
+.item-action-btn.delete {
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+}
+
+.item-action-btn.resize {
+    bottom: 0;
+    right: 0;
+    transform: translate(50%, 50%);
+    background: #B3E0FF; /* Pastel blue */
+}
+
+/* Image specific styles */
+.resizable-image-wrapper {
+    position: absolute;
+    cursor: move;
+    border: 1px dashed transparent; /* Default transparent border */
+    transition: border-color 0.2s;
+}
+
+.resizable-image-wrapper.selected {
+    border-color: #FF7581; /* Accent for selected image */
+}

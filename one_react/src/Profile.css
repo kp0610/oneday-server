@@ -1,0 +1,435 @@
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 20px 20px;
+    /* box-sizing: border-box; */
+    position: relative;
+    border-radius: 20px;
+    width: 342px;
+    /* margin: 20px; */
+    transform: translate(-21px, 0px);
+    border: 0px solid #ffffff;
+}
+
+.close-profile-button {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background-color: white;
+    border: 1px solid #E1E7EF; /* Add a subtle border */
+    border-radius: 50%;
+    width: 28px; /* Slightly larger for better tap target */
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px; /* Adjust font size for 'x' */
+    cursor: pointer;
+    color: #383838; /* Darker color for 'x' */
+    z-index: 10; /* Ensure it's above other content */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow */
+}
+
+.close-profile-button:hover {
+    background-color: #f0f0f0; /* Slight change on hover */
+}
+
+.close-profile-modal-button {
+    position: absolute;
+    top: 10px; /* Adjusted top */
+    right: 30px; /* Adjusted right */
+    background-color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: #383838;
+    z-index: 10;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1); /* Add a subtle shadow */
+}
+
+.close-profile-modal-button:hover {
+    color: #333;
+}
+
+.profile-container h1 {
+    color: #8E95A2; /* Changed color */
+    margin-bottom: 15px; /* Reduced margin */
+    font-size: 15px;
+    font-weight: 300;
+}
+
+.profile-picture-container {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #E9E9E9; /* Light gray for empty circle */
+    background-size: cover;
+    background-position: center;
+    margin: 15px auto 20px auto;
+    border: 1px solid #E1E7EF;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative; /* For absolute positioning of input */
+}
+
+.profile-image-and-name {
+    display: flex;
+    flex-direction: column; /* Changed to column to stack image and nickname */
+    align-items: center; /* Center items horizontally */
+    gap: 0px; /* Remove gap between image and nickname as margin-top handles it */
+    margin-bottom: 5px; /* Reduced margin-bottom by half */
+}
+
+.profile-nickname-display-popup {
+    font-size: 24px; /* Changed font size */
+    color: #575757; /* Changed color */
+    font-weight: bold; /* Assuming bold is desired for a prominent display */
+    margin-top: 8px; /* Reduced margin-top by half */
+}
+
+.profile-nickname-display {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.profile-picture-container input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.profile-form-group {
+    margin-top: 10px; /* Spacing from header */
+    margin-bottom: -10px; /* Reduced margin */
+    width: 100%;
+    max-width: 400px;
+}
+
+.profile-form-group label {
+    display: block;
+    margin-bottom: 5px; /* Reduced margin */
+    font-weight: bold;
+    color: #333;
+}
+
+.profile-form-group input[type="text"],
+.profile-form-group input[type="email"],
+.profile-form-group input[type="password"] {
+    width: 100%;
+    padding: 9px 15px; /* Adjusted padding */
+    border: 1px solid #E9ECEF; /* Soft border color */
+    border-radius: 12px; /* More rounded */
+    font-size: 1em; /* Increased font size */
+    box-sizing: border-box;
+    background-color: white; /* White background */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.profile-form-group input[type="text"]:focus,
+.profile-form-group input[type="email"]:focus,
+.profile-form-group input[type="password"]:focus {
+    border-color: #FFC0CB; /* Pink focus border */
+    box-shadow: 0 0 0 3px rgba(255, 192, 203, 0.5); /* Soft pink shadow on focus */
+    outline: none;
+}
+
+.profile-form-group input[type="email"][disabled] {
+    background-color: #F8F9FA; /* Slightly different background for disabled */
+    color: #9a9a9a;
+    cursor: not-allowed;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="email"],
+.modal-content input[type="password"] {
+    width: 340px;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    height: 32px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px; /* Moved down by 15px */
+    width: 100%;
+    max-width: 400px;
+}
+
+.profile-actions button {
+    flex: 1; /* Make buttons take equal space */
+    padding: 12px 20px; /* Adjusted padding */
+    border: none;
+    border-radius: 15px; /* More rounded */
+    font-size: 1em; /* Adjusted font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow */
+}
+
+.profile-actions .save-button {
+    background-color: #FF7581; /* Pink accent */
+    color: white;
+}
+
+.profile-actions .save-button:hover {
+    background-color: #e06b75;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.profile-actions .back-button {
+    background-color: #E9ECEF; /* Light grey */
+    color: #383838;
+}
+
+.profile-actions .back-button:hover {
+    background-color: #cccccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.profile-display {
+    text-align: center;
+    margin-bottom: 15px; /* Reduced margin */
+}
+
+.saved-name {
+    font-size: 2em; /* Slightly smaller font size */
+    color: #FF7581;
+    margin-bottom: 10px; /* Reduced margin */
+    font-weight: bold;
+}
+
+/* Removed .edit-button styles */
+
+.profile-settings-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items horizontally */
+    gap: 14px; /* Increased gap */
+    margin-top: 22px; /* Adjusted margin-top for 24px gap */
+    width: 100%;
+    max-width: 400px;
+}
+
+.settings-button {
+    background-color: white; /* White box */
+    color: #8E95A2; /* Pink accent */
+    width: 272px;
+    height: 36px;
+    border: 1px solid #F0F3F6; /* Pink border */
+    border-radius: 20px; /* More rounded */
+    font-size: 14px; /* Adjusted font size */
+    font-weight: normal;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s;
+    text-align: center; /* Center text */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow */
+}
+
+.settings-button:hover {
+    background-color: #FFE1E3; /* Lighter pink on hover */
+    border-color: #FF7581; /* Darker pink border on hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.withdraw-text {
+    color: #8E95A2;
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 10px; /* Space below logout button */
+}
+
+.personal-info-edit-form {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 15px; /* Reduced margin */
+}
+
+.add-dday-button {
+    background-color: #FF7581;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 10px auto 0 auto;
+    transition: background-color 0.3s ease;
+}
+
+.add-dday-button:hover {
+    background-color: #e06b75;
+}
+
+.dday-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001; /* Higher than main profile modal */
+}
+
+.dday-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px; /* Smaller width */
+    max-height: 80vh; /* Allow some height, but keep it manageable */
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative; /* For potential close button inside */
+}
+
+.dday-modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #FF7581;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.modal-content.change-password-modal-content {
+    height: 240px !important;
+    left: -20px;
+}
+
+.modal-content.change-email-modal-content {
+    left: -20px;
+}
+
+.modal-content.change-username-modal-content {
+    left: -20px;
+}
+
+.dday-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 0.9em;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+.dday-item span {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.delete-dday-button {
+    background-color: #ffcdd2;
+    color: #c62828;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 1em; /* Increased font size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.delete-dday-button:hover {
+    background-color: #ef9a9a;
+}
+
+.icon-selection {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.icon-button {
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.icon-button:hover {
+    background-color: #e0e0e0;
+}
+
+.icon-button.selected {
+    background-color: #FF7581;
+    color: white;
+    border-color: #FF7581;
+}
+
+.modal-content.profile-modal-content {
+    background-color: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    /* Ensure it doesn't take up extra space */
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+}
+
+.modal-content.profile-modal-content h3 {
+    font-size: 13px;
+    color: #4a4a4a;
+    margin-bottom: 10px;
+}
+
+.profile-upload-button {
+    background-color: #FF7581; /* Pink accent */
+    color: white;
+    width: 150px; /* Example width */
+    padding: 8px 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px; /* Space from nickname */
+    transition: background-color 0.3s ease;
+}
+
+.profile-upload-button:hover {
+    background-color: #e06b75;
+}

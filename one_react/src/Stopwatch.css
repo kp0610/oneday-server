@@ -1,0 +1,454 @@
+/* Stopwatch.css */
+
+.stopwatch-container {
+    display: flex;
+    flex-direction: column; /* Changed to column for vertical stacking */
+    gap: 20px; /* Space between the sections */
+    /* padding: 20px; */ /* Padding is handled by dashboard-content-wrapper */
+    /* background-color: #F1F4F6; */ /* Inherit background from parent */
+    height: 100%; /* Ensure it takes full height of its flex parent */
+    font-family: 'Pretendard', sans-serif;
+    /* Removed padding as it's handled by dashboard-content-wrapper's padding */
+}
+
+.stopwatch-top-section {
+    display: flex;
+    flex-direction: row; /* Arrange children horizontally */
+    gap: 15px; /* Space between category and main stopwatch sections */
+    background-color: white; /* Combined box background */
+    border-radius: 16px; /* Combined box border-radius */
+    border: 1.2px solid #E1E7EF; /* Combined box border */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06); /* Consistent shadow */
+    padding: 15px; /* Padding for the combined box */
+    align-items: center; /* Ensure vertical centering of children */
+}
+
+.category-section {
+    flex: 0.8;
+    min-width: 0; /* Critical: prevents flex item from overflowing due to content */
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack its children vertically */
+    background-color: transparent; /* Remove individual box styling */
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+.main-stopwatch {
+    flex: 1.3;
+    background-color: rgba(244, 244, 244, 0.9); /* F4F4F4 with 90% opacity */
+    border: 1px solid #E1E7EF;
+    border-radius: 15px;
+    height: 100px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertical centering */
+    align-items: center; /* Horizontal centering */
+    box-sizing: border-box; /* Ensures padding/border don't exceed height */
+    padding: 10px;
+}
+
+h2, h3 {
+    font-size: 11px;
+    font-weight: 600;
+    color: #4B4B4B;
+    margin-top: 0;
+    margin-bottom: 2px; /* Reduced margin to fit in 96px */
+}
+
+.timer-display {
+    font-size: 25px;
+    font-weight: bold;
+    color: #383838;
+    margin: 1px 0;
+}
+
+.category-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Maintains 2 columns */
+    gap: 6px;
+    max-height: 100px; /* Increased height to ensure 3 rows show fully without scrollbar appearing prematurely */
+    overflow-y: auto;
+    padding-right: 1px;
+    margin-bottom: 1px;
+    justify-items: center; /* Centers the chips within their grid cells to keep their shape */
+}
+
+.category-chip {
+    width: auto; /* Allow width to be determined by content */
+    max-width: 100%; /* Prevent exceeding grid cell width */
+    min-width: unset; /* Remove min-width if it forces stretching, or set a reasonable small value like 60px */
+    justify-self: center; /* Center the chip within the grid cell */
+    /* Colors are now dynamic via inline styles */
+    border-radius: 20px;
+    height: 24px;
+    padding: 1px 13.5px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #383838;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* white-space: nowrap; Removed here, handled in .category-name */
+}
+
+.category-chip.wide {
+    grid-column: span 2; /* Span across both columns to occupy the full row */
+    /* width: 100% removed to maintain original capsule design */
+}
+
+.category-name {
+    display: block;
+    /* overflow: hidden; Removed to rely on JS truncation */
+    /* text-overflow: ellipsis; Removed to rely on JS truncation */
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.add-category-trigger-button {
+    width: 18px;
+    height: 18px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    color: #383838;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    cursor: pointer;
+    z-index: 1;
+    border: none; /* Ensure no default button border */
+    padding: 0; /* Remove default button padding */
+}
+.category-chip.selected {
+    background-color: #FFB3C0; /* Softer pastel pink */
+    color: white;
+    border-color: #FFB3C0;
+}
+
+.task-category-chip {
+    /* Colors are now dynamic via inline styles */
+    border-radius: 20px; /* Perfectly rounded capsule shape */
+    height: 24px; /* Capsule height */
+    padding: 1px 13.5px; /* Adjusted padding */
+    font-size: 13px; /* Category name font size */
+    color: #383838;
+    cursor: pointer; /* Indicate clickable */
+    white-space: nowrap; /* Prevent wrapping */
+    display: flex; /* Use flex to center text */
+    align-items: center;
+    justify-content: center;
+}
+
+.add-category-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #F0F3F6;
+    border-radius: 20px;
+    padding: 3px; /* Reduced padding */
+    max-width: 180px; /* Limit its width */
+    flex-shrink: 0; /* Prevent shrinking too much */
+    margin-top: auto; /* Pushes it to the bottom within the flex column parent */
+    align-self: center; /* Centers it horizontally if parent is wider than max-width */
+}
+
+.add-category-wrapper input {
+    border: none;
+    outline: none;
+    flex-grow: 0; /* Prevent it from taking all available space */
+    padding: 3px 8px; /* Reduced padding */
+    background-color: transparent;
+}
+
+.color-picker-palette {
+    display: grid; /* Use grid for 5x3 layout */
+    grid-template-columns: repeat(5, 1fr); /* 5 columns */
+    grid-template-rows: repeat(3, auto); /* 3 rows */
+    gap: 10px; /* Spacing between circles */
+    margin-top: 10px;
+    justify-items: center; /* Center items in their grid cells */
+}
+
+.color-swatch {
+    width: 30px; /* Circle width */
+    height: 30px; /* Circle height */
+    border-radius: 50%; /* Circle shape */
+    cursor: pointer;
+    border: 2px solid transparent; /* Border for selection feedback */
+    transition: all 0.2s; /* Smooth transitions */
+    display: flex; /* For centering content if needed */
+    align-items: center;
+    justify-content: center;
+}
+
+.color-swatch.selected {
+    border-color: #383838; /* Highlight selected color */
+    transform: scale(1.05); /* Slightly smaller scale for capsule */
+}
+
+.add-category-wrapper button {
+    background-color: #DDE2E6; /* Lighter pastel grey */
+    border: none;
+    border-radius: 50%;
+    width: 24px; /* Reduced width */
+    height: 24px; /* Reduced height */
+    font-size: 16px; /* Reduced font size */
+    color: #383838;
+    cursor: pointer;
+}
+
+.add-category-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Dimming background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.add-category-popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid #E1E7EF;
+    /* box-shadow removed as border is added */
+    position: relative; /* For close button positioning */
+    width: 300px;
+    max-width: 90%;
+}
+
+.add-category-popup-close-button {
+    position: absolute;
+    top: 20px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #383838;
+    padding: 0;
+}
+
+.add-category-popup-content h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #4B4B4B;
+}
+
+.main-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px; /* Reduced gap */
+    margin-top: 5px; /* Push the buttons down slightly */
+}
+
+.main-controls .start-button {
+    background-color: #FF7581;
+    color: white;
+    border: 1.1px solid #E1E7EF;
+    border-radius: 11px;
+    padding: 0 10px; /* Horizontal padding for text expansion */
+    height: 28px;
+    width: auto; /* Allow width to expand with text */
+    min-width: 48px; /* Maintain minimum width */
+    cursor: pointer;
+    /* transition: background-color 0.2s, border-color 0.2s; Removed for instant interaction */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+}
+
+.main-controls .start-button.pause-state {
+    background-color: #BDBDBD; /* Requested gray color */
+    color: white; /* Changed to white for better contrast on darker gray */
+    border: 1.1px solid #E1E7EF; /* Requested border style */
+}
+
+.main-controls .reset-button {
+    background-color: white;
+    color: #6E7279;
+    border: 1.1px solid #E1E7EF;
+    border-radius: 11px;
+    width: 55px;
+    height: 28px;
+    padding: 0;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    font-size: 13px;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.02em;
+}
+
+.task-list-section {
+    padding: 10px; /* Consistent padding for all task list sections */
+}
+
+.task-list-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* No gap between list items, border provides separation */
+}
+
+.stopwatch-task-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: transparent; /* Remove light gray background */
+    padding: 9px 5px; /* Vertical padding 9px, horizontal 5px */
+    gap: 12px; /* Consistent gap between elements */
+    border-top: 1px solid #F0F3F6; /* Horizontal line above each item */
+}
+.stopwatch-task-list li span {
+    font-size: 12px; /* Reduced font size for task details */
+}
+
+.stopwatch-task-list li:last-child {
+    border-bottom: 1px solid #F0F3F6; /* Add bottom border to the last item */
+}
+
+.task-details {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align to start, separator fills space */
+    gap: 0; /* No gap as separator handles it */
+    flex-grow: 1; /* Allow details to take up space */
+}
+
+.task-details span:last-of-type {
+    font-size: 14.85px;
+    color: #404040;
+    font-weight: 400;
+    letter-spacing: 0.05em; /* 5% of font size */
+}
+
+.task-separator-line {
+    flex-grow: 1; /* Fill available space */
+    height: 1px;
+    background-image: linear-gradient(to right, #EEEEEE 4px, transparent 4px, transparent 11px);
+    background-size: 11px 1px;
+    background-repeat: repeat-x;
+    margin: 0 19px; /* 19px gap on both sides of the line */
+}
+
+
+
+.task-list-section button {
+    background-color: transparent; /* Interior is transparent */
+    color: #6E6E6E; /* Text color */
+    border: 0.7px solid #BFBFBF; /* Border color and thickness */
+    border-radius: 10px; /* Curve radius */
+    width: 55px; /* Fixed width */
+    height: 26px; /* Fixed height */
+    font-size: 12px; /* Font size */
+    font-weight: 300; /* Light font weight */
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex; /* Use flex to center text */
+    align-items: center;
+    justify-content: center;
+    padding: 0; /* Remove padding as width/height are set */
+}
+
+.task-list-section button:hover {
+    background-color: #A0A0A0; /* Slightly darker on hover */
+}
+
+.play-pause-button {
+    width: 14px;
+    height: 14px;
+    background: none !important; /* Ensure no background box aggressively */
+    border: none !important; /* Ensure no border aggressively */
+    outline: none; /* Remove default outline */
+    padding: 0;
+    font-size: 14px; /* For the icon/character */
+    color: #6E6E6E; /* Matches "완료" button text color */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Prevent shrinking */
+    box-shadow: none !important; /* Ensure no shadow aggressively */
+}
+
+.delete-button-circle {
+    background-color: white; /* Button background is white */
+    border: 1px solid white; /* Make border white */
+    border-radius: 50%; /* Make it a circle */
+    width: 18px !important; /* Adjusted size - aggressive debugging */
+    height: 18px !important; /* Adjusted size - aggressive debugging */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #383838; /* Minus sign color changed to #383838 */
+    font-size: 14px; /* Size for the minus sign */
+    cursor: pointer;
+    line-height: 1; /* Ensure vertical centering of text */
+    padding: 0; /* Remove default button padding */
+    flex-shrink: 0; /* Prevent shrinking when space is tight */
+    box-shadow: 0 0 2.3px rgba(0, 0, 0, 0.1); /* Light gray shadow with blur 2.3px */
+}
+
+
+
+.task-list-section:last-child {
+    background-color: transparent; /* Make interior uncolored */
+    border: 1px solid #E1E7EF; /* Changed border color to #E1E7EF */
+    border-radius: 20px;
+    /* Padding is now handled by the general .task-list-section rule */
+}
+
+.task-list-section.hide-border {
+    border: none;
+    padding: 0;
+    height: 0;
+    overflow: hidden;
+    margin-top: 0; /* Also remove top margin if present */
+    margin-bottom: 0; /* Also remove bottom margin if present */
+    opacity: 0; /* Fade out effect */
+    visibility: hidden; /* Hide completely */
+    transition: all 0.3s ease-in-out; /* Smooth transition */
+}
+
+.delete-category-button {
+    width: 18px;
+    height: 18px;
+    background-color: #FF7581; /* Red for delete action */
+    border-radius: 50%;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    cursor: pointer;
+    z-index: 10; /* Ensure it's above everything */
+    border: none;
+    padding: 0;
+    line-height: 1;
+}
+

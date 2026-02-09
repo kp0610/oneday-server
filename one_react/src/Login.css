@@ -1,0 +1,356 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght @400;700&display=swap');
+
+:root {
+    --primary-color: #FF7581;
+    --background-color: #f0f2f5;
+    --container-bg: #ffffff;
+    --text-color: #333;
+    --light-text-color: #888;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Ensure html and body take full height */
+    overflow: hidden; /* Prevent scrolling on html/body */
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    box-sizing: border-box; /* Apply globally */
+}
+
+.main-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.info-panel {
+    flex-basis: 50%;
+    background: linear-gradient(to right, #F8A6AD, #F7F9FA); /* New linear gradient background */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.info-panel h2 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: -20px; /* Changed to negative margin */
+    line-height: 1.4;
+    color: var(--primary-color); /* Key color */
+    text-shadow:
+        0.5px 0.5px 0 #AEAEAE, /* Simulate stroke */
+        -0.5px -0.5px 0 #AEAEAE, /* Simulate stroke */
+        0.5px -0.5px 0 #AEAEAE, /* Simulate stroke */
+        -0.5px 0.5px 0 #AEAEAE, /* Simulate stroke */
+        0px 0px 5px rgba(255, 96, 96, 0.25); /* Drop shadow */
+}
+
+.info-panel p {
+    font-size: 20px;
+    line-height: 1.6;
+    color: #F7F9FA;
+    font-weight: 400;
+}
+
+.form-wrapper {
+    flex-basis: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F7F9FA; /* New background color */
+}
+
+.form-container {
+    width: 420px;
+    padding: 40px;
+    background-color: transparent; /* No separate background needed */
+    text-align: center;
+}
+
+.form-container h1 {
+    font-size: 20px; /* Changed font size */
+    color: #8E95A2; /* Changed color */
+    margin-bottom: 17px; /* Changed margin-bottom */
+    font-weight: normal; /* Changed from bold to normal */
+}
+
+input[type="email"],
+input[type="password"],
+.login-input, /* Added for nickname input */
+#nickname-input::placeholder {
+    color: #8E95A2;
+    font-size: 15px;
+}
+
+input[type="email"],
+input[type="password"],
+.login-input, /* Added for nickname input */
+#nickname-input {
+    width: 327px; /* Changed from 100% */
+    height: 43px; /* New height */
+    padding: 0 15px; /* Adjusted padding for new height */
+    margin-bottom: 15px; /* Spacing between email and password */
+    border: 1px solid #CCCCCC; /* Changed border color */
+    border-radius: 15px; /* Changed border-radius */
+    box-sizing: border-box;
+    font-size: 13px; /* Changed font size to 13px */
+    color: #8E95A2; /* Changed text color */
+    background-color: #ffffff; /* New background color */
+}
+
+input[type="password"],
+#nickname-input {
+    width: 327px; /* Changed from 100% */
+    height: 43px; /* New height */
+    padding: 0 15px; /* Adjusted padding for new height */
+    margin-bottom: 17px; /* Spacing between password and next element */
+    border: 1px solid #CCCCCC; /* Changed border color */
+    border-radius: 15px; /* Changed border-radius */
+    box-sizing: border-box;
+    font-size: 13px; /* Changed font size to 13px (approx 13pt) */
+    color: #8E95A2; /* Changed text color */
+    background-color: #ffffff; /* New background color */
+}
+
+.options, .terms {
+    text-align: left; /* Align content to the left */
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: #8E95A2;
+    width: 327px; /* Match input/button width */
+    margin-left: auto; /* Center the block */
+    margin-right: auto; /* Center the block */
+}
+
+.options label, .terms label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+button[type="submit"],
+#save-profile {
+    width: 327px; /* Changed from 100% */
+    height: 43px; /* New height */
+    padding: 0; /* Remove padding as height is fixed */
+    background-color: var(--primary-color);
+    border: 1px solid #CCCCCC; /* Added stroke */
+    border-radius: 15px; /* Changed border-radius */
+    color: #ffffff; /* Text color is white for buttons */
+    font-size: 17px; /* Changed font size to 17px (approx 17pt) */
+    font-weight: normal; /* Removed bold font-weight */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover,
+#save-profile:hover {
+    background-color: #ff5c6b;
+}
+
+.social-login {
+    margin-top: 30px;
+    font-size: 14px;
+}
+
+.social-login p {
+    margin-bottom: 15px;
+    color: var(--light-text-color);
+    font-size: 14px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-icons img {
+    border-radius: 50%;
+}
+
+.toggle-form {
+    margin-top: 30px;
+    font-size: 15px; /* Changed font size */
+    color: #8E95A2; /* Changed color */
+}
+
+.toggle-form a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+/* Profile Setup Page Specifics */
+.profile-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 600px; /* Wider container for iPad */
+    padding: 50px;
+    background-color: var(--container-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.profile-setup-form {
+    margin-top: 30px;
+}
+
+.profile-picture-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 30px;
+}
+
+#profile-preview {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+}
+
+.profile-upload-label {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #fff;
+    color: var(--primary-color);
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+}
+
+.profile-upload-label:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+#profile-upload {
+    display: none;
+}
+
+#nickname-input {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Transition Overlay */
+#transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--primary-color);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#transition-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Media Query for Mobile */
+ @media (max-width: 768px) {
+    .main-wrapper {
+        flex-direction: column;
+    }
+
+    .info-panel {
+        display: none; /* Hide info panel on mobile */
+    }
+
+    .form-wrapper {
+        flex-basis: 100%;
+        height: 100vh;
+    }
+
+    .form-container {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .container {
+        width: 90%;
+        padding: 30px 20px;
+    }
+}
+
+/* Media Query for iPad Pro 11" and similar tablets */
+ @media (min-width: 769px) and (max-width: 1024px) {
+    .main-wrapper {
+        flex-direction: row; /* Ensure side-by-side layout */
+    }
+
+    .info-panel {
+        flex-basis: 40%; /* Reduced space for info panel */
+        padding: 20px; /* Further reduced padding */
+    }
+
+    .info-panel h2 {
+        font-size: 24px; /* Further reduced */
+    }
+
+    .info-panel p {
+        font-size: 14px; /* Further reduced */
+    }
+
+    .form-wrapper {
+        flex-basis: 60%; /* More space for form */
+    }
+
+    .form-container {
+        width: 90%; /* More flexible width */
+        max-width: 400px; /* Prevent it from becoming too wide */
+        padding: 20px; /* Reduced padding */
+    }
+
+    .form-container h1 {
+        font-size: 28px; /* Further reduced */
+    }
+
+    input[type="email"],
+    input[type="password"],
+    #nickname-input {
+        width: 327px; /* Explicitly set width */
+        height: 43px; /* Explicitly set height */
+        /* Removed conflicting padding and font-size */
+    }
+
+    button[type="submit"],
+    #save-profile {
+        width: 327px; /* Explicitly set width */
+        height: 43px; /* Explicitly set height */
+        /* Removed conflicting padding and font-size */
+    }
+
+    .social-login p, .toggle-form {
+        font-size: 12px; /* Further reduced font size */
+    }
+}

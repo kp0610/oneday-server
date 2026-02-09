@@ -1,0 +1,253 @@
+/* StopwatchCollection.css (New Design) */
+.stopwatch-collection-container {
+    width: 100%; /* Keep width 100% to occupy available space inside collection-right-box-bottom */
+    height: 100%; /* Fill the height of the parent container */
+    padding: 20px; /* Add padding to the container */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
+    font-family: 'Pretendard', sans-serif;
+    overflow-y: auto; /* Enable scrolling for the summary view if content overflows */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Removed header styles */
+/*
+.sc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px 0;
+}
+
+.sc-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sc-header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sc-back-icon {
+    font-size: 30px;
+    cursor: pointer;
+    color: #A5A5A5;
+}
+
+.sc-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #383838;
+}
+*/
+
+
+
+/* Removed sc-calendar-icon styles */
+/*
+.sc-calendar-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #FFC0CB;
+}
+*/
+
+.sc-bar-chart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Closer spacing for cute feel */
+    padding-top: 0; /* Remove padding-top here as container padding handles it */
+}
+
+.sc-category-item {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sc-category-label {
+    flex-shrink: 0;
+    height: 24px; /* Match capsule height */
+    padding: 1px 13.5px; /* Match horizontal padding */
+    border-radius: 20px; /* More 동글동글 */
+    text-align: center;
+    font-size: 13px;
+    color: #383838; /* Darker text for readability on pastel */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sc-bar-wrapper {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sc-bar {
+    height: 24px; /* Thicker bar */
+    background-color: #E9ECEF; /* Lighter background for bar track */
+    border-radius: 12px; /* Adjusted to half of new height */
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.sc-bar-fill {
+    height: 100%;
+    border-radius: 8px; /* 동글동글 */
+    transition: width 0.5s ease-in-out;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.sc-time {
+    font-size: 14px;
+    font-weight: 600; /* Slightly bolder */
+    color: #6E7279; /* Softer color */
+    min-width: 80px; /* To prevent layout shifts */
+    text-align: right;
+}
+
+.sc-empty-state {
+    text-align: center;
+    padding-top: 100px;
+    color: #9a9a9a; /* Softer grey */
+    background-color: #ffffff; /* 하얀박스 */
+    border-radius: 16px; /* 동글동글 */
+    margin: 20px 0; /* Adjusted margin */
+    padding: 40px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.sc-empty-state .icon {
+    font-size: 50px;
+    margin-bottom: 20px;
+    color: #C0C0C0; /* Soft icon color */
+}
+
+/* --- New Daily Card Styles --- */
+.stopwatch-daily-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(261px, 1fr)); /* Same as weekly-summary-grid */
+    gap: 39px 19px; /* Row gap 39px, Column gap 19px */
+    width: 100%;
+    overflow-y: auto; /* Enable scrolling if content overflows */
+    padding-right: 5px; /* Adjust padding for grid scrollbar */
+    margin-top: 39px;
+    justify-content: center;
+}
+
+.stopwatch-daily-card {
+    width: 261px;
+    height: 147px;
+    border-radius: 20px;
+    border: 1px solid #E1E7EF;
+    background-color: #FBFCFD;
+    box-sizing: border-box;
+    padding: 15px; /* Adjusted padding to match healthcare card */
+    display: grid; /* Use grid for layout */
+    grid-template-columns: repeat(2, 1fr); /* Two columns for layout */
+    grid-template-rows: auto 1fr; /* Rows for date, and then categories content */
+    gap: 0px 0px; /* Adjust gap as needed for precise positioning */
+    position: relative; /* For absolute positioning if needed */
+    overflow: hidden; /* Hide overflow of content within the card */
+}
+
+.stopwatch-daily-card-date { /* Keeping the class name as in JS, but applying healthcare styles */
+    color: #FF7581;
+    font-size: 15px;
+    font-weight: 500; /* Match healthcare font-weight */
+    grid-column: 1 / -1; /* Span across both columns */
+    padding-left: 5px; /* Adjust as needed for positioning */
+    margin-bottom: 0; /* Remove margin-bottom as padding/grid handles spacing */
+}
+
+.stopwatch-card-categories-content {
+    grid-column: 1 / -1; /* Span across both columns */
+    padding-top: 14px; /* Mimic spacing from date like healthcare card's calories-section */
+    padding-left: 5px; /* Align with date */
+    padding-right: 5px; /* Align with other content */
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to next line */
+    gap: 8px 10px; /* Vertical and horizontal gap between items */
+    align-items: flex-start; /* Align items to the top */
+    overflow-y: auto; /* Enable scrolling for categories if content overflows */
+}
+
+.stopwatch-daily-category-item {
+    display: flex;
+    align-items: center;
+    /* Default for long category, will be overridden for shorter ones */
+    /* width: 100%; /* Default: one item per line, adjusted for short */
+}
+
+.stopwatch-daily-category-item.long-category {
+    width: 100%; /* For categories with 4+ characters, take full width */
+}
+
+.stopwatch-daily-category-item:not(.long-category) {
+    /* For categories <= 3 chars, allow two per line */
+    /* Approximate width for two items with gap in 221px content area */
+    width: calc(50% - 5px); /* 5px is half of the horizontal gap */
+}
+
+.stopwatch-daily-category-chip {
+    height: 25.35px;
+    padding: 0 10px; /* Adjust padding for visual appeal */
+    border-radius: 12px; /* Half of height for pill shape */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12.5px; /* Smaller font for chip text */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide overflow content */
+    text-overflow: ellipsis; /* Show ellipsis for truncated text */
+    max-width: 29px; /* Limit chip width before ellipsis (adjust as needed) */
+    flex-shrink: 0; /* Prevent chip from shrinking */
+}
+
+.stopwatch-daily-category-time {
+    font-size: 13px;
+    color: #575757;
+    margin-left: 2px;
+    flex-shrink: 0;
+}
+
+/* Empty State Card Design */
+.empty-data-card {
+    width: 492px; /* Fixed width */
+    height: 147px; /* Fixed height */
+    border-radius: 20px; /* Border radius */
+    background-color: #FBFCFD; /* Background color */
+    border: 1px solid #E1E7EF; /* Border */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px; /* Font size for message */
+    color: #A0A0A0; /* Color for message */
+    text-align: center;
+    margin: 39px auto 0; /* Align with card grid, center horizontally */
+}

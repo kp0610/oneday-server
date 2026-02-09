@@ -1,0 +1,178 @@
+.pedometer-wrapper {
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0px;
+    box-shadow: none;
+    margin-bottom: 20px;
+}
+
+.section-header {
+    margin-bottom: 15px;
+}
+
+.section-header h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 0;
+}
+
+.healthcare-content-box {
+    background-color: #ffffff;
+    border: 1px solid #E1E7EF;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 0px;
+    box-shadow: 0 0px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: row; /* Changed to row for horizontal alignment */
+    align-items: center; /* Vertically align items in the center */
+    justify-content: flex-start; /* Align items to the start */
+    gap: 10px; /* Add gap between items */
+}
+
+.pedometer-info-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pedometer-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.weight-column {
+    flex-basis: 50%;
+    text-align: center;
+}
+
+.calorie-column {
+    flex-basis: 50%;
+    text-align: center;
+}
+
+.weight-info input {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.weight-display-container {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+}
+
+.weight-display-container:hover {
+    background-color: #f0f0f0;
+}
+
+.weight-display-container p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #5a5a5a;
+}
+
+.calorie-display-format {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.calorie-value {
+    font-weight: 600;
+    color: #ff6347;
+}
+
+.calorie-goal-value {
+    color: #777;
+}
+
+.pedometer-graph-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.pedometer-graph {
+    width: 100px;
+    height: 100px;
+    transform: rotate(-90deg);
+}
+
+.pedometer-graph-background {
+    fill: none;
+    stroke: #f0f0f0;
+    stroke-width: 10;
+}
+
+.pedometer-graph-progress {
+    fill: none;
+    stroke: #ff6347;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s ease-in-out;
+}
+
+.pedometer-graph-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.pedometer-graph-text p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.weight-value-container {
+    display: flex;
+    align-items: center;
+    gap: 2px; /* Reduced gap */
+    width: 85px; /* Fixed width to prevent expansion during editing */
+}
+
+.weight-unit {
+    font-size: 14px;
+    font-weight: 500;
+    color: #5a5a5a;
+    margin: 0;
+}
+
+.weight-input-inplace {
+    border: none;
+    background-color: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    min-width: 30px; /* Adjusted to fit 14px font */
+    max-width: 60px; /* Adjusted to fit 14px font */
+    height: 1.2em;
+    line-height: 1.2em;
+    vertical-align: middle; /* Align with surrounding elements */
+}
+
+/* Hide spinner arrows for number input in WebKit browsers */
+.weight-input-inplace::-webkit-outer-spin-button,
+.weight-input-inplace::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Hide spinner arrows for number input in Firefox */
+.weight-input-inplace[type=number] {
+    -moz-appearance: textfield;
+}

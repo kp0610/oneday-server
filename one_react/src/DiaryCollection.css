@@ -1,0 +1,177 @@
+/* DiaryCollection.css (New Design) */
+
+.diary-collection-container {
+    width: 100%;
+    /* background-color: #ffffff; */ /* Light pastel background - This might be handled by CollectionView's boxes */
+    /* border-radius: 20px; */ /* 곡률 20px - This might be handled by CollectionView's boxes */
+    /* border: 1px solid #E1E7EF; */ /* 테두리 굵기 1, 색상 E1E7EF - This might be handled by CollectionView's boxes */
+    padding: 0px; /* Adjust padding as content will be inside CollectionView boxes */
+    /* min-height: 100vh; */ /* Ensure it takes full height - removed as it's within CollectionView */
+    box-sizing: border-box;
+    font-family: 'Pretendard', sans-serif;
+}
+
+/* Removed dc-header styles */
+/*
+.dc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
+.dc-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dc-back-icon, .dc-filter-icon {
+    font-size: 30px;
+    cursor: pointer;
+    color: #A5A5A5;
+}
+
+.dc-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #383838;
+}
+*/
+
+.diary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(261px, 1fr)); /* Consistent card width */
+    gap: 39px 19px; /* Row gap 39px, Column gap 19px */
+    padding-bottom: 20px;
+    margin-top: 39px; /* Consistent spacing from top */
+    justify-content: center;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.diary-card {
+    width: 261px;
+    height: 147px;
+    border-radius: 20px;
+    border: 1px solid #E1E7EF;
+    background-color: #FBFCFD;
+    box-sizing: border-box;
+    padding: 15px; /* Consistent padding */
+    display: grid;
+    grid-template-rows: auto 1fr; /* First row for header, second for preview */
+    gap: 0px; /* No gap between header and preview */
+    position: relative;
+    overflow: hidden;
+    cursor: pointer; /* Keep cursor pointer */
+    transition: transform 0.2s ease-in-out; /* Keep hover effect */
+    animation: fadeIn 0.5s ease-in-out; /* Keep fade-in animation */
+}
+
+.diary-card:hover {
+    transform: scale(1.03);
+}
+
+.diary-card:active {
+    transform: scale(0.98);
+}
+
+
+
+
+
+.card-date-display {
+    color: #FF7581;
+    font-size: 15px;
+    font-weight: 500;
+    flex-shrink: 0; /* Prevent date from shrinking */
+}
+
+.empty-state {
+    text-align: center;
+    padding-top: 50px; /* Adjusted padding */
+    color: #9a9a9a; /* Softer grey */
+    background-color: #ffffff; /* 하얀박스 */
+    border-radius: 16px; /* 동글동글 */
+    margin: 20px 0; /* Adjusted margin */
+    padding: 40px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.empty-illustration {
+    font-size: 50px;
+    margin-bottom: 20px;
+    color: #C0C0C0; /* Soft icon color */
+}
+
+.diary-card-header {
+    display: flex;
+    align-items: center;
+    gap: 9px; /* 9px gap between date and title */
+    padding-left: 5px; /* Align with healthcare card's padding */
+    padding-bottom: 14px; /* Mimic space below date/title before preview */
+}
+
+.diary-title-display {
+    font-size: 15px;
+    color: #383838;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1; /* Allow title to take available space and truncate */
+}
+
+.diary-preview-content {
+    font-size: 12px; /* Example size */
+    color: #6a6a6a; /* Example color */
+    line-height: 1.4;
+    overflow: hidden; /* Ensure preview fits within its area */
+    text-overflow: ellipsis; /* Truncate if content is too long */
+    display: -webkit-box; /* For multiline ellipsis */
+    -webkit-line-clamp: 3; /* Show up to 3 lines (adjust as needed) */
+    -webkit-box-orient: vertical;
+    padding-left: 5px; /* Align with other content */
+    padding-right: 5px;
+}
+
+/* Empty State Card Design */
+.empty-data-card {
+    width: 492px; /* Fixed width */
+    height: 147px; /* Fixed height */
+    border-radius: 20px; /* Border radius */
+    background-color: #FBFCFD; /* Background color */
+    border: 1px solid #E1E7EF; /* Border */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px; /* Font size for message */
+    color: #A0A0A0; /* Color for message */
+    text-align: center;
+    margin: 39px auto 0; /* Align with card grid, center horizontally */
+}
+
+/* Styling for the image thumbnail within Diary Card */
+.diary-card-image-thumbnail {
+    position: absolute; /* Position relative to .diary-card */
+    bottom: 15px; /* Adjust from bottom */
+    right: 15px; /* Adjust from right */
+    width: 60px; /* Small fixed width */
+    height: 60px; /* Small fixed height */
+    object-fit: cover; /* Cover the area */
+    border-radius: 8px; /* Slightly rounded corners */
+    border: 1px solid #E1E7EF;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 5; /* Ensure it's above other content if necessary */
+}
+
+

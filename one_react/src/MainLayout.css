@@ -1,0 +1,55 @@
+/* MainLayout.css */
+
+.main-layout {
+    display: flex;
+    flex-direction: column; /* Changed to column */
+    height: 100%; /* Fill parent height */
+    width: 100%; /* Fill parent width */
+}
+
+.main-header {
+    display: flex;
+    flex-direction: row; /* Changed to row */
+    justify-content: space-between; /* Pushes logo to left, profile to right */
+    align-items: center; /* Center items vertically */
+    padding: 15px 30px; /* Adjusted padding for horizontal header */
+    background-color: #ffffff;
+    border-bottom: 1px solid #eee; /* Add a separator for the header */
+    width: 100%; /* Full width for the header */
+    box-sizing: border-box;
+    flex-shrink: 0;
+    height: auto; /* Auto height for the header */
+}
+
+.logo-container, .logo-container:visited {
+    text-decoration: none;
+    color: inherit;
+}
+
+.main-header .logo-container h1 {
+    font-size: 33px; /* From Figma */
+    font-weight: bold;
+    color: #ff7581; /* From Figma */
+    margin: 0;
+    margin-bottom: 6px; /* Added for spacing */
+    font-family: 'Pretendard', sans-serif; /* Set font to Pretendard */
+}
+
+.main-header .logo-container p {
+    font-size: 14px;
+    color: #909090; /* From Figma */
+    margin: 0;
+}
+
+.main-content {
+    flex-grow: 1; /* Take remaining horizontal space */
+    /* overflow-y: auto; */
+    overflow-x: hidden; /* Hide horizontal overflow */
+    background-color: transparent; /* Make content background transparent */
+    display: flex; /* Enable flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: flex-start; /* Align content to the top */
+    height: 100%; /* Fill parent height */
+    box-sizing: border-box; /* Include padding in width */
+    padding: 20px; /* Add padding for spacing */
+}
