@@ -138,7 +138,39 @@ const Diary = ({ selectedDate, userId }) => {
                     const img = new Image();
                     img.crossOrigin = 'anonymous'; // Handle potential CORS issues
                     img.onload = () => {
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Draw image to fill canvas
+                        const canvas = canvasRef.current;
+                        const ctx = canvas.getContext('2d');
+                        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the dpr-scaled canvas
+
+                        const sourceWidth = img.width;
+                        const sourceHeight = img.height;
+                        const dpr = window.devicePixelRatio || 1;
+
+                        // Calculate draw dimensions for the *display* size first
+                        const canvasCssWidth = canvas.clientWidth;
+                        const canvasCssHeight = canvas.clientHeight;
+
+                        const aspectRatio = sourceWidth / sourceHeight;
+
+                        let drawCssWidth = canvasCssWidth;
+                        let drawCssHeight = canvasCssWidth / aspectRatio;
+
+                        if (drawCssHeight > canvasCssHeight) {
+                            drawCssHeight = canvasCssHeight;
+                            drawCssWidth = canvasCssHeight * aspectRatio;
+                        }
+
+                        // Center the image within the canvas
+                        const drawX = (canvasCssWidth - drawCssWidth) / 2;
+                        const drawY = (canvasCssHeight - drawCssHeight) / 2;
+
+
+                        // Now, draw onto the dpr-scaled canvas context using the calculated CSS dimensions
+                        // multiplied by dpr to get the correct drawing buffer coordinates.
+                        ctx.drawImage(img, 0, 0, sourceWidth, sourceHeight, // Source image (entire image)
+                            drawX, drawY,                                          // Destination x, y on canvas
+                            drawCssWidth, drawCssHeight);                  // Destination width, height on canvas (already scaled by ctx.scale(dpr, dpr))
+
                         const initialState = { canvasData: canvas.toDataURL(), texts: loadedTexts, images: loadedImages };
                         setHistory([initialState]);
                         setHistoryStep(0);
@@ -166,12 +198,48 @@ const Diary = ({ selectedDate, userId }) => {
             return;
         }
         const canvas = canvasRef.current;
-        
+        const ctx = canvas.getContext('2d');
+
+        // Get the current CSS display dimensions of the canvas wrapper
+        const container = containerRef.current;
+        const displayWidth = container.clientWidth;
+        const displayHeight = container.clientHeight;
+
+        // Create a temporary canvas at the display resolution
         const finalCanvas = document.createElement('canvas');
-        finalCanvas.width = canvas.width;
-        finalCanvas.height = canvas.height;
+        finalCanvas.width = displayWidth;
+        finalCanvas.height = displayHeight;
         const finalCtx = finalCanvas.getContext('2d');
-        finalCtx.drawImage(canvas, 0, 0);
+
+        let initialCanvasBase64 = null;
+        if (historyStep >= 0 && history[historyStep]) {
+            initialCanvasBase64 = history[historyStep].canvasData;
+        } else {
+            initialCanvasBase64 = canvas.toDataURL();
+        }
+
+        if (initialCanvasBase64) {
+            const tempImg = new Image();
+            tempImg.src = initialCanvasBase64;
+            await new Promise(resolve => tempImg.onload = resolve);
+
+            const sourceWidth = tempImg.width;
+            const sourceHeight = tempImg.height;
+
+            const aspectRatio = sourceWidth / sourceHeight;
+            let drawWidth = displayWidth;
+            let drawHeight = displayWidth / aspectRatio;
+
+            if (drawHeight > displayHeight) {
+                drawHeight = displayHeight;
+                drawWidth = displayHeight * aspectRatio;
+            }
+            // Center the image if it doesn't fill the entire canvas
+            const drawX = (displayWidth - drawWidth) / 2;
+            const drawY = (displayHeight - drawHeight) / 2;
+
+            finalCtx.drawImage(tempImg, 0, 0, sourceWidth, sourceHeight, drawX, drawY, drawWidth, drawHeight);
+        }
 
         const imageLoadPromises = images.map(image => {
             return new Promise(resolve => {
@@ -181,7 +249,7 @@ const Diary = ({ selectedDate, userId }) => {
                     finalCtx.drawImage(img, image.x, image.y, image.width, image.height);
                     resolve();
                 };
-                img.onerror = () => resolve(); // Continue even if an image fails to load
+                img.onerror = () => resolve();
             });
         });
 
@@ -193,7 +261,7 @@ const Diary = ({ selectedDate, userId }) => {
             finalCtx.fillText(text.value, text.x, text.y);
         });
 
-        const canvasData = finalCanvas.toDataURL();
+        const canvasData = finalCanvas.toDataURL('image/png');
         const diaryData = {
             userId,
             date: selectedDate,
