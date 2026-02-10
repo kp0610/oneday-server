@@ -5,7 +5,7 @@ import ImageUploader from './ImageUploader';
 import Modal from './Modal';
 import { useProfile } from './ProfileContext'; // Import the context hook
 import { MdOutlineCameraAlt } from 'react-icons/md'; // Import MdOutlineCameraAlt
-import { FaPencilAlt } from 'react-icons/fa'; // Import FaPencilAlt
+import { FiEdit2 } from 'react-icons/fi'; // Import FiEdit2 for a simpler, rounder pencil icon
 
 const Profile = ({ show, onClose }) => { // Accept show and onClose props
     const { profile, updateProfileContext } = useProfile(); // Use the context
@@ -307,7 +307,7 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                         ) : (
                             <span className="profile-nickname-display-popup">{profile.username || 'Guest'}</span>
                         )}
-                        <FaPencilAlt className="edit-nickname-icon" onClick={handleEditNicknameClick} />
+                        <FiEdit2 className={`edit-nickname-icon ${isEditingNickname ? 'is-editing' : ''}`} onClick={handleEditNicknameClick} />
                     </div>
                 </div>
                 

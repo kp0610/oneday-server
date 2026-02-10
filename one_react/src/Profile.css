@@ -117,7 +117,8 @@
     font-size: 24px; /* Changed font size */
     color: #575757; /* Changed color */
     font-weight: bold; /* Assuming bold is desired for a prominent display */
-    margin-top: 8px; /* Reduced margin-top by half */
+    /* Removed margin-top: 8px; */
+    line-height: 1; /* Explicit line-height */
 }
 
 .profile-nickname-display {
@@ -473,29 +474,45 @@
     font-size: 24px; /* Match display font size */
     color: #575757; /* Match display color */
     font-weight: bold; /* Match display font weight */
-    border: none;
+    border: none !important;
     border-bottom: 1px solid #FF7581; /* Underline for editing */
     text-align: center;
-    background-color: transparent;
+    background-color: transparent !important;
     outline: none;
-    padding: 0;
+    padding: 0 !important;
     margin: 0;
     width: auto; /* Adjust width based on content */
+    border-radius: 0 !important;
+    line-height: 1; /* Explicit line-height */
+    vertical-align: middle; /* Added for better vertical alignment */
+    transform: translateY(7px); /* Push text down further */
 }
 
 .nickname-display-wrapper {
-    display: flex;
+    display: inline-flex; /* Changed to inline-flex */
     align-items: center;
     gap: 8px; /* Space between nickname and icon */
+    height: 30px; /* Fixed height to prevent vertical shifts */
 }
 
 .edit-nickname-icon {
     cursor: pointer;
-    color: #8E95A2; /* Adjust color as needed */
-    font-size: 1em; /* Adjust size as needed */
+    color: #383838; /* Changed color */
+    font-size: 1.2em; /* Slightly increased size */
+    /* Removed margin-top: 4px; */
     transition: color 0.2s ease;
 }
 
 .edit-nickname-icon:hover {
     color: #FF7581; /* Hover color */
+}
+
+.edit-nickname-icon.is-editing {
+    position: relative;
+    left: -100px; /* Changed to -100px */
+    margin-top: 0; /* Prevent moving down */
+    vertical-align: middle; /* Ensure vertical alignment */
+    transform: translateY(0); /* Explicitly fix vertical position */
+    /* Add transition for smooth movement if desired */
+    transition: left 0.3s ease;
 }
