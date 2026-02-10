@@ -191,36 +191,46 @@ router.get('/profile/:userId', async (req, res) => {
 });
 
 // @route   PUT /api/auth/profile/:userId
-// @desc    Update user profile (specifically weight for now)
+// @desc    Update user profile (general updates via JSON)
 // @access  Private
 router.put('/profile/:userId', jsonParser, async (req, res) => {
     const { userId } = req.params;
-    const { weight } = req.body;
+    const { username, weight } = req.body; // Allow both username and weight
 
-    if (weight === undefined) {
-        return res.status(400).json({ msg: 'Weight data is required.' });
+    const updates = [];
+    const params = [];
+
+    if (username !== undefined) {
+        updates.push('username = ?');
+        params.push(username);
+    }
+    if (weight !== undefined) {
+        updates.push('weight = ?');
+        params.push(weight);
+    }
+
+    if (updates.length === 0) {
+        return res.status(400).json({ msg: 'No profile data provided to update.' });
     }
 
     try {
-        await db.query(
-            'UPDATE users SET weight = ? WHERE id = ?',
-            [weight, userId]
-        );
+        params.push(userId); // for the WHERE clause
+        const sql = `UPDATE users SET ${updates.join(', ')} WHERE id = ?`;
+        const [result] = await db.query(sql, params);
 
-        // FIX: Select 'weight' in the follow-up query to return the updated object
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ msg: 'User not found, update failed.' });
+        }
+
         const [updatedUsers] = await db.query(
             'SELECT id, username, email, profile_image_url, weight FROM users WHERE id = ?',
             [userId]
         );
-
-        if (updatedUsers.length === 0) {
-            return res.status(404).json({ msg: '사용자를 찾을 수 없습니다.' });
-        }
-
+        
         res.json(updatedUsers[0]);
 
     } catch (error) {
-        console.error('Update profile (weight) error:', error);
+        console.error('Update profile (general) error:', error);
         res.status(500).json({ msg: `서버 오류: ${error.message}` });
     }
 });

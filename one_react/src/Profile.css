@@ -469,6 +469,20 @@
     /* left: -20px; */
 }
 
+.profile-nickname-edit-input {
+    font-size: 24px; /* Match display font size */
+    color: #575757; /* Match display color */
+    font-weight: bold; /* Match display font weight */
+    border: none;
+    border-bottom: 1px solid #FF7581; /* Underline for editing */
+    text-align: center;
+    background-color: transparent;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    width: auto; /* Adjust width based on content */
+}
+
 .nickname-display-wrapper {
     display: flex;
     align-items: center;

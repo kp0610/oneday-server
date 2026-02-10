@@ -15,6 +15,8 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
     const [profileImage, setProfileImage] = useState(null); // This is for the new file to be uploaded
     const [previewImage, setPreviewImage] = useState('');
     const [email, setEmail] = useState(''); // Email is not part of the context, will handle separately if needed
+    const [isEditingNickname, setIsEditingNickname] = useState(false);
+    const [editingUsername, setEditingUsername] = useState('');
 
     // State for Change Password Modal
     const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
@@ -29,11 +31,7 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
     const [passwordForEmailChange, setPasswordForEmailChange] = useState('');
     const [emailError, setEmailError] = useState('');
 
-    // State for Change Username Modal
-    const [showChangeUsernameModal, setShowChangeUsernameModal] = useState(false);
-    const [newUsername, setNewUsername] = useState('');
-    const [passwordForUsernameChange, setPasswordForUsernameChange] = useState('');
-    const [usernameError, setUsernameError] = useState('');
+
 
 
     const [showWithdrawModal, setShowWithdrawModal] = useState(false); // New state for withdraw modal
@@ -44,6 +42,7 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
         // Populate form with data from context
         if (profile) {
             setUsername(profile.username || ''); // Use profile.username
+            setEditingUsername(profile.username || ''); // Initialize editingUsername
             const imageUrlFromContext = profile.profileImage || '';
             setPreviewImage(imageUrlFromContext); // Use profile.profile_image_url
             setEmail(profile.email || ''); // Set email from profile
@@ -173,46 +172,76 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
         }
     };
 
-    const handleCancelUsernameChange = () => {
-        setShowChangeUsernameModal(false);
-        setNewUsername('');
-        setPasswordForUsernameChange('');
-        setUsernameError('');
+
+
+
+
+    const handleEditNicknameClick = () => {
+        setIsEditingNickname(true);
+        setEditingUsername(profile.username || ''); // Load current username into editing state
     };
 
-    const handleChangeUsername = async () => {
-        setUsernameError('');
-        if (!newUsername || !passwordForUsernameChange) {
-            setUsernameError('모든 필드를 입력해주세요.');
+    const handleNicknameSave = async () => {
+        if (editingUsername === (profile.username || '')) {
+            setIsEditingNickname(false); // No change, just exit editing mode
+            return;
+        }
+
+        if (!editingUsername.trim()) {
+            alert('닉네임을 입력해주세요.');
+            setEditingUsername(profile.username || ''); // Revert to current username
+            setIsEditingNickname(false);
             return;
         }
 
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/change-username/${userId}`, {
-                method: 'PUT',
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/profile/${userId}`, {
+                method: 'PUT', // Assuming PUT for profile updates
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ newUsername, password: passwordForUsernameChange }),
+                body: JSON.stringify({ username: editingUsername }),
             });
 
-            const data = await res.json();
-
             if (res.ok) {
-                alert(data.msg);
-                setShowChangeUsernameModal(false);
-                setNewUsername('');
-                setPasswordForUsernameChange('');
-                // Update the username in the profile context
-                updateProfileContext({ ...profile, username: newUsername });
+                const updatedProfileData = await res.json();
+                alert('닉네임이 성공적으로 변경되었습니다.');
+                updateProfileContext(updatedProfileData); // Update the global context
+                setIsEditingNickname(false); // Exit editing mode
             } else {
-                setUsernameError(data.msg);
+                const errorData = await res.json();
+                console.error('Profile.js - Error response from backend:', errorData);
+                alert(`닉네임 변경 실패: ${errorData.msg}`);
+                setEditingUsername(profile.username || ''); // Revert on error
+                setIsEditingNickname(false);
             }
         } catch (error) {
-            console.error('Failed to change username:', error);
-            setUsernameError(`닉네임 변경 중 오류가 발생했습니다: ${error.message}`);
+            console.error('Failed to change nickname:', error);
+            alert(`닉네임 변경 중 오류가 발생했습니다: ${error.message}`);
+            setEditingUsername(profile.username || ''); // Revert on error
+            setIsEditingNickname(false);
         }
     };
 
+    const handleNicknameKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent new line in input
+            handleNicknameSave();
+        } else if (e.key === 'Escape') {
+            setIsEditingNickname(false);
+            setEditingUsername(profile.username || ''); // Revert to current username
+        }
+    };
 
+    const handleNicknameBlur = () => {
+        // If the user blurs without pressing Enter, we can either save or revert.
+        // For now, let's revert if no change was made, otherwise, prompt to save or discard.
+        // Or, simply revert if not saved by Enter.
+        if (editingUsername !== (profile.username || '')) {
+            // If there's an unsaved change, we might want to ask the user or auto-save.
+            // For this implementation, we'll just revert if not explicitly saved by Enter.
+            setEditingUsername(profile.username || '');
+        }
+        setIsEditingNickname(false);
+    };
 
     const handleLogout = () => {
         localStorage.clear();
@@ -265,8 +294,20 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                         </ImageUploader>
                     </div>
                     <div className="nickname-display-wrapper">
-                        <span className="profile-nickname-display-popup">{profile.username || 'Guest'}</span>
-                        <FaPencilAlt className="edit-nickname-icon" onClick={() => setShowChangeUsernameModal(true)} />
+                        {isEditingNickname ? (
+                            <input
+                                type="text"
+                                className="profile-nickname-edit-input"
+                                value={editingUsername}
+                                onChange={(e) => setEditingUsername(e.target.value)}
+                                onKeyDown={handleNicknameKeyDown}
+                                onBlur={handleNicknameBlur}
+                                autoFocus
+                            />
+                        ) : (
+                            <span className="profile-nickname-display-popup">{profile.username || 'Guest'}</span>
+                        )}
+                        <FaPencilAlt className="edit-nickname-icon" onClick={handleEditNicknameClick} />
                     </div>
                 </div>
                 
@@ -364,30 +405,7 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
 
 
 
-            <Modal show={showChangeUsernameModal} onClose={handleCancelUsernameChange} contentClassName="change-username-modal-content">
-                <h3>닉네임 변경</h3>
-                <div className="profile-form-group">
-                    <input
-                        type="text"
-                        placeholder="새 닉네임"
-                        value={newUsername}
-                        onChange={(e) => setNewUsername(e.target.value)}
-                    />
-                </div>
-                <div className="profile-form-group">
-                    <input
-                        type="password"
-                        placeholder="현재 비밀번호"
-                        value={passwordForUsernameChange}
-                        onChange={(e) => setPasswordForUsernameChange(e.target.value)}
-                    />
-                </div>
-                {usernameError && <p className="error-message">{usernameError}</p>}
-                <div className="modal-actions">
-                    <button onClick={handleChangeUsername}>변경하기</button>
-                    <button onClick={handleCancelUsernameChange}>취소</button>
-                </div>
-            </Modal>
+
 
             {/* Withdrawal Confirmation Modal */}
             <Modal show={showWithdrawModal} onClose={() => setShowWithdrawModal(false)}>
