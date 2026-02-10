@@ -464,3 +464,24 @@
     border-color: #8e8e8e; /* Darker border on hover */
     color: #8e8e8e; /* Darker icon on hover */
 }
+
+.modal-content.change-username-modal-content {
+    /* left: -20px; */
+}
+
+.nickname-display-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between nickname and icon */
+}
+
+.edit-nickname-icon {
+    cursor: pointer;
+    color: #8E95A2; /* Adjust color as needed */
+    font-size: 1em; /* Adjust size as needed */
+    transition: color 0.2s ease;
+}
+
+.edit-nickname-icon:hover {
+    color: #FF7581; /* Hover color */
+}

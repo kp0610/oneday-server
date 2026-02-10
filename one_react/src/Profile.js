@@ -5,6 +5,7 @@ import ImageUploader from './ImageUploader';
 import Modal from './Modal';
 import { useProfile } from './ProfileContext'; // Import the context hook
 import { MdOutlineCameraAlt } from 'react-icons/md'; // Import MdOutlineCameraAlt
+import { FaPencilAlt } from 'react-icons/fa'; // Import FaPencilAlt
 
 const Profile = ({ show, onClose }) => { // Accept show and onClose props
     const { profile, updateProfileContext } = useProfile(); // Use the context
@@ -27,6 +28,12 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
     const [newEmail, setNewEmail] = useState('');
     const [passwordForEmailChange, setPasswordForEmailChange] = useState('');
     const [emailError, setEmailError] = useState('');
+
+    // State for Change Username Modal
+    const [showChangeUsernameModal, setShowChangeUsernameModal] = useState(false);
+    const [newUsername, setNewUsername] = useState('');
+    const [passwordForUsernameChange, setPasswordForUsernameChange] = useState('');
+    const [usernameError, setUsernameError] = useState('');
 
 
     const [showWithdrawModal, setShowWithdrawModal] = useState(false); // New state for withdraw modal
@@ -166,6 +173,45 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
         }
     };
 
+    const handleCancelUsernameChange = () => {
+        setShowChangeUsernameModal(false);
+        setNewUsername('');
+        setPasswordForUsernameChange('');
+        setUsernameError('');
+    };
+
+    const handleChangeUsername = async () => {
+        setUsernameError('');
+        if (!newUsername || !passwordForUsernameChange) {
+            setUsernameError('모든 필드를 입력해주세요.');
+            return;
+        }
+
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/change-username/${userId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ newUsername, password: passwordForUsernameChange }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert(data.msg);
+                setShowChangeUsernameModal(false);
+                setNewUsername('');
+                setPasswordForUsernameChange('');
+                // Update the username in the profile context
+                updateProfileContext({ ...profile, username: newUsername });
+            } else {
+                setUsernameError(data.msg);
+            }
+        } catch (error) {
+            console.error('Failed to change username:', error);
+            setUsernameError(`닉네임 변경 중 오류가 발생했습니다: ${error.message}`);
+        }
+    };
+
 
 
     const handleLogout = () => {
@@ -218,7 +264,10 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                             <MdOutlineCameraAlt />
                         </ImageUploader>
                     </div>
-                    <span className="profile-nickname-display-popup">{profile.username || 'Guest'}</span>
+                    <div className="nickname-display-wrapper">
+                        <span className="profile-nickname-display-popup">{profile.username || 'Guest'}</span>
+                        <FaPencilAlt className="edit-nickname-icon" onClick={() => setShowChangeUsernameModal(true)} />
+                    </div>
                 </div>
                 
                 
@@ -314,6 +363,31 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
             </Modal>
 
 
+
+            <Modal show={showChangeUsernameModal} onClose={handleCancelUsernameChange} contentClassName="change-username-modal-content">
+                <h3>닉네임 변경</h3>
+                <div className="profile-form-group">
+                    <input
+                        type="text"
+                        placeholder="새 닉네임"
+                        value={newUsername}
+                        onChange={(e) => setNewUsername(e.target.value)}
+                    />
+                </div>
+                <div className="profile-form-group">
+                    <input
+                        type="password"
+                        placeholder="현재 비밀번호"
+                        value={passwordForUsernameChange}
+                        onChange={(e) => setPasswordForUsernameChange(e.target.value)}
+                    />
+                </div>
+                {usernameError && <p className="error-message">{usernameError}</p>}
+                <div className="modal-actions">
+                    <button onClick={handleChangeUsername}>변경하기</button>
+                    <button onClick={handleCancelUsernameChange}>취소</button>
+                </div>
+            </Modal>
 
             {/* Withdrawal Confirmation Modal */}
             <Modal show={showWithdrawModal} onClose={() => setShowWithdrawModal(false)}>
