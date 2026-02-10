@@ -452,9 +452,9 @@
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
     position: absolute; /* Position absolutely within the profile picture container */
-    bottom: 0; /* Align to the bottom */
-    right: 0; /* Align to the right */
-    transform: translate(50%, 50%); /* Shift by half its own size to align center with corner */
+    bottom: 4px; /* Changed to 4px */
+    right: 4px; /* Changed to 4px */
+    /* Removed transform: translate(50%, 50%); */
     z-index: 2; /* Ensure it's above other content */
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); /* Drop shadow only */
 }
@@ -498,7 +498,7 @@
 
 .edit-nickname-icon {
     cursor: pointer;
-    color: #383838; /* Changed color */
+    color: #A0A0A0; /* Changed to darker gray */
     font-size: 1.2em; /* Slightly increased size */
     /* Removed margin-top: 4px; */
     transition: color 0.2s ease;
