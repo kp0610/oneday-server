@@ -31,6 +31,10 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
     const [passwordForEmailChange, setPasswordForEmailChange] = useState('');
     const [emailError, setEmailError] = useState('');
 
+    // State for in-app success popup
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
+
 
 
 
@@ -203,7 +207,9 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
 
             if (res.ok) {
                 const updatedProfileData = await res.json();
-                alert('닉네임이 성공적으로 변경되었습니다.');
+                setSuccessMessage('닉네임이 성공적으로 변경되었습니다.');
+                setShowSuccessPopup(true);
+                setTimeout(() => setShowSuccessPopup(false), 3000); // Hide after 3 seconds
                 updateProfileContext(updatedProfileData); // Update the global context
                 setIsEditingNickname(false); // Exit editing mode
             } else {
@@ -406,6 +412,15 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
 
 
 
+
+            {/* In-app Success Popup */}
+            <Modal show={showSuccessPopup} onClose={() => setShowSuccessPopup(false)}>
+                <h3>알림</h3>
+                <p>{successMessage}</p>
+                <div className="modal-actions">
+                    <button onClick={() => setShowSuccessPopup(false)}>확인</button>
+                </div>
+            </Modal>
 
             {/* Withdrawal Confirmation Modal */}
             <Modal show={showWithdrawModal} onClose={() => setShowWithdrawModal(false)}>
