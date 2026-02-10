@@ -494,6 +494,7 @@
     align-items: center;
     gap: 8px; /* Space between nickname and icon */
     height: 30px; /* Fixed height to prevent vertical shifts */
+    margin-left: 17px; /* Shift slightly to the right */
 }
 
 .edit-nickname-icon {
