@@ -438,46 +438,28 @@
 }
 
 .profile-upload-button {
-    background-color: transparent; /* Ensure no background interference */
-    /* Removed color */
+    background-color: #ffffff; /* Fill color */
+    color: #B3B3B3; /* Icon color */
     width: 25px; /* Smaller width for a rounded button */
     height: 25px; /* Smaller height for a rounded button */
     padding: 0; /* Remove padding */
-    /* Removed border */
+    border: 1px solid #E1E7EF; /* Stroke color */
     border-radius: 50%; /* Make it perfectly round */
-    font-size: 16px; /* Adjust font size for icon */
+    font-size: 18px; /* Increased icon size */
     cursor: pointer;
-    /* margin-top: 10px; */ /* Remove margin-top as absolute positioning will handle it */
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
     display: flex; /* Use flexbox for centering */
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
-    /* Removed position: absolute; */
-    /* Removed bottom: 0 !important; */
-    /* Removed right: 0 !important; */
-    /* Removed transform: translate(50%, 50%); */
-    /* Removed z-index: 2; */
-    /* Removed box-shadow */
-}
-
-.camera-icon-wrapper {
-    background-color: #ffffff; /* Fill color */
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #E1E7EF; /* Stroke color */
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); /* Drop shadow only */
-    color: #B3B3B3; /* Icon color */
-    font-size: 18px; /* Increased icon size */
     position: absolute; /* Position absolutely within the profile picture container */
     bottom: 0; /* Align to the bottom */
     right: 0; /* Align to the right */
     transform: translate(50%, 50%); /* Shift by half its own size to align center with corner */
     z-index: 2; /* Ensure it's above other content */
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); /* Drop shadow only */
 }
+
+
 
 .profile-upload-button:hover {
     background-color: #f0f0f0; /* Subtle hover effect */

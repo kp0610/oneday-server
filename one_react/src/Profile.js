@@ -296,9 +296,7 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                         style={{ border: '1px solid #E1E7EF', backgroundImage: backgroundImageUrl }}
                     >
                         <ImageUploader onImageUpload={handleImageUpload} className="profile-upload-button">
-                            <div className="camera-icon-wrapper">
-                                <MdOutlineCameraAlt />
-                            </div>
+                            <MdOutlineCameraAlt />
                         </ImageUploader>
                     </div>
                     <div className="nickname-display-wrapper">
