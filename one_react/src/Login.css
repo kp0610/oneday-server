@@ -190,6 +190,69 @@ button[type="submit"]:hover,
     font-weight: 700;
 }
 
+.social-login-divider {
+    display: flex;
+    align-items: center;
+    margin-top: 42px; /* Adjusted for 42px spacing */
+    margin-bottom: 20px;
+    width: 327px; /* Match input/button width */
+    margin-left: auto; /* Center the block */
+    margin-right: auto; /* Center the block */
+}
+
+.social-login-divider .line {
+    flex-grow: 1;
+    height: 1px;
+    background-image: linear-gradient(to right, #CCCCCC 4px, transparent 0%); /* 4px dash */
+    background-size: 11px 1px; /* 4px dash + 7px gap = 11px total pattern length */
+    background-repeat: repeat-x;
+    background-position: center;
+}
+
+.social-login-divider .text {
+    padding: 0 10px; /* Space around the text */
+    font-size: 15px; /* Same as .toggle-form */
+    color: #8E95A2; /* Same as .toggle-form */
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.social-login-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+    gap: 35px;
+}
+
+.social-icon-button {
+    width: 54px;
+    height: 51px;
+    border-radius: 15px;
+    background-color: #f0f0f0; /* Placeholder background */
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1); /* Drop shadow */
+    display: flex; /* Use flexbox to center content */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    cursor: pointer; /* Indicate clickable */
+}
+
+.social-icon-button img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ensure icon fits without cropping */
+}
+
+.kakao-button {
+    background-color: #FEE500; /* Kakao brand yellow */
+}
+
+.google-button {
+    background-color: #FFFFFF; /* White background for Google */
+}
+
+.apple-button {
+    background-color: #000000; /* Black background for Apple */
+}
+
 /* Profile Setup Page Specifics */
 .profile-page-wrapper {
     display: flex;

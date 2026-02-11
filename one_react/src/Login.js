@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Login.css';
 import { useProfile } from './ProfileContext'; // Import the context hook
+import kakaoIcon from './icons/kakao logo.svg'; // Import Kakao icon
+import googleIcon from './icons/Google Logo.svg'; // Import Google icon
+import appleIcon from './icons/Apple Logo.svg'; // Import Apple icon
 
 const Login = ({ onLogin }) => {
     const [isLogin, setIsLogin] = useState(true);
@@ -111,6 +114,22 @@ const Login = ({ onLogin }) => {
                             <button type="submit">로그인</button>
                         </form>
                         <p className="toggle-form">계정이 없으신가요? <a href="#" id="show-signup" onClick={showSignup}>회원가입</a></p>
+                        <div className="social-login-divider">
+                            <span className="line"></span>
+                            <span className="text">소셜미디어로 로그인</span>
+                            <span className="line"></span>
+                        </div>
+                        <div className="social-login-buttons">
+                            <div className="social-icon-button kakao-button">
+                                <img src={kakaoIcon} alt="Kakao Login" />
+                            </div>
+                            <div className="social-icon-button google-button">
+                                <img src={googleIcon} alt="Google Login" />
+                            </div>
+                            <div className="social-icon-button apple-button">
+                                <img src={appleIcon} alt="Apple Login" />
+                            </div>
+                        </div>
                     </div>
                 ) : (
                     <div className="form-container" id="signup-form">
