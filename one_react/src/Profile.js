@@ -79,18 +79,22 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
 
             if (res.ok) {
                 const updatedProfileData = await res.json();
-                alert('프로필이 성공적으로 업데이트되었습니다.');
+                setSuccessMessage('프로필이 성공적으로 업데이트되었습니다.');
+                setShowSuccessPopup(true);
+                setTimeout(() => setShowSuccessPopup(false), 3000); // Hide after 3 seconds
                 updateProfileContext(updatedProfileData); // Update the global context
                 setPreviewImage(updatedProfileData.profile_image_url || ''); // Ensure previewImage reflects the saved URL
                 // onClose(); // Removed: User will close the modal manually
             } else {
                 const errorData = await res.json();
                 console.error('Profile.js - Error response from backend:', errorData); // Debug log
-                alert(`프로필 업데이트 실패: ${errorData.msg}`);
+                setSuccessMessage(`프로필 업데이트 실패: ${errorData.msg}`);
+                setShowSuccessPopup(true);
             }
         } catch (error) {
             console.error('Failed to update profile:', error);
-            alert(`프로필 업데이트 중 오류가 발생했습니다: ${error.message}`);
+            setSuccessMessage(`프로필 업데이트 중 오류가 발생했습니다: ${error.message}`);
+            setShowSuccessPopup(true);
         }
     };
 
