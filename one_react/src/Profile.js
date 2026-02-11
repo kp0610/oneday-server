@@ -249,9 +249,25 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
         setIsEditingNickname(false);
     };
 
-    const handleLogout = () => {
-        localStorage.clear();
-        window.location.href = '/login';
+    const handleLogout = async () => {
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/logout`, {
+                method: 'GET',
+                credentials: 'include',
+            });
+
+            if (res.ok) {
+                localStorage.clear();
+                window.location.href = '/login';
+            } else {
+                const errorData = await res.json();
+                console.error('Logout failed on backend:', errorData.msg);
+                alert('로그아웃 실패: ' + errorData.msg);
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+            alert('로그아웃 중 오류가 발생했습니다.');
+        }
     };
 
     const handleWithdraw = async () => {

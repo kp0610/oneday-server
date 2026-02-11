@@ -1,9 +1,5 @@
-import express from "express";
-import session from "express-session";
-import passport from "passport";
-import cors from "cors";
 import path from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath } from "url"; // Ensure this import is present
 import dotenv from "dotenv";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import authRoutes from "./routes/auth.js"; // Import auth routes
@@ -18,6 +14,10 @@ import todosRoutes from "./routes/todos.js";
 import db from "./config/db.js"; // Import the database connection pool
 import bcrypt from "bcrypt"; // Import bcrypt for password hashing
 import crypto from "crypto"; // Import crypto for generating random password
+import express from "express"; // Import express
+import session from "express-session";
+import passport from "passport";
+import cors from "cors";
 
 // ==================
 // 기본 설정
@@ -157,6 +157,23 @@ app.get(
     res.redirect("http://localhost:3000");
   }
 );
+
+// ==================
+// 로그아웃
+// ==================
+app.get("/auth/logout", (req, res, next) => {
+  req.logout((err) => { // req.logout requires a callback
+    if (err) {
+      return next(err);
+    }
+    req.session.destroy((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.status(200).json({ msg: "Logged out successfully" });
+    });
+  });
+});
 
 // ==================
 // 로그인 실패 확인용
