@@ -21,13 +21,36 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [scale, setScale] = useState(1); // Add scale state
   const [isTemplateNavOpen, setIsTemplateNavOpen] = useState(false);
+  const { refreshProfile } = useProfile(); // Get refreshProfile from context
 
   useEffect(() => {
-    const checkAuth = () => {
-      const userId = localStorage.getItem('userId');
-      const authStatus = !!userId;
-      setIsAuthenticated(authStatus);
-      // console.log('App.js - Initial isAuthenticated status:', authStatus); // Debug log
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/me`, {
+          method: 'GET',
+          credentials: 'include', // Crucial for sending session cookies
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.isLoggedIn) {
+            localStorage.setItem('userId', data.userId);
+            setIsAuthenticated(true);
+            refreshProfile(); // Refresh profile context if needed
+          } else {
+            localStorage.removeItem('userId');
+            setIsAuthenticated(false);
+          }
+        } else {
+          // Handle cases where /me returns an error or not ok status (e.g., 401)
+          localStorage.removeItem('userId');
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Failed to fetch /me:", error);
+        localStorage.removeItem('userId');
+        setIsAuthenticated(false);
+      }
     };
 
     checkAuth(); // Check on initial load

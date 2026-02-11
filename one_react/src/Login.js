@@ -123,7 +123,7 @@ const Login = ({ onLogin }) => {
                             <div className="social-icon-button kakao-button">
                                 <img src={kakaoIcon} alt="Kakao Login" />
                             </div>
-                            <div className="social-icon-button google-button">
+                            <div className="social-icon-button google-button" onClick={() => window.location.href = 'http://localhost:3001/auth/google'}>
                                 <img src={googleIcon} alt="Google Login" />
                             </div>
                             <div className="social-icon-button apple-button">

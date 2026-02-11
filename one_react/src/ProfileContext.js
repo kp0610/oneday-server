@@ -24,7 +24,9 @@ export const ProfileProvider = ({ children }) => {
         }
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/profile/${userId}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/profile/${userId}`, {
+                credentials: 'include',
+            });
             if (response.ok) {
                 const data = await response.json();
                 // console.log('fetchProfile - API response data:', data); // Debug log
@@ -85,6 +87,7 @@ export const ProfileProvider = ({ children }) => {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ weight: parseFloat(newWeight) }),
+            credentials: 'include', // Crucial for sending session cookies
         });
 
         if (!response.ok) {

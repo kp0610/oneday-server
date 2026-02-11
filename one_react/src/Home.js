@@ -40,11 +40,11 @@ const Home = () => {
         
         const fetchDashboardData = async () => {
             try {
-                const eventsRes = await fetch(`${process.env.REACT_APP_API_URL}/api/events/${userId}/${selectedDate}`, { cache: 'no-cache' });
+                const eventsRes = await fetch(`${process.env.REACT_APP_API_URL}/api/events/${userId}/${selectedDate}`, { cache: 'no-cache', credentials: 'include' });
                 const eventsData = eventsRes.ok ? await eventsRes.json() : Promise.reject(new Error('Failed to fetch day events'));
                 setDashboardEvents(eventsData);
 
-                const todosRes = await fetch(`${process.env.REACT_APP_API_URL}/api/todos/${userId}/${selectedDate}`, { cache: 'no-cache' });
+                const todosRes = await fetch(`${process.env.REACT_APP_API_URL}/api/todos/${userId}/${selectedDate}`, { cache: 'no-cache', credentials: 'include' });
                 const todosData = todosRes.ok ? await todosRes.json() : Promise.reject(new Error('Failed to fetch todos'));
                 setTodos(todosData);
                 // console.log('Home.js - Fetched todosData after update:', JSON.stringify(todosData, null, 2)); // Debug log
@@ -88,7 +88,7 @@ const Home = () => {
         const lastDay = new Date(year, month + 1, 0).getDate();
         const lastDayOfMonth = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
 
-        fetch(`${process.env.REACT_APP_API_URL}/api/events/range/${userId}?startDate=${firstDayOfMonth}&endDate=${lastDayOfMonth}`, { cache: 'no-cache' })
+        fetch(`${process.env.REACT_APP_API_URL}/api/events/range/${userId}?startDate=${firstDayOfMonth}&endDate=${lastDayOfMonth}`, { cache: 'no-cache', credentials: 'include' })
             .then(res => {
                 if (!res.ok) {
                     return res.json().then(err => { throw new Error(err.msg) });
