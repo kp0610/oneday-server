@@ -1,5 +1,10 @@
+import express from "express";
+import session from "express-session";
+// import MySQLStore from "express-mysql-session"; // Import express-mysql-session
+import passport from "passport";
+import cors from "cors";
 import path from "path";
-import { fileURLToPath } from "url"; // Ensure this import is present
+import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import authRoutes from "./routes/auth.js"; // Import auth routes
@@ -14,10 +19,7 @@ import todosRoutes from "./routes/todos.js";
 import db from "./config/db.js"; // Import the database connection pool
 import bcrypt from "bcrypt"; // Import bcrypt for password hashing
 import crypto from "crypto"; // Import crypto for generating random password
-import express from "express"; // Import express
-import session from "express-session";
-import passport from "passport";
-import cors from "cors";
+import fs from "fs"; // Import fs for directory check
 
 // ==================
 // 기본 설정
@@ -31,6 +33,33 @@ dotenv.config({
 
 const app = express();
 const PORT = 3001;
+
+// Ensure the uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
+
+// MySQLStore 설정 (주석 처리 또는 제거)
+// const sessionStore = new MySQLStore(session, {
+//     host: process.env.DB_HOST,
+//     port: process.env.DB_PORT,
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASSWORD,
+//     database: process.env.DB_NAME,
+//     clearExpired: true, // Clear expired sessions
+//     checkExpirationInterval: 900000, // How frequently to check for expired sessions (in ms)
+//     expiration: 86400000, // The maximum age of a session (in ms)
+//     createDatabaseTable: true, // Create the session table if it doesn't exist
+//     schema: {
+//         tableName: 'sessions',
+//         columnNames: {
+//             session_id: 'session_id',
+//             expires: 'expires',
+//             data: 'data'
+//         }
+//     }
+// });
 
 // ==================
 // CORS 설정 (React 연동)
@@ -48,6 +77,11 @@ app.use(
 app.use(express.json());
 
 // ==================
+// Static file serving for uploads
+// ==================
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// ==================
 // session 설정
 // ==================
 app.use(
@@ -55,6 +89,10 @@ app.use(
     secret: "dev-secret",
     resave: false,
     saveUninitialized: false,
+    // store: sessionStore, // Use MySQLStore for session storage (제거)
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 // 1 day
+    }
   })
 );
 
