@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Strategy as KakaoStrategy } from "passport-kakao";
 import authRoutes from "./routes/auth.js"; // Import auth routes
 import diaryRoutes from "./routes/diary.js";
 import eventsRoutes from "./routes/events.js";
@@ -131,6 +132,7 @@ passport.use(
             username: profile.displayName,
             email: profile.emails[0].value,
             password: hashedPassword, // Store the hashed random password
+            provider: 'google', // Add provider field
           };
           const [result] = await connection.query('INSERT INTO users SET ?', newUser);
           const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
@@ -138,6 +140,51 @@ passport.use(
         }
       } catch (err) {
         console.error("GoogleStrategy error:", err);
+        return done(err, null);
+      } finally {
+        if (connection) connection.release();
+      }
+    }
+  )
+);
+
+// ==================
+// Kakao OAuth 전략
+// ==================
+passport.use(
+  new KakaoStrategy(
+    {
+      clientID: process.env.KAKAO_CLIENT_ID,
+      clientSecret: process.env.KAKAO_CLIENT_SECRET, // Kakao는 clientSecret이 필수는 아니지만, 보안을 위해 사용하는 것이 좋습니다.
+      callbackURL: "http://localhost:3001/auth/kakao/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      const connection = await db.getConnection();
+      try {
+        // Check if user already exists in our DB
+        const [users] = await connection.query('SELECT * FROM users WHERE kakao_id = ?', [profile.id]);
+
+        if (users.length > 0) {
+          // User found, return our internal user object
+          return done(null, users[0]);
+        } else {
+          // No user found with this kakao_id, create a new one
+          const randomPassword = crypto.randomBytes(16).toString('hex'); // Generate a random string
+          const hashedPassword = await bcrypt.hash(randomPassword, 10); // Hash the random string
+
+          const newUser = {
+            kakao_id: profile.id,
+            username: profile.displayName,
+            // email: profile._json.kakao_account.email, // 카카오 정책상 이메일 수집 안 함
+            password: hashedPassword, // Store the hashed random password
+            provider: 'kakao', // Add provider field
+          };
+          const [result] = await connection.query('INSERT INTO users SET ?', newUser);
+          const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
+          return done(null, createdUser[0]);
+        }
+      } catch (err) {
+        console.error("KakaoStrategy error:", err);
         return done(err, null);
       } finally {
         if (connection) connection.release();
@@ -188,6 +235,28 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
+    failureRedirect: "/login-fail",
+  }),
+  (req, res) => {
+    // 로그인 성공 → React로 이동
+    res.redirect("http://localhost:3000");
+  }
+);
+
+// ==================
+// Kakao 로그인 시작
+// ==================
+app.get(
+  "/auth/kakao",
+  passport.authenticate("kakao")
+);
+
+// ==================
+// Kakao 로그인 콜백
+// ==================
+app.get(
+  "/auth/kakao/callback",
+  passport.authenticate("kakao", {
     failureRedirect: "/login-fail",
   }),
   (req, res) => {

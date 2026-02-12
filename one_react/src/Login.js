@@ -120,7 +120,7 @@ const Login = ({ onLogin }) => {
                             <span className="line"></span>
                         </div>
                         <div className="social-login-buttons">
-                            <div className="social-icon-button kakao-button">
+                            <div className="social-icon-button kakao-button" onClick={() => window.location.href = 'http://localhost:3001/auth/kakao'}>
                                 <img src={kakaoIcon} alt="Kakao Login" />
                             </div>
                             <div className="social-icon-button google-button" onClick={() => window.location.href = 'http://localhost:3001/auth/google'}>
