@@ -578,29 +578,39 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Align items to the start for labels */
-    gap: 8px; /* Space between detail items */
+    align-items: center; /* Center the item groups */
+    gap: 10px; /* Space between detail items */
     padding: 0 15px; /* Horizontal padding */
     box-sizing: border-box;
 }
 
-.my-info-details p {
-    margin: 0;
-    font-size: 14px;
-    color: #575757;
-    display: flex; /* Use flex for label and value alignment */
-    justify-content: space-between; /* Space out label and value */
-    width: 100%; /* Take full width */
+.my-info-item-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align label and chip to the start */
+    width: 100%;
+    gap: 5px; /* 5px gap between label and chip */
 }
 
 .my-info-details .my-info-label {
-    font-weight: bold; /* Make labels bold */
-    color: #333;
+    font-size: 14px;
+    font-weight: normal; /* Regular */
+    color: #8E95A2;
+    margin-bottom: 0; /* Remove default paragraph margin */
 }
 
-.my-info-details .my-info-value {
-    font-weight: normal;
-    color: #575757;
+.my-info-chip {
+    background-color: #ffffff;
+    border: 1px solid #F0F3F6;
+    width: 244px;
+    height: 36px;
+    border-radius: 10px; /* Chip roundness */
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    font-size: 14px;
+    color: #575757; /* Default text color for chip content */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 .my-info-details .settings-button {
