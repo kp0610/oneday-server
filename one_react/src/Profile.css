@@ -580,7 +580,7 @@
     flex-direction: column;
     align-items: center; /* Center the item groups */
     gap: 10px; /* Space between detail items */
-    padding: 0 15px; /* Horizontal padding */
+    padding: 0 14px; /* Horizontal padding to create gap from back box (272 - 244 = 28, 28/2 = 14) */
     box-sizing: border-box;
 }
 
@@ -588,7 +588,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start; /* Align label and chip to the start */
-    width: 100%;
+    width: 100%; /* Take full width of the padded container */
     gap: 5px; /* 5px gap between label and chip */
 }
 
@@ -602,28 +602,32 @@
 .my-info-chip {
     background-color: #ffffff;
     border: 1px solid #F0F3F6;
-    width: 244px;
+    width: 244px; /* Fixed width */
     height: 36px;
-    border-radius: 10px; /* Chip roundness */
+    border-radius: 20px; /* Chip roundness */
     display: flex;
-    justify-content: center; /* Center content horizontally */
+    justify-content: flex-start; /* Left align content horizontally */
     align-items: center; /* Center content vertically */
     font-size: 14px;
-    color: #575757; /* Default text color for chip content */
+    color: #8E95A2; /* Text color for chip content */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    padding-left: 15px; /* Padding for left-aligned text */
 }
 
+/* Remove the settings-button styles from my-info-details as they are no longer needed */
+/*
 .my-info-details .settings-button {
-    width: calc(100% - 0px); /* Adjust width to fit padding */
+    width: calc(100% - 0px);
     height: 36px;
     font-size: 14px;
-    border-radius: 10px; /* Slightly less rounded for inner buttons */
-    background-color: #F0F3F6; /* Different background for inner buttons */
+    border-radius: 10px;
+    background-color: #F0F3F6;
     color: #575757;
     border: none;
     box-shadow: none;
-    margin-top: 5px; /* Add some space above the inner buttons */
+    margin-top: 5px;
 }
+*/
 
 .my-info-details .settings-button:hover {
     background-color: #E1E7EF;
