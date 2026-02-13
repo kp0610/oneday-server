@@ -602,7 +602,7 @@
 .my-info-chip {
     background-color: #ffffff;
     border: 1px solid #F0F3F6;
-    width: 244px; /* Fixed width */
+    width: 100%; /* Make chip take full width of its parent (my-info-item-group) */
     height: 36px;
     border-radius: 20px; /* Chip roundness */
     display: flex;
