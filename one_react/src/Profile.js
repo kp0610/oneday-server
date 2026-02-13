@@ -359,7 +359,9 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                         <span className="my-info-text">내 정보 확인하기</span>
                         {showMyInfoDetails && (
                             <div className="my-info-details">
-                                <p>이메일: {profile.email}</p>
+                                <p className="my-info-label">이름: <span className="my-info-value">{profile.username || 'N/A'}</span></p>
+                                <p className="my-info-label">아이디: <span className="my-info-value">{profile.email || 'N/A'}</span></p>
+                                <p className="my-info-label">비밀번호: <span className="my-info-value">********</span></p>
                                 {/* Add more profile details here if needed */}
                                 <button onClick={() => setShowChangeEmailModal(true)} className="settings-button">아이디 변경하기</button>
                                 <button onClick={() => setShowChangePasswordModal(true)} className="settings-button">비밀번호 변경하기</button>
