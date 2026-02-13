@@ -368,6 +368,7 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                                                                                             <div className="my-info-chip">{profile.email || 'N/A'}</div>
                                                                                         </div>
                                                                                         {/* Add more profile details here if needed */}
+                                                                                        <button onClick={() => setShowWithdrawModal(true)} className="settings-button withdraw-button-inside-info">탈퇴하기</button>
                                                                                     </div>
                                                                                 )}
                                                                                 </button>
@@ -380,7 +381,6 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                         backgroundRepeat: 'no-repeat'
                     }}></div>
                     <button onClick={handleLogout} className="settings-button" style={{ backgroundColor: '#FF5C5C', borderRadius: '10px', color: '#ffffff' }}>로그아웃</button>
-                    <span className="withdraw-text" onClick={() => setShowWithdrawModal(true)}>탈퇴</span>
                 </div>
             </div>
 
