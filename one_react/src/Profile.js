@@ -367,10 +367,6 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                                                                                             <p className="my-info-label">아이디</p>
                                                                                             <div className="my-info-chip">{profile.email || 'N/A'}</div>
                                                                                         </div>
-                                                                                        <div className="my-info-item-group">
-                                                                                            <p className="my-info-label">비밀번호</p>
-                                                                                            <div className="my-info-chip">********</div>
-                                                                                        </div>
                                                                                         {/* Add more profile details here if needed */}
                                                                                     </div>
                                                                                 )}
