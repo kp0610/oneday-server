@@ -40,6 +40,8 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
 
     const [showWithdrawModal, setShowWithdrawModal] = useState(false); // New state for withdraw modal
 
+    const [showMyInfoDetails, setShowMyInfoDetails] = useState(false); // New state for "내 정보 확인하기" button
+
     const userId = localStorage.getItem('userId');
 
     useEffect(() => {
@@ -350,8 +352,20 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                                         backgroundRepeat: 'no-repeat'
                                     }}></div>
           
-                    <button onClick={() => setShowChangeEmailModal(true)} className="settings-button" style={{ backgroundColor: '#E9E9E9' }}>아이디 변경하기</button>
-                    <button onClick={() => setShowChangePasswordModal(true)} className="settings-button" style={{ backgroundColor: '#E9E9E9' }}>비밀번호 변경하기</button>
+                    <button 
+                        className={`settings-button my-info-button ${showMyInfoDetails ? 'active' : ''}`} 
+                        onClick={() => setShowMyInfoDetails(!showMyInfoDetails)} 
+                    >
+                        <span className="my-info-text">내 정보 확인하기</span>
+                        {showMyInfoDetails && (
+                            <div className="my-info-details">
+                                <p>이메일: {profile.email}</p>
+                                {/* Add more profile details here if needed */}
+                                <button onClick={() => setShowChangeEmailModal(true)} className="settings-button">아이디 변경하기</button>
+                                <button onClick={() => setShowChangePasswordModal(true)} className="settings-button">비밀번호 변경하기</button>
+                            </div>
+                        )}
+                    </button>
                     <div style={{
                         height: '1px',
                         width: '272px',

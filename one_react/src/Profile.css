@@ -518,3 +518,91 @@
     /* Add transition for smooth movement if desired */
     transition: left 0.3s ease;
 }
+
+/* New styles for "내 정보 확인하기" button */
+.my-info-button {
+    /* Default chip-like style, similar to other settings-button */
+    background-color: #E9E9E9;
+    color: #8E95A2;
+    width: 272px;
+    height: 36px;
+    border: 1px solid #F0F3F6;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: normal;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex; /* Use flex to center text */
+    justify-content: center;
+    align-items: center;
+}
+
+.my-info-button:hover {
+    background-color: #FFE1E3;
+    border-color: #FF7581;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.my-info-button.active {
+    width: 272px;
+    height: 289px; /* Expanded height */
+    border-radius: 20px;
+    background-color: #E9E9E9;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 15px;
+    position: relative;
+    /* Ensure text is visible and correctly positioned */
+    text-align: center; /* Center the text */
+}
+
+.my-info-button .my-info-text {
+    /* Style for the fixed text inside the button */
+    font-size: 14px;
+    color: #8E95A2;
+    font-weight: normal;
+    /* Adjust margin based on whether details are shown */
+    margin-bottom: 0; /* Default, no margin */
+}
+
+.my-info-button.active .my-info-text {
+    margin-bottom: 10px; /* Space between fixed text and details when active */
+}
+
+.my-info-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Space between detail items */
+    padding: 0 15px; /* Horizontal padding */
+    box-sizing: border-box;
+}
+
+.my-info-details p {
+    margin: 0;
+    font-size: 14px;
+    color: #575757;
+}
+
+.my-info-details .settings-button {
+    width: calc(100% - 0px); /* Adjust width to fit padding */
+    height: 36px;
+    font-size: 14px;
+    border-radius: 10px; /* Slightly less rounded for inner buttons */
+    background-color: #F0F3F6; /* Different background for inner buttons */
+    color: #575757;
+    border: none;
+    box-shadow: none;
+}
+
+.my-info-details .settings-button:hover {
+    background-color: #E1E7EF;
+    border-color: transparent;
+    box-shadow: none;
+}
