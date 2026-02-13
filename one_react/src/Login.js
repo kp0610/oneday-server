@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import './Login.css';
-import { useProfile } from './ProfileContext'; // Import the context hook
 import kakaoIcon from './icons/kakao logo.svg'; // Import Kakao icon
 import googleIcon from './icons/Google Logo.svg'; // Import Google icon
-import appleIcon from './icons/Apple Logo.svg'; // Import Apple icon
+// import appleIcon from './icons/Apple Logo.svg'; // Import Apple icon
+import naverIcon from './icons/naver logo.svg'; // Import Naver icon
 
 const Login = ({ onLogin }) => {
     const [isLogin, setIsLogin] = useState(true);
@@ -126,8 +124,8 @@ const Login = ({ onLogin }) => {
                             <div className="social-icon-button google-button" onClick={() => window.location.href = 'http://localhost:3001/auth/google'}>
                                 <img src={googleIcon} alt="Google Login" />
                             </div>
-                            <div className="social-icon-button apple-button">
-                                <img src={appleIcon} alt="Apple Login" />
+                            <div className="social-icon-button naver-button" onClick={() => window.location.href = 'http://localhost:3001/auth/naver'}>
+                                <img src={naverIcon} alt="Naver Login" />
                             </div>
                         </div>
                     </div>
