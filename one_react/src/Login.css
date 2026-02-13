@@ -249,8 +249,8 @@ button[type="submit"]:hover,
     background-color: #FFFFFF; /* White background for Google */
 }
 
-.apple-button {
-    background-color: #000000; /* Black background for Apple */
+.naver-button {
+    background-color: #03C75A; /* Naver brand green */
 }
 
 /* Profile Setup Page Specifics */

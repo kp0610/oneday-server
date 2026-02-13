@@ -1,3 +1,6 @@
+import React, { useState, useEffect } from 'react';
+import './Login.css';
+import { useProfile } from './ProfileContext'; // Import the context hook
 import kakaoIcon from './icons/kakao logo.svg'; // Import Kakao icon
 import googleIcon from './icons/Google Logo.svg'; // Import Google icon
 // import appleIcon from './icons/Apple Logo.svg'; // Import Apple icon
