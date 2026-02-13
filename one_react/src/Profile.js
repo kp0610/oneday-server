@@ -6,6 +6,8 @@ import Modal from './Modal';
 import { useProfile } from './ProfileContext'; // Import the context hook
 import { MdOutlineCameraAlt } from 'react-icons/md'; // Import MdOutlineCameraAlt
 import { FiEdit2 } from 'react-icons/fi'; // Import FiEdit2 for a simpler, rounder pencil icon
+import GoogleLogo from './icons/Google Logo.svg'; // Import Google Logo
+import KakaoLogo from './icons/kakao logo.svg'; // Import Kakao Logo
 
 const Profile = ({ show, onClose }) => { // Accept show and onClose props
     const { profile, updateProfileContext } = useProfile(); // Use the context
@@ -368,7 +370,7 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                                                                                             <div className="my-info-chip">{profile.email || 'N/A'}</div>
                                                                                         </div>
                                                                                         {/* Add more profile details here if needed */}
-                                                                                        <button onClick={() => setShowWithdrawModal(true)} className="settings-button withdraw-button-inside-info">탈퇴하기</button>
+                                                                                        <span onClick={() => setShowWithdrawModal(true)} className="withdraw-text-inside-info">탈퇴하기</span>
                                                                                     </div>
                                                                                 )}
                                                                                 </button>

@@ -259,7 +259,7 @@
     height: 36px;
     border: 1px solid #F0F3F6; /* Pink border */
     border-radius: 20px; /* More rounded */
-    font-size: 14px; /* Adjusted font size */
+    font-size: 14px;
     font-weight: normal;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s;
@@ -541,7 +541,7 @@
 
 .my-info-button.active {
     width: 272px;
-    height: 270px; /* Adjusted height after moving '탈퇴' button inside */
+    height: 215px; /* Adjusted height as per request */
     border-radius: 20px;
     background-color: #E9E9E9;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
@@ -608,6 +608,14 @@
     padding-left: 15px; /* Padding for left-aligned text */
 }
 
+.social-login-icon {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%; /* Circular shape */
+    margin-right: 8px; /* Space between icon and text */
+    object-fit: contain; /* Ensure the image fits within the circle */
+}
+
 /* Remove the settings-button styles from my-info-details as they are no longer needed */
 /*
 .my-info-details .settings-button {
@@ -629,21 +637,12 @@
     box-shadow: none;
 }
 
-.withdraw-button-inside-info {
-    background-color: #FF5C5C; /* Red background */
-    color: #C0C0C0; /* New text color */
-    width: 244px; /* Match chip width */
-    height: 36px;
-    border-radius: 10px;
-    font-size: 10px; /* New font size */
-    font-weight: normal;
+.withdraw-text-inside-info {
+    color: #C0C0C0;
+    font-size: 10px;
+    text-decoration: underline;
     cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-top: 10px; /* Space from the item above */
-}
-
-.withdraw-button-inside-info:hover {
-    background-color: #e04c4c !important; /* Darker red on hover */
+    width: 100%; /* Ensure it takes full width of parent */
+    text-align: center; /* Center the text within its width */
+    margin-top: 5px; /* Move down by 5px */
 }

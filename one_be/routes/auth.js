@@ -179,7 +179,7 @@ router.get('/profile/:userId', async (req, res) => {
     const { userId } = req.params;
     try {
         // FIX: Also select 'weight' here to ensure consistency
-        const [users] = await db.query('SELECT id, username, email, profile_image_url, weight FROM users WHERE id = ?', [userId]);
+        const [users] = await db.query('SELECT id, username, email, profile_image_url, weight, provider FROM users WHERE id = ?', [userId]);
         if (users.length === 0) {
             return res.status(404).json({ msg: '사용자를 찾을 수 없습니다.' });
         }
