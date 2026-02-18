@@ -99,7 +99,7 @@ input[type="password"],
     width: 327px; /* Changed from 100% */
     height: 43px; /* New height */
     padding: 0 15px; /* Adjusted padding for new height */
-    margin-bottom: 15px; /* Spacing between email and password */
+    margin-bottom: 17px; /* Spacing between email and password */
     border: 1px solid #CCCCCC; /* Changed border color */
     border-radius: 15px; /* Changed border-radius */
     box-sizing: border-box;
@@ -370,24 +370,27 @@ button[type="submit"]:hover,
     display: flex;
     align-items: center;
     width: 327px; /* Match form input width */
-    margin: 0 auto 15px auto; /* Center and add bottom margin */
+    height: 43px; /* Explicitly set height */
+    margin: 0 auto 17px auto; /* Center and add bottom margin, consistent with other inputs */
     border: 1px solid #CCCCCC;
     border-radius: 15px;
     background-color: #ffffff;
     box-sizing: border-box;
+    position: relative; /* Added for absolute positioning of button */
 }
 
 .email-input-wrapper input[type="email"],
 .verification-code-wrapper input[type="text"] {
     flex-grow: 1; /* Take up available space */
     border: none; /* Remove border as wrapper has it */
-    padding: 0 15px;
-    height: 43px;
-    font-size: 13px;
+    padding: 15px 15px 0 15px; /* Adjusted padding-top to push text further down */
+    height: 43px; /* Consistent height */
+    font-size: 13px; /* Consistent font size */
     color: #8E95A2;
     background-color: transparent; /* Use wrapper's background */
     border-radius: 15px; /* Inherit from wrapper */
     outline: none; /* Remove outline on focus */
+    padding-right: 70px; /* Increased padding to make more space for the button */
 }
 
 .email-input-wrapper input[type="email"]:disabled {
@@ -399,13 +402,17 @@ button[type="submit"]:hover,
     background-color: var(--primary-color);
     color: #ffffff;
     border: none;
-    border-radius: 0 15px 15px 0; /* Rounded only on right side */
+    border-radius: 15px; /* Chip shape, matching input border-radius */
     padding: 0 15px;
     height: 22px; /* Reduced height */
     font-size: 10px; /* Reduced font size */
     cursor: pointer;
     transition: background-color 0.3s;
     white-space: nowrap; /* Prevent text wrapping */
+    position: absolute; /* Position absolutely within the wrapper */
+    right: 10px; /* Move 10px from the right edge of the wrapper */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust for vertical centering */
 }
 
 .verify-button:hover:not(:disabled) {
