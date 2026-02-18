@@ -179,7 +179,7 @@ router.get('/profile/:userId', async (req, res) => {
     const { userId } = req.params;
     try {
         // FIX: Also select 'weight' here to ensure consistency
-        const [users] = await db.query('SELECT id, username, email, profile_image_url, weight, provider FROM users WHERE id = ?', [userId]);
+        const [users] = await db.query('SELECT id, username, real_name, email, profile_image_url, weight, provider FROM users WHERE id = ?', [userId]);
         if (users.length === 0) {
             return res.status(404).json({ msg: '사용자를 찾을 수 없습니다.' });
         }
@@ -350,23 +350,54 @@ router.put('/change-username/:userId', jsonParser, async (req, res) => {
 // @access  Private
 router.delete('/withdraw/:userId', async (req, res) => {
     const { userId } = req.params;
+    let connection; // Declare connection outside try-catch to ensure it's accessible in finally
+    console.log(`Attempting to withdraw user: ${userId}`); // Debug log
 
     try {
-        // Optional: Delete associated data from other tables first
-        // await db.query('DELETE FROM menstrual_cycles WHERE user_id = ?', [userId]);
-        // await db.query('DELETE FROM daily_steps WHERE user_id = ?', [userId]);
-        // ... and so on for other tables like meals, todos, events
+        connection = await db.getConnection(); // Get a connection from the pool
+        await connection.beginTransaction(); // Start a transaction
 
-        const [result] = await db.query('DELETE FROM users WHERE id = ?', [userId]);
+        // Delete associated data from other tables first
+        console.log(`Deleting associated data for user ${userId}...`); // Debug log
+        await connection.query('DELETE FROM menstrual_cycles WHERE user_id = ?', [userId]);
+        await connection.query('DELETE FROM menstrual_predictions WHERE user_id = ?', [userId]);
+        await connection.query('DELETE FROM daily_steps WHERE user_id = ?', [userId]);
+        await connection.query('DELETE FROM todos WHERE user_id = ?', [userId]);
+        await connection.query('DELETE FROM events WHERE user_id = ?', [userId]);
+        await connection.query('DELETE FROM diaries WHERE user_id = ?', [userId]); // Corrected table name
+        // Delete meal_foods entries associated with meals of this user
+        await connection.query('DELETE FROM meal_foods WHERE meal_id IN (SELECT id FROM meals WHERE user_id = ?)', [userId]);
+        await connection.query('DELETE FROM meals WHERE user_id = ?', [userId]);
+        await connection.query('DELETE FROM stopwatch_records WHERE user_id = ?', [userId]);
+        await connection.query('DELETE FROM stopwatch_categories WHERE user_id = ?', [userId]);
+        await connection.query('DELETE FROM templates WHERE user_id = ?', [userId]);
+        console.log(`Associated data deleted for user ${userId}.`); // Debug log
+
+        // Finally, delete the user from the users table
+        console.log(`Deleting user ${userId} from 'users' table...`); // Debug log
+        const [result] = await connection.query('DELETE FROM users WHERE id = ?', [userId]);
+        console.log(`DELETE FROM users result for user ${userId}:`, result); // Debug log
 
         if (result.affectedRows === 0) {
+            await connection.rollback(); // Rollback if user not found
+            console.log(`User ${userId} not found for withdrawal, rolling back.`); // Debug log
             return res.status(404).json({ msg: '사용자를 찾을 수 없습니다.' });
         }
 
+        await connection.commit(); // Commit the transaction if all successful
+        console.log(`User ${userId} successfully withdrawn and transaction committed.`); // Debug log
         res.status(200).json({ msg: '회원 탈퇴가 성공적으로 처리되었습니다.' });
+
     } catch (error) {
+        if (connection) {
+            await connection.rollback(); // Rollback on error
+        }
         console.error('Withdraw account error:', error);
         res.status(500).json({ msg: `Database error: ${error.message}` });
+    } finally {
+        if (connection) {
+            connection.release(); // Release the connection back to the pool
+        }
     }
 });
 

@@ -12,7 +12,8 @@ export const ProfileProvider = ({ children }) => {
                 profileImage: null, 
                 weight: null,
                 email: null, // Initialize email in the profile state
-                provider: null // Initialize provider in the profile state
+                provider: null, // Initialize provider in the profile state
+                real_name: null // Initialize real_name in the profile state
             });
             const [loading, setLoading] = useState(true);
         
@@ -38,7 +39,8 @@ export const ProfileProvider = ({ children }) => {
                             profileImage: data.profile_image_url ? `${process.env.REACT_APP_API_URL}${data.profile_image_url}` : null,
                             weight: data.weight || null, // Set weight from fetched data
                             email: data.email || null, // Set email from fetched data
-                            provider: data.provider || null // Set provider from fetched data
+                            provider: data.provider || null, // Set provider from fetched data
+                            real_name: data.real_name || null // Set real_name from fetched data
                         });
                         // Note: console.log(profile) here will show the *previous* state due to async nature of setProfile
                         // To see the updated state, you'd need another useEffect or a callback.
@@ -66,7 +68,7 @@ export const ProfileProvider = ({ children }) => {
         
             // This function can be used for general profile updates (like username/image)
             const updateProfileContext = (newProfileData) => {
-                const { id, username, profile_image_url, weight, email, provider } = newProfileData;
+                const { id, username, profile_image_url, weight, email, provider, real_name } = newProfileData;
                 
                 let finalProfileImageUrl = profile_image_url;
                 if (profile_image_url && !profile_image_url.startsWith('http') && !profile_image_url.startsWith('data:')) {
@@ -80,7 +82,8 @@ export const ProfileProvider = ({ children }) => {
                     profileImage: finalProfileImageUrl || prev.profileImage,
                     weight: weight !== undefined ? weight : prev.weight,
                     email: email || prev.email, // Update email in the context
-                    provider: provider || prev.provider // Update provider in the context
+                    provider: provider || prev.provider, // Update provider in the context
+                    real_name: real_name || prev.real_name // Update real_name in the context
                 }));
             };
             

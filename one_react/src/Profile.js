@@ -287,6 +287,12 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
             });
 
             if (res.ok) {
+                // Call backend logout to clear session cookie
+                await fetch(`${process.env.REACT_APP_API_URL}/auth/logout`, {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+
                 alert('회원 탈퇴가 성공적으로 처리되었습니다.');
                 localStorage.clear(); // Clear all local storage data
                 window.location.href = '/login'; // Redirect to login page
@@ -361,11 +367,10 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                         <span className="my-info-text">내 정보 확인하기</span>
                         {showMyInfoDetails && (
                             <div className="my-info-details">
-                                                                                        <div className="my-info-item-group">
-                                                                                            <p className="my-info-label">이름</p>
-                                                                                            <div className="my-info-chip">{profile.username || 'N/A'}</div>
-                                                                                        </div>
-                                                                                        <div className="my-info-item-group">
+                                                                                                                                                                                    <div className="my-info-item-group">
+                                                                                                                                                                                        <p className="my-info-label">이름</p>
+                                                                                                                                                                                        <div className="my-info-chip">{profile.real_name || 'N/A'}</div>
+                                                                                                                                                                                    </div>                                                                                        <div className="my-info-item-group">
                                                                                             <p className="my-info-label">아이디</p>
                                                                                             <div className="my-info-chip">{profile.email || 'N/A'}</div>
                                                                                         </div>

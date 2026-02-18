@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as KakaoStrategy } from "passport-kakao";
+import { Strategy as NaverStrategy } from "passport-naver"; // Import NaverStrategy
 import authRoutes from "./routes/auth.js"; // Import auth routes
 import diaryRoutes from "./routes/diary.js";
 import eventsRoutes from "./routes/events.js";
@@ -112,16 +113,43 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:3001/auth/google/callback",
+      passReqToCallback: true // Add this line
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (req, accessToken, refreshToken, profile, done) => { // Add req here
       const connection = await db.getConnection();
       try {
         // Check if user already exists in our DB
         const [users] = await connection.query('SELECT * FROM users WHERE google_id = ?', [profile.id]);
 
         if (users.length > 0) {
-          // User found, return our internal user object
-          return done(null, users[0]);
+          // User found, check if profile data needs to be updated
+          let user = users[0];
+          const updates = [];
+          const params = [];
+
+          if (user.username !== profile.displayName) {
+            updates.push('username = ?');
+            params.push(profile.displayName);
+          }
+          if (user.real_name !== profile.displayName) {
+            updates.push('real_name = ?');
+            params.push(profile.displayName);
+          }
+          // Assuming profile.photos[0].value is the profile image URL
+          if (profile.photos && profile.photos.length > 0 && user.profile_image_url !== profile.photos[0].value) {
+            updates.push('profile_image_url = ?');
+            params.push(profile.photos[0].value);
+          }
+
+          if (updates.length > 0) {
+            params.push(user.id);
+            const updateSql = `UPDATE users SET ${updates.join(', ')} WHERE id = ?`;
+            await connection.query(updateSql, params);
+            // Re-fetch user to get updated data
+            const [updatedUsers] = await connection.query('SELECT * FROM users WHERE id = ?', [user.id]);
+            user = updatedUsers[0];
+          }
+          return done(null, user);
         } else {
           // No user found with this google_id, create a new one
           const randomPassword = crypto.randomBytes(16).toString('hex'); // Generate a random string
@@ -130,12 +158,15 @@ passport.use(
           const newUser = {
             google_id: profile.id,
             username: profile.displayName,
+            real_name: profile.displayName, // Add real_name field
             email: profile.emails[0].value,
             password: hashedPassword, // Store the hashed random password
             provider: 'google', // Add provider field
+            profile_image_url: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null, // Add profile image
           };
           const [result] = await connection.query('INSERT INTO users SET ?', newUser);
           const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
+          req.session.isNewUser = true; // Set flag for new user
           return done(null, createdUser[0]);
         }
       } catch (err) {
@@ -152,13 +183,13 @@ passport.use(
 // Kakao OAuth 전략
 // ==================
 passport.use(
-  new KakaoStrategy(
-    {
-      clientID: process.env.KAKAO_CLIENT_ID,
-      clientSecret: process.env.KAKAO_CLIENT_SECRET, // Kakao는 clientSecret이 필수는 아니지만, 보안을 위해 사용하는 것이 좋습니다.
-      callbackURL: "http://localhost:3001/auth/kakao/callback",
-    },
-    async (accessToken, refreshToken, profile, done) => {
+          new KakaoStrategy(
+              {
+                  clientID: process.env.KAKAO_CLIENT_ID,
+                  clientSecret: process.env.KAKAO_CLIENT_SECRET,
+                  callbackURL: "http://localhost:3001/auth/kakao/callback",
+                  passReqToCallback: true // Add this line
+              },    async (req, accessToken, refreshToken, profile, done) => { // Add req here
       const connection = await db.getConnection();
       try {
         // Check if user already exists in our DB
@@ -174,17 +205,68 @@ passport.use(
 
           const newUser = {
             kakao_id: profile.id,
-            username: profile.displayName,
+            username: profile.username, // Use profile.username for nickname
+            real_name: profile.username, // Use profile.username for real_name as well
             // email: profile._json.kakao_account.email, // 카카오 정책상 이메일 수집 안 함
             password: hashedPassword, // Store the hashed random password
             provider: 'kakao', // Add provider field
           };
           const [result] = await connection.query('INSERT INTO users SET ?', newUser);
           const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
+          req.session.isNewUser = true; // Set flag for new user
           return done(null, createdUser[0]);
         }
       } catch (err) {
         console.error("KakaoStrategy error:", err);
+        return done(err, null);
+      } finally {
+        if (connection) connection.release();
+      }
+    }
+  )
+);
+
+// ==================
+// Naver OAuth 전략
+// ==================
+passport.use(
+  new NaverStrategy(
+    {
+      clientID: process.env.NAVER_CLIENT_ID,
+      clientSecret: process.env.NAVER_CLIENT_SECRET,
+      callbackURL: "http://localhost:3001/auth/naver/callback",
+      passReqToCallback: true // Add this line
+    },
+    async (req, accessToken, refreshToken, profile, done) => { // Add req here
+      const connection = await db.getConnection();
+      try {
+        // Check if user already exists in our DB
+        const [users] = await connection.query('SELECT * FROM users WHERE naver_id = ?', [profile.id]);
+
+        if (users.length > 0) {
+          // User found, return our internal user object
+          return done(null, users[0]);
+        } else {
+          // No user found with this naver_id, create a new one
+          console.log("Naver Profile:", profile); // Debug log for Naver profile
+          const randomPassword = crypto.randomBytes(16).toString('hex'); // Generate a random string
+          const hashedPassword = await bcrypt.hash(randomPassword, 10); // Hash the random string
+
+          const newUser = {
+            naver_id: profile.id,
+            username: profile.displayName,
+            real_name: profile.displayName,
+            email: profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null, // Naver may not always provide email
+            password: hashedPassword, // Store the hashed random password
+            provider: 'naver', // Add provider field
+          };
+          const [result] = await connection.query('INSERT INTO users SET ?', newUser);
+          const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
+          req.session.isNewUser = true; // Set flag for new user
+          return done(null, createdUser[0]);
+        }
+      } catch (err) {
+        console.error("NaverStrategy error:", err);
         return done(err, null);
       } finally {
         if (connection) connection.release();
@@ -205,11 +287,11 @@ passport.deserializeUser(async (id, done) => {
   const connection = await db.getConnection();
   try {
     // Fetch the user from our database using the internal ID
-    const [users] = await connection.query('SELECT * FROM users WHERE id = ?', [id]);
+    const [users] = await connection.query('SELECT id, username, real_name, email, profile_image_url, weight, provider FROM users WHERE id = ?', [id]);
     if (users.length > 0) {
       done(null, users[0]); // Attach our internal user object to req.user
     } else {
-      done(new Error('User not found'), null);
+      done(null, false); // Indicate authentication failure, but not an error
     }
   } catch (err) {
     console.error("deserializeUser error:", err);
@@ -239,7 +321,12 @@ app.get(
   }),
   (req, res) => {
     // 로그인 성공 → React로 이동
-    res.redirect("http://localhost:3000");
+    let redirectUrl = "http://localhost:3000";
+    if (req.session.isNewUser) {
+      redirectUrl += "?status=registered";
+      req.session.isNewUser = false; // Clear the flag
+    }
+    res.redirect(redirectUrl);
   }
 );
 
@@ -261,7 +348,39 @@ app.get(
   }),
   (req, res) => {
     // 로그인 성공 → React로 이동
-    res.redirect("http://localhost:3000");
+    let redirectUrl = "http://localhost:3000";
+    if (req.session.isNewUser) {
+      redirectUrl += "?status=registered";
+      req.session.isNewUser = false; // Clear the flag
+    }
+    res.redirect(redirectUrl);
+  }
+);
+
+// ==================
+// Naver 로그인 시작
+// ==================
+app.get(
+  "/auth/naver",
+  passport.authenticate("naver")
+);
+
+// ==================
+// Naver 로그인 콜백
+// ==================
+app.get(
+  "/auth/naver/callback",
+  passport.authenticate("naver", {
+    failureRedirect: "/login-fail",
+  }),
+  (req, res) => {
+    // 로그인 성공 → React로 이동
+    let redirectUrl = "http://localhost:3000";
+    if (req.session.isNewUser) {
+      redirectUrl += "?status=registered";
+      req.session.isNewUser = false; // Clear the flag
+    }
+    res.redirect(redirectUrl);
   }
 );
 
@@ -277,6 +396,7 @@ app.get("/auth/logout", (req, res, next) => {
       if (err) {
         return next(err);
       }
+      res.clearCookie('connect.sid'); // Explicitly clear the session cookie
       res.status(200).json({ msg: "Logged out successfully" });
     });
   });
@@ -324,3 +444,4 @@ app.use("/api/todos", todosRoutes);
 app.listen(PORT, () => {
   console.log(`✅ Server is running on http://localhost:${PORT}`);
 });
+
