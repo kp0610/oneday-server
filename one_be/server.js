@@ -122,24 +122,17 @@ passport.use(
         const [users] = await connection.query('SELECT * FROM users WHERE google_id = ?', [profile.id]);
 
         if (users.length > 0) {
-          // User found, check if profile data needs to be updated
+          // User found, update only real_name if it's NULL or empty
           let user = users[0];
           const updates = [];
           const params = [];
 
-          if (user.username !== profile.displayName) {
-            updates.push('username = ?');
-            params.push(profile.displayName);
-          }
-          if (user.real_name !== profile.displayName) {
+          // Only update real_name if it's currently NULL or an empty string
+          if (user.real_name === null || user.real_name === '') {
             updates.push('real_name = ?');
             params.push(profile.displayName);
           }
-          // Assuming profile.photos[0].value is the profile image URL
-          if (profile.photos && profile.photos.length > 0 && user.profile_image_url !== profile.photos[0].value) {
-            updates.push('profile_image_url = ?');
-            params.push(profile.photos[0].value);
-          }
+          // username and profile_image_url are NOT updated to preserve user customizations
 
           if (updates.length > 0) {
             params.push(user.id);
