@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import session from "express-session";
 // import MySQLStore from "express-mysql-session"; // Import express-mysql-session
@@ -5,7 +8,6 @@ import passport from "passport";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as KakaoStrategy } from "passport-kakao";
 import { Strategy as NaverStrategy } from "passport-naver"; // Import NaverStrategy
@@ -28,10 +30,6 @@ import fs from "fs"; // Import fs for directory check
 // ==================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-dotenv.config({
-  path: path.join(__dirname, ".env"),
-});
 
 const app = express();
 const PORT = 3001;
@@ -299,9 +297,13 @@ passport.deserializeUser(async (id, done) => {
 // ==================
 app.get(
   "/auth/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  })
+  (req, res, next) => {
+    console.log("Google Auth Options:", { scope: ["profile", "email"], prompt: "consent" });
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+      prompt: "consent" // Force consent screen
+    })(req, res, next);
+  }
 );
 
 // ==================
@@ -328,7 +330,12 @@ app.get(
 // ==================
 app.get(
   "/auth/kakao",
-  passport.authenticate("kakao")
+  (req, res, next) => {
+    console.log("Kakao Auth Options:", { auth_type: "reauthenticate" });
+    passport.authenticate("kakao", {
+      auth_type: "reauthenticate" // Force reauthentication/consent screen
+    })(req, res, next);
+  }
 );
 
 // ==================
@@ -355,7 +362,12 @@ app.get(
 // ==================
 app.get(
   "/auth/naver",
-  passport.authenticate("naver")
+  (req, res, next) => {
+    console.log("Naver Auth Options:", { auth_type: "reprompt" });
+    passport.authenticate("naver", {
+      auth_type: "reprompt" // Force reprompt/consent screen
+    })(req, res, next);
+  }
 );
 
 // ==================

@@ -125,7 +125,7 @@ input[type="password"],
 .options, .terms {
     text-align: left; /* Align content to the left */
     margin-bottom: 20px;
-    font-size: 15px;
+    font-size: 12px; /* Reduced font size */
     color: #8E95A2;
     width: 327px; /* Match input/button width */
     margin-left: auto; /* Center the block */
@@ -134,7 +134,7 @@ input[type="password"],
 
 .options label, .terms label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 5px; /* Reduced margin-bottom */
 }
 
 button[type="submit"],
@@ -365,55 +365,54 @@ button[type="submit"]:hover,
     }
 }
 
-/* Media Query for iPad Pro 11" and similar tablets */
- @media (min-width: 769px) and (max-width: 1024px) {
-    .main-wrapper {
-        flex-direction: row; /* Ensure side-by-side layout */
-    }
+/* Email Verification UI */
+.email-input-wrapper, .verification-code-wrapper {
+    display: flex;
+    align-items: center;
+    width: 327px; /* Match form input width */
+    margin: 0 auto 15px auto; /* Center and add bottom margin */
+    border: 1px solid #CCCCCC;
+    border-radius: 15px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
 
-    .info-panel {
-        flex-basis: 40%; /* Reduced space for info panel */
-        padding: 20px; /* Further reduced padding */
-    }
+.email-input-wrapper input[type="email"],
+.verification-code-wrapper input[type="text"] {
+    flex-grow: 1; /* Take up available space */
+    border: none; /* Remove border as wrapper has it */
+    padding: 0 15px;
+    height: 43px;
+    font-size: 13px;
+    color: #8E95A2;
+    background-color: transparent; /* Use wrapper's background */
+    border-radius: 15px; /* Inherit from wrapper */
+    outline: none; /* Remove outline on focus */
+}
 
-    .info-panel h2 {
-        font-size: 24px; /* Further reduced */
-    }
+.email-input-wrapper input[type="email"]:disabled {
+    background-color: #f0f0f0; /* Light gray for disabled state */
+    cursor: not-allowed;
+}
 
-    .info-panel p {
-        font-size: 14px; /* Further reduced */
-    }
+.verify-button {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 0 15px 15px 0; /* Rounded only on right side */
+    padding: 0 15px;
+    height: 22px; /* Reduced height */
+    font-size: 10px; /* Reduced font size */
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap; /* Prevent text wrapping */
+}
 
-    .form-wrapper {
-        flex-basis: 60%; /* More space for form */
-    }
+.verify-button:hover:not(:disabled) {
+    background-color: #ff5c6b;
+}
 
-    .form-container {
-        width: 90%; /* More flexible width */
-        max-width: 400px; /* Prevent it from becoming too wide */
-        padding: 20px; /* Reduced padding */
-    }
-
-    .form-container h1 {
-        font-size: 28px; /* Further reduced */
-    }
-
-    input[type="email"],
-    input[type="password"],
-    #nickname-input {
-        width: 327px; /* Explicitly set width */
-        height: 43px; /* Explicitly set height */
-        /* Removed conflicting padding and font-size */
-    }
-
-    button[type="submit"],
-    #save-profile {
-        width: 327px; /* Explicitly set width */
-        height: 43px; /* Explicitly set height */
-        /* Removed conflicting padding and font-size */
-    }
-
-    .social-login p, .toggle-form {
-        font-size: 12px; /* Further reduced font size */
-    }
+.verify-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
 }

@@ -2,26 +2,156 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const db = require('../config/db'); // Use db.js for consistency
+const crypto = require('crypto'); // Import crypto for generating random password
+const nodemailer = require('nodemailer'); // Import nodemailer
+
+// Nodemailer transporter setup
+const transporter = nodemailer.createTransport({
+    service: "gmail", // Explicitly set to "gmail"
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+console.log("EMAIL_USER:", process.env.EMAIL_USER); // Log to check if .env is loaded
+console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "****** (loaded)" : "NOT LOADED"); // Log to check if EMAIL_PASS is loaded
 
 // Create a JSON parsing middleware that will be used for specific routes
 const jsonParser = express.json();
+
+
+
+// @route   POST /api/auth/send-verification-code
+// @desc    Send email verification code
+// @access  Public
+router.post('/send-verification-code', jsonParser, async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ msg: '이메일을 입력해주세요.' });
+    }
+
+    let connection;
+    try {
+        connection = await db.getConnection();
+
+        // Check if email already exists in users table
+        const [existingUser] = await connection.query('SELECT email FROM users WHERE email = ?', [email]);
+        if (existingUser.length > 0) {
+            return res.status(400).json({ msg: '이미 가입된 이메일입니다.' });
+        }
+
+        // Generate 6-digit code
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // Code expires in 5 minutes
+
+        // Store code in database
+        // First, delete any old codes for this email
+        await connection.query('DELETE FROM email_verification_codes WHERE email = ?', [email]);
+        await connection.query(
+            'INSERT INTO email_verification_codes (email, code, expires_at, is_verified_temp) VALUES (?, ?, ?, FALSE)',
+            [email, code, expiresAt]
+        );
+
+        // Send email
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'OneDay 회원가입 인증번호',
+            html: `<p>귀하의 OneDay 회원가입 인증번호는 <b>${code}</b> 입니다.</p><p>5분 이내에 입력해주세요.</p>`,
+        });
+
+        res.status(200).json({ msg: '인증번호가 이메일로 발송되었습니다.' });
+
+    } catch (error) {
+        console.error('Send verification code error:', error);
+        res.status(500).json({ msg: `인증번호 발송 중 오류 발생: ${error.message}` });
+    } finally {
+        if (connection) connection.release();
+    }
+});
+
+// @route   POST /api/auth/verify-code
+// @desc    Verify email verification code
+// @access  Public
+router.post('/verify-code', jsonParser, async (req, res) => {
+    const { email, code } = req.body;
+
+    if (!email || !code) {
+        return res.status(400).json({ msg: '이메일과 인증번호를 모두 입력해주세요.' });
+    }
+
+    let connection;
+    try {
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
+        const [rows] = await connection.query(
+            'SELECT * FROM email_verification_codes WHERE email = ? AND code = ?',
+            [email, code]
+        );
+
+        if (rows.length === 0) {
+            await connection.rollback();
+            return res.status(400).json({ msg: '유효하지 않은 인증번호입니다.' });
+        }
+
+        const verificationEntry = rows[0];
+        if (new Date() > new Date(verificationEntry.expires_at)) {
+            await connection.query('DELETE FROM email_verification_codes WHERE id = ?', [verificationEntry.id]);
+            await connection.commit();
+            return res.status(400).json({ msg: '인증번호가 만료되었습니다.' });
+        }
+
+        // Code is valid and not expired, mark as verified temporarily
+        await connection.query(
+            'UPDATE email_verification_codes SET is_verified_temp = TRUE WHERE id = ?',
+            [verificationEntry.id]
+        );
+        await connection.commit();
+
+        res.status(200).json({ msg: '이메일이 성공적으로 인증되었습니다.' });
+
+    } catch (error) {
+        if (connection) await connection.rollback();
+        console.error('Verify code error:', error);
+        res.status(500).json({ msg: `인증번호 확인 중 오류 발생: ${error.message}` });
+    } finally {
+        if (connection) connection.release();
+    }
+});
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
 // @access  Public
 router.post('/register', jsonParser, async (req, res) => {
     const { email, password, nickname } = req.body;
-    // console.log('Backend Register - req.body:', req.body); // Debug log
 
     if (!email || !password || !nickname) {
         return res.status(400).json({ msg: '이메일, 비밀번호, 닉네임을 모두 입력해주세요.' });
     }
 
+    let connection;
     try {
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
         // Check for existing user
-        const [existingUser] = await db.query('SELECT email FROM users WHERE email = ?', [email]);
+        const [existingUser] = await connection.query('SELECT email FROM users WHERE email = ?', [email]);
         if (existingUser.length > 0) {
+            await connection.rollback();
             return res.status(400).json({ msg: '이미 사용중인 이메일입니다.' });
+        }
+
+        // Check if email has been verified via code
+        const [verifiedEmail] = await connection.query(
+            'SELECT * FROM email_verification_codes WHERE email = ? AND is_verified_temp = TRUE AND expires_at > NOW()',
+            [email]
+        );
+
+        if (verifiedEmail.length === 0) {
+            await connection.rollback();
+            return res.status(400).json({ msg: '이메일 인증이 완료되지 않았거나 만료되었습니다. 다시 인증해주세요.' });
         }
 
         // Hash password
@@ -30,23 +160,33 @@ router.post('/register', jsonParser, async (req, res) => {
         const newUser = {
             email,
             password: hashedPassword,
-            username: nickname, // Assuming 'username' is the column for nickname
+            username: nickname,
+            is_verified: true, // Set to true as email is pre-verified
         };
-        // console.log('Backend Register - newUser object:', newUser); // Debug log
 
-        const [result] = await db.query('INSERT INTO users SET ?', newUser);
-        // console.log('Backend Register - INSERT query result:', result); // Debug log
+        const [result] = await connection.query('INSERT INTO users SET ?', newUser);
 
+        // Clear the temporary verification record
+        await connection.query('DELETE FROM email_verification_codes WHERE email = ?', [email]);
+
+        await connection.commit();
         res.status(201).json({
-            msg: '회원가입이 완료되었습니다.',
+            msg: '회원가입이 완료되었습니다!',
             userId: result.insertId
         });
 
     } catch (err) {
-        console.error(err.message);
+        if (connection) await connection.rollback();
+        console.error('Register error:', err.message);
         res.status(500).json({ msg: `Server error: ${err.message}` });
+    } finally {
+        if (connection) connection.release();
     }
 });
+
+
+
+
 
 // @route   POST /api/auth/login
 // @desc    Authenticate user & get token
@@ -66,10 +206,15 @@ router.post('/login', jsonParser, async (req, res) => {
         }
 
         const user = users[0];
+        console.log(`[Login] User ID: ${user.id}, is_verified: ${user.is_verified}`);
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
             return res.status(401).json({ msg: '이메일 또는 비밀번호가 잘못되었습니다.' });
+        }
+
+        if (!user.is_verified) {
+            return res.status(401).json({ msg: '이메일 인증이 필요합니다. 이메일을 확인해주세요.' });
         }
 
         res.status(200).json({ msg: '로그인 성공', userId: user.id });

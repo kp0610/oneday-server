@@ -1,0 +1,78 @@
+.rejoin-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.rejoin-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.rejoin-card h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.rejoin-card p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    font-size: 1.1em;
+}
+
+.rejoin-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.rejoin-actions button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.rejoin-actions button:first-child { /* Yes, Rejoin button */
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.rejoin-actions button:first-child:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.rejoin-actions button:last-child { /* No, Cancel button */
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
+.rejoin-actions button:last-child:hover {
+    background-color: #da190b;
+    transform: translateY(-2px);
+}
+
+.rejoin-actions button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.rejoin-container.error {
+    color: #f44336;
+    font-weight: bold;
+}
