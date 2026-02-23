@@ -375,14 +375,3 @@
     font-weight: 700;
     color: #5a5a5a;
 }
-.date-box.start-date::before {
-    content: '';
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background-color: #FF7581; /* Key color */
-    border-radius: 50%;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-}
