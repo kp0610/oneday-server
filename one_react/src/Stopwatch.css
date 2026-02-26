@@ -162,9 +162,10 @@ h2, h3 {
 .add-category-wrapper input {
     border: none;
     outline: none;
-    flex-grow: 0; /* Prevent it from taking all available space */
-    padding: 3px 8px; /* Reduced padding */
+    flex-grow: 0;
+    padding: 1px 29px;
     background-color: transparent;
+    font-size: 13px; /* Decreased font size as requested */
 }
 
 .color-picker-palette {

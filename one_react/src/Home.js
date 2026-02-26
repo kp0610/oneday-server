@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom'; // Import useLocation
 // import { useOutletContext } from 'react-router-dom'; // Removed
 import './Home.css';
 import './SlideOutNav.css';
@@ -7,11 +8,24 @@ import Dashboard from './Dashboard';
 import { useData } from './DataContext';
 import ViewToggle from './ViewToggle'; // Import ViewToggle
 import DailySummaryPopup from './DailySummaryPopup'; // Import DailySummaryPopup
+import { useProfile } from './ProfileContext'; // Import useProfile
+import Template from './Template'; // Import Template component
 
 const Home = () => {
     // const { setIsSlideOutNavOpen } = useOutletContext(); // Removed
+    const { refreshProfile } = useProfile(); // Get refreshProfile from context
+    const location = useLocation(); // Initialize useLocation
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        if (queryParams.get('status') === 'registered') {
+            alert('회원가입이 완료되었습니다!'); // Or use a more sophisticated toast/message system
+            // Optionally, remove the query parameter from the URL to prevent showing the alert again on refresh
+            // navigate(location.pathname, { replace: true }); // Requires useNavigate
+        }
+    }, [location]); // Re-run when location changes
     const { selectedDate, setSelectedDate } = useData();
-    // console.log("Home.js selectedDate:", selectedDate); // Removed
+    console.log("Home.js - selectedDate from useData:", selectedDate); // Add this line
     const [isMonthView, setIsMonthView] = useState(true); // State for month/week view
     
     const [monthOffset, setMonthOffset] = useState(0);
@@ -40,11 +54,11 @@ const Home = () => {
         
         const fetchDashboardData = async () => {
             try {
-                const eventsRes = await fetch(`${process.env.REACT_APP_API_URL}/api/events/${userId}/${selectedDate}`, { cache: 'no-cache' });
+                const eventsRes = await fetch(`${process.env.REACT_APP_API_URL}/api/events/${userId}/${selectedDate}`, { cache: 'no-cache', credentials: 'include' });
                 const eventsData = eventsRes.ok ? await eventsRes.json() : Promise.reject(new Error('Failed to fetch day events'));
                 setDashboardEvents(eventsData);
 
-                const todosRes = await fetch(`${process.env.REACT_APP_API_URL}/api/todos/${userId}/${selectedDate}`, { cache: 'no-cache' });
+                const todosRes = await fetch(`${process.env.REACT_APP_API_URL}/api/todos/${userId}/${selectedDate}`, { cache: 'no-cache', credentials: 'include' });
                 const todosData = todosRes.ok ? await todosRes.json() : Promise.reject(new Error('Failed to fetch todos'));
                 setTodos(todosData);
                 // console.log('Home.js - Fetched todosData after update:', JSON.stringify(todosData, null, 2)); // Debug log
@@ -88,7 +102,7 @@ const Home = () => {
         const lastDay = new Date(year, month + 1, 0).getDate();
         const lastDayOfMonth = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
 
-        fetch(`${process.env.REACT_APP_API_URL}/api/events/range/${userId}?startDate=${firstDayOfMonth}&endDate=${lastDayOfMonth}`, { cache: 'no-cache' })
+        fetch(`${process.env.REACT_APP_API_URL}/api/events/range/${userId}?startDate=${firstDayOfMonth}&endDate=${lastDayOfMonth}`, { cache: 'no-cache', credentials: 'include' })
             .then(res => {
                 if (!res.ok) {
                     return res.json().then(err => { throw new Error(err.msg) });

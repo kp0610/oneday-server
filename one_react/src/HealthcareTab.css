@@ -388,9 +388,9 @@
 
 .weight-scale-icon {
     display: inline-block;
-    width: 41px; /* Adjust as needed */
-    height: 41px; /* Adjust as needed */
-    margin-right: 5px;
+    width: 44px;
+    height: 44px;
+    margin-right: 0px;
     vertical-align: middle;
 }
 

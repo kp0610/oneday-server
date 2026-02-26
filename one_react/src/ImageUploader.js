@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'; // Import useRef
 
-const ImageUploader = ({ onImageUpload, children }) => { // Accept children prop
+const ImageUploader = ({ onImageUpload, children, className }) => { // Accept children and className prop
     const fileInputRef = useRef(null); // Create a ref for the file input
 
     const handleFileChange = (event) => {
@@ -28,7 +28,7 @@ const ImageUploader = ({ onImageUpload, children }) => { // Accept children prop
                 ref={fileInputRef} // Assign the ref
                 style={{ display: 'none' }} // Hide the input
             />
-            <div onClick={handleClick}> {/* Render children and attach click handler */}
+            <div onClick={handleClick} className={className}> {/* Render children and attach click handler, apply className */}
                 {children}
             </div>
         </>

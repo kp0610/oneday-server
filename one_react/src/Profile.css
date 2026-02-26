@@ -1,3 +1,24 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 1000; /* Ensure it's on top */
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative; /* For absolute positioning of close button if needed */
+}
+
 .profile-container {
     display: flex;
     flex-direction: column;
@@ -9,7 +30,7 @@
     border-radius: 20px;
     width: 342px;
     /* margin: 20px; */
-    transform: translate(-21px, 0px);
+    /* transform: translate(-21px, 0px); */
     border: 0px solid #ffffff;
 }
 
@@ -67,8 +88,8 @@
 }
 
 .profile-picture-container {
-    width: 100px;
-    height: 100px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
     background-color: #E9E9E9; /* Light gray for empty circle */
     background-size: cover;
@@ -77,10 +98,10 @@
     border: 1px solid #E1E7EF;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
+    overflow: visible;
     position: relative; /* For absolute positioning of input */
 }
 
@@ -96,7 +117,8 @@
     font-size: 24px; /* Changed font size */
     color: #575757; /* Changed color */
     font-weight: bold; /* Assuming bold is desired for a prominent display */
-    margin-top: 8px; /* Reduced margin-top by half */
+    /* Removed margin-top: 8px; */
+    line-height: 1; /* Explicit line-height */
 }
 
 .profile-nickname-display {
@@ -237,7 +259,7 @@
     height: 36px;
     border: 1px solid #F0F3F6; /* Pink border */
     border-radius: 20px; /* More rounded */
-    font-size: 14px; /* Adjusted font size */
+    font-size: 14px;
     font-weight: normal;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s;
@@ -251,13 +273,7 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.withdraw-text {
-    color: #8E95A2;
-    font-size: 14px;
-    text-decoration: underline;
-    cursor: pointer;
-    margin-top: 10px; /* Space below logout button */
-}
+
 
 .personal-info-edit-form {
     width: 100%;
@@ -319,16 +335,14 @@
 
 .modal-content.change-password-modal-content {
     height: 240px !important;
-    left: -20px;
+    /* left: -20px; */
 }
 
 .modal-content.change-email-modal-content {
-    left: -20px;
+    /* left: -20px; */
 }
 
-.modal-content.change-username-modal-content {
-    left: -20px;
-}
+
 
 .dday-item {
     display: flex;
@@ -418,18 +432,217 @@
 }
 
 .profile-upload-button {
-    background-color: #FF7581; /* Pink accent */
-    color: white;
-    width: 150px; /* Example width */
-    padding: 8px 15px;
-    border: none;
-    border-radius: 10px;
-    font-size: 14px;
+    background-color: #ffffff; /* Fill color */
+    color: #B3B3B3; /* Icon color */
+    width: 25px; /* Smaller width for a rounded button */
+    height: 25px; /* Smaller height for a rounded button */
+    padding: 0; /* Remove padding */
+    border: 1px solid #E1E7EF; /* Stroke color */
+    border-radius: 50%; /* Make it perfectly round */
+    font-size: 18px; /* Increased icon size */
     cursor: pointer;
-    margin-top: 10px; /* Space from nickname */
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    position: absolute; /* Position absolutely within the profile picture container */
+    bottom: 4px; /* Changed to 4px */
+    right: 4px; /* Changed to 4px */
+    /* Removed transform: translate(50%, 50%); */
+    z-index: 2; /* Ensure it's above other content */
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); /* Drop shadow only */
 }
 
+
+
 .profile-upload-button:hover {
-    background-color: #e06b75;
+    background-color: #f0f0f0; /* Subtle hover effect */
+    border-color: #8e8e8e; /* Darker border on hover */
+    color: #8e8e8e; /* Darker icon on hover */
+}
+
+.modal-content.change-username-modal-content {
+    /* left: -20px; */
+}
+
+.profile-nickname-edit-input {
+    font-size: 24px; /* Match display font size */
+    color: #575757; /* Match display color */
+    font-weight: bold; /* Match display font weight */
+    border: none !important;
+    border-bottom: 1px solid #FF7581; /* Underline for editing */
+    text-align: center;
+    background-color: transparent !important;
+    outline: none;
+    padding: 0 !important;
+    margin: 0;
+    width: auto; /* Adjust width based on content */
+    border-radius: 0 !important;
+    line-height: 1; /* Explicit line-height */
+    vertical-align: middle; /* Added for better vertical alignment */
+    transform: translateY(7px); /* Push text down further */
+}
+
+.nickname-display-wrapper {
+    display: inline-flex; /* Changed to inline-flex */
+    align-items: center;
+    gap: 8px; /* Space between nickname and icon */
+    height: 30px; /* Fixed height to prevent vertical shifts */
+    margin-left: 17px; /* Shift slightly to the right */
+}
+
+.edit-nickname-icon {
+    cursor: pointer;
+    color: #A0A0A0; /* Changed to darker gray */
+    font-size: 1.2em; /* Slightly increased size */
+    /* Removed margin-top: 4px; */
+    transition: color 0.2s ease;
+}
+
+.edit-nickname-icon:hover {
+    color: #FF7581; /* Hover color */
+}
+
+.edit-nickname-icon.is-editing {
+    position: relative;
+    left: -100px; /* Changed to -100px */
+    margin-top: 0; /* Prevent moving down */
+    vertical-align: middle; /* Ensure vertical alignment */
+    transform: translateY(0); /* Explicitly fix vertical position */
+    /* Add transition for smooth movement if desired */
+    transition: left 0.3s ease;
+}
+
+/* New styles for "내 정보 확인하기" button */
+.my-info-button {
+    /* Default chip-like style, similar to other settings-button */
+    background-color: #E9E9E9;
+    color: #8E95A2;
+    width: 272px;
+    height: 36px;
+    border: 1px solid #F0F3F6;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: normal;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex; /* Use flex to center text */
+    justify-content: center;
+    align-items: center;
+}
+
+.my-info-button:hover {
+    background-color: #FFE1E3;
+    border-color: #FF7581;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.my-info-button.active {
+    width: 272px;
+    height: 215px; /* Adjusted height as per request */
+    border-radius: 20px;
+    background-color: #E9E9E9;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 15px;
+    position: relative;
+    /* Ensure text is visible and correctly positioned */
+    text-align: center; /* Center the text */
+}
+
+.my-info-button .my-info-text {
+    /* Style for the fixed text inside the button */
+    font-size: 14px;
+    color: #8E95A2;
+    font-weight: normal;
+    /* Adjust margin based on whether details are shown */
+    margin-bottom: 0; /* Default, no margin */
+}
+
+.my-info-button.active .my-info-text {
+    margin-bottom: 15px; /* Space between fixed text and details when active */
+}
+
+.my-info-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the item groups */
+    gap: 10px; /* Space between detail items */
+    padding: 0 14px; /* Horizontal padding to create gap from back box (272 - 244 = 28, 28/2 = 14) */
+    box-sizing: border-box;
+}
+
+.my-info-item-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align label and chip to the start */
+    width: 100%; /* Take full width of the padded container */
+    gap: 5px; /* 5px gap between label and chip */
+}
+
+.my-info-details .my-info-label {
+    font-size: 14px;
+    font-weight: normal; /* Regular */
+    color: #8E95A2;
+    margin-bottom: 0; /* Remove default paragraph margin */
+}
+
+.my-info-chip {
+    background-color: #ffffff;
+    border: 1px solid #F0F3F6;
+    width: 100%; /* Make chip take full width of its parent (my-info-item-group) */
+    height: 36px;
+    border-radius: 20px; /* Chip roundness */
+    display: flex;
+    justify-content: flex-start; /* Left align content horizontally */
+    align-items: center; /* Center content vertically */
+    font-size: 14px;
+    color: #8E95A2; /* Text color for chip content */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    padding-left: 15px; /* Padding for left-aligned text */
+}
+
+.social-login-icon {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%; /* Circular shape */
+    margin-right: 8px; /* Space between icon and text */
+    object-fit: contain; /* Ensure the image fits within the circle */
+}
+
+/* Remove the settings-button styles from my-info-details as they are no longer needed */
+/*
+.my-info-details .settings-button {
+    width: calc(100% - 0px);
+    height: 36px;
+    font-size: 14px;
+    border-radius: 10px;
+    background-color: #F0F3F6;
+    color: #575757;
+    border: none;
+    box-shadow: none;
+    margin-top: 5px;
+}
+*/
+
+.my-info-details .settings-button:hover {
+    background-color: #E1E7EF;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.withdraw-text-inside-info {
+    color: #C0C0C0;
+    font-size: 10px;
+    text-decoration: underline;
+    cursor: pointer;
+    width: 100%; /* Ensure it takes full width of parent */
+    text-align: center; /* Center the text within its width */
+    margin-top: 5px; /* Move down by 5px */
 }

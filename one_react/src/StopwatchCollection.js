@@ -198,29 +198,26 @@ const StopwatchCollection = ({ displayMode = 'summary', sortOrder, setSortOrder,
 
                 {sortedData.length > 0 ? (
                     <div className="sc-bar-chart-list">
-                        {sortedData.map(({ category, totalTime, color }) => (
-                            <div key={category} className="sc-category-item">
-                                <div className="sc-category-label"
-                                    style={{
-                                        backgroundColor: `rgba(${parseInt(color.slice(1,3), 16)}, ${parseInt(color.slice(3,5), 16)}, ${parseInt(color.slice(5,7), 16)}, 0.5)`,
-                                        border: `1px solid ${color}`
-                                    }}>
-                                    {category}
-                                </div>
-                                <div className="sc-bar-wrapper">
+                        {sortedData.map(({ category, totalTime, color }) => {
+                            const displayCategoryName = category.length > 10 ? category.substring(0, 10) + '...' : category;
+                            return (
+                                <div key={category} className="sc-category-item">
                                     <div className="sc-bar">
                                         <div
                                             className="sc-bar-fill"
                                             style={{
                                                 width: `${maxTime > 0 ? (totalTime / maxTime) * 100 : 0}%`,
-                                                                                                                                backgroundColor: `rgba(${parseInt(color.slice(1,3), 16)}, ${parseInt(color.slice(3,5), 16)}, ${parseInt(color.slice(5,7), 16)}, 0.5)`,                                                border: `1px solid ${color}`
+                                                backgroundColor: `rgba(${parseInt(color.slice(1,3), 16)}, ${parseInt(color.slice(3,5), 16)}, ${parseInt(color.slice(5,7), 16)}, 0.5)`,
+                                                border: `0.99px solid ${color}`
                                             }}
-                                        ></div>
+                                        >
+                                            <span className="sc-category-name">{displayCategoryName}</span>
+                                        </div>
                                     </div>
                                     <div className="sc-time">{formatTime(totalTime)}</div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 ) : (
                     <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>

@@ -1,11 +1,10 @@
 /* StopwatchCollection.css (New Design) */
 .stopwatch-collection-container {
-    width: 100%; /* Keep width 100% to occupy available space inside collection-right-box-bottom */
-    height: 100%; /* Fill the height of the parent container */
-    padding: 20px; /* Add padding to the container */
-    box-sizing: border-box; /* Include padding in the element's total width and height */
+    width: 100%;
+    padding-top: 10px; /* Small buffer at the top of the scrollable area */
+    padding-bottom: 15px; /* Added padding at the bottom */
+    box-sizing: border-box;
     font-family: 'Pretendard', sans-serif;
-    overflow-y: auto; /* Enable scrolling for the summary view if content overflows */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -61,73 +60,54 @@
 .sc-bar-chart-list {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Closer spacing for cute feel */
-    padding-top: 0; /* Remove padding-top here as container padding handles it */
+    gap: 15px;
+    width: 100%;
+    max-width: 400px; /* Or a suitable max-width */
+    margin: 0 auto;
 }
 
 .sc-category-item {
-    background-color: #ffffff;
-    border-radius: 16px;
-    padding: 10px 15px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    animation: slideUp 0.5s ease-out;
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.sc-category-label {
-    flex-shrink: 0;
-    height: 24px; /* Match capsule height */
-    padding: 1px 13.5px; /* Match horizontal padding */
-    border-radius: 20px; /* More 동글동글 */
-    text-align: center;
-    font-size: 13px;
-    color: #383838; /* Darker text for readability on pastel */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.sc-bar-wrapper {
-    flex-grow: 1;
     display: flex;
     align-items: center;
     gap: 10px;
+    width: 100%;
 }
 
 .sc-bar {
-    height: 24px; /* Thicker bar */
-    background-color: #E9ECEF; /* Lighter background for bar track */
-    border-radius: 12px; /* Adjusted to half of new height */
     flex-grow: 1;
+    height: 29px;
+    width: 257px;
+    background-color: #ffffff;
+    border: 0.99px solid #DFDFDF;
+    border-radius: 29.7px;
     overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .sc-bar-fill {
     height: 100%;
-    border-radius: 8px; /* 동글동글 */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 29.7px;
     transition: width 0.5s ease-in-out;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.sc-category-name {
+    font-size: 14.67px;
+    color: #383838;
+    padding-left: 15px;
+    white-space: nowrap;
 }
 
 .sc-time {
     font-size: 14px;
-    font-weight: 600; /* Slightly bolder */
-    color: #6E7279; /* Softer color */
-    min-width: 80px; /* To prevent layout shifts */
+    font-weight: 600;
+    color: #6E7279;
+    min-width: 80px;
     text-align: right;
 }
 
