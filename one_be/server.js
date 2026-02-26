@@ -434,7 +434,7 @@ app.get("/me", (req, res) => {
 // 라우터 연결
 // ==================
 app.use("/api/auth", authRoutes);
-app.use("/api/diary", diaryRoutes);
+app.use("/api/diaries", diaryRoutes);
 app.use("/api/events", eventsRoutes);
 app.use("/api/foods", foodsRoutes);
 app.use("/api/healthcare", healthcareRoutes);
