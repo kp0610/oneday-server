@@ -129,15 +129,24 @@
 }
 
 /* --- New Daily Card Styles --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .stopwatch-daily-cards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(261px, 1fr)); /* Same as weekly-summary-grid */
-    gap: 39px 19px; /* Row gap 39px, Column gap 19px */
-    width: 100%;
-    overflow-y: auto; /* Enable scrolling if content overflows */
-    padding-right: 5px; /* Adjust padding for grid scrollbar */
+    grid-template-columns: repeat(auto-fill, minmax(261px, 1fr));
+    gap: 39px 19px;
     margin-top: 39px;
-    justify-content: center;
+    justify-items: center;
+    width: 100%;
 }
 
 .stopwatch-daily-card {
@@ -150,10 +159,11 @@
     padding: 15px; /* Adjusted padding to match healthcare card */
     display: grid; /* Use grid for layout */
     grid-template-columns: repeat(2, 1fr); /* Two columns for layout */
-    grid-template-rows: auto 1fr; /* Rows for date, and then categories content */
+    grid-template-rows: auto auto 1fr; /* Rows for date, and then categories content */
     gap: 0px 0px; /* Adjust gap as needed for precise positioning */
     position: relative; /* For absolute positioning if needed */
     overflow: hidden; /* Hide overflow of content within the card */
+    animation: fadeIn 0.5s ease-in-out; /* Add animation */
 }
 
 .stopwatch-daily-card-date { /* Keeping the class name as in JS, but applying healthcare styles */
@@ -167,6 +177,7 @@
 
 .stopwatch-card-categories-content {
     grid-column: 1 / -1; /* Span across both columns */
+    grid-row: 2 / -1; /* Span from row 2 to the end */
     padding-top: 14px; /* Mimic spacing from date like healthcare card's calories-section */
     padding-left: 5px; /* Align with date */
     padding-right: 5px; /* Align with other content */

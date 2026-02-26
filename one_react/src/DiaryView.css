@@ -1,11 +1,13 @@
 /* DiaryView.css */
 
 .diary-view-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-    min-height: 100vh;
+    padding: 100px;
+    background-color: #FBFCFD;
+    min-height: 0vh;
     box-sizing: border-box;
     font-family: 'Arial', sans-serif;
+    border: 1px solid #E1E7EF;
+    border-radius: 25px;
 }
 
 .diary-view-header {

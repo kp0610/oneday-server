@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './DiaryCollection.css';
-// import { useNavigate } from 'react-router-dom'; // Removed as back button is removed
+import { useNavigate } from 'react-router-dom';
 
 import { useProfile } from './ProfileContext'; // Import useProfile
 // import IllustratedCalendarIcon from './IllustratedCalendarIcon'; // Removed as calendar icon is removed
 
 const DiaryCollection = ({ selectedStartDate, selectedEndDate }) => {
     const [allDiaries, setAllDiaries] = useState([]);
-    // const navigate = useNavigate(); // Removed
+    const navigate = useNavigate();
     const { profile } = useProfile(); // Get profile from context
 
     useEffect(() => {
@@ -61,7 +61,7 @@ const DiaryCollection = ({ selectedStartDate, selectedEndDate }) => {
 
 
     const handleCardClick = (id) => {
-        // navigate(`/diary-view/id/${id}`); // Navigation will be handled by CollectionView or parent
+        navigate(`/diary-view/id/${id}`);
     };
 
     // const handleGoBack = () => { // Removed
@@ -76,11 +76,6 @@ const DiaryCollection = ({ selectedStartDate, selectedEndDate }) => {
                 ? diary.title.substring(0, 10) + '...'
                 : diary.title || '제목 없음';
     
-            // Truncate content for preview
-            const displayPreview = diary.content && diary.content.length > 50 // Example truncation
-                ? diary.content.substring(0, 50) + '...'
-                : diary.content || '내용 없음';
-    
     
             return (
                 <div key={diary.id} className="diary-card" onClick={() => handleCardClick(diary.id)}>
@@ -91,7 +86,6 @@ const DiaryCollection = ({ selectedStartDate, selectedEndDate }) => {
                         <span className="card-date-display">{diary.displayDate}</span>
                         <span className="diary-title-display">{displayTitle}</span>
                     </div>
-                    <div className="diary-preview-content">{displayPreview}</div>
                 </div>
             );
         };

@@ -161,16 +161,18 @@
     font-weight: 400; /* Updated font-weight as per user request */
     font-size: 10px; /* Updated font-size as per user request */
     color: #4a4a4a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .food-qty {
-    width: 25px; /* Updated width as per user request */
+    width: 35.5px;
     text-align: center;
     border: 1px solid #e0e6ed;
     border-radius: 8px;
-    padding: 1px 6px; /* Updated padding as per user request */
-    /* Removed margin-left: 10px; as gap will handle spacing */
-    font-size: 11px; /* Updated font-size as per user request */
+    padding: 1px 2px;
+    font-size: 11px;
     color: #5a5a5a;
     transition: border-color 0.2s, box-shadow 0.2s;
 }

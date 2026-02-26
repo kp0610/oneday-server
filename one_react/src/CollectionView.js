@@ -6,6 +6,7 @@ import DiaryCollection from './DiaryCollection';
 import MiniCalendar from './MiniCalendar'; // Import MiniCalendar
 import SortToggle from './SortToggle'; // Import SortToggle
 import { useData } from './DataContext'; // Import useData
+import { useProfile } from './ProfileContext'; // Import useProfile
 import MealSummaryDisplay from './MealSummaryDisplay'; // Import MealSummaryDisplay
 import './CollectionView.css'; // New CSS file for CollectionView
 
@@ -77,6 +78,8 @@ const CollectionView = () => {
     const [selectedEndDate, setSelectedEndDate] = useState(getToday());
     const [tempSelectedDate, setTempSelectedDate] = useState(null); // For handling single date selection in MiniCalendar
     const { mealsByDate, setActiveDateRange } = useData();
+    const { profile } = useProfile();
+    const [todayDiaryImage, setTodayDiaryImage] = useState(null);
 
 
     useEffect(() => {
@@ -94,6 +97,31 @@ const CollectionView = () => {
             setSelectedCollection('diary');
         }
     }, [location.pathname]);
+
+    useEffect(() => {
+        const fetchTodayDiary = async () => {
+            if (selectedCollection === 'diary' && profile.userId) {
+                try {
+                    const todayStr = getToday();
+                    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/diaries/${profile.userId}/${todayStr}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.canvasImagePath) {
+                            setTodayDiaryImage(`${process.env.REACT_APP_API_URL}${data.canvasImagePath}`);
+                        } else {
+                            setTodayDiaryImage(null);
+                        }
+                    } else {
+                        setTodayDiaryImage(null);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch today's diary:", error);
+                    setTodayDiaryImage(null);
+                }
+            }
+        };
+        fetchTodayDiary();
+    }, [selectedCollection, profile.userId]);
 
     const handleCollectionChange = (collectionType) => {
         setSelectedCollection(collectionType);
@@ -187,6 +215,17 @@ const CollectionView = () => {
                             )}
                             {selectedCollection === 'stopwatch' && (
                                 <StopwatchCollection displayMode="summary" sortOrder={sortOrder} setSortOrder={setSortOrder} selectedStartDate={selectedStartDate} selectedEndDate={selectedEndDate} />
+                            )}
+                            {selectedCollection === 'diary' && (
+                                <div className="today-diary-preview-container" style={{ width: '371px', height: '207px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px', position: 'relative', zIndex: 10, top: '1.4px' }}>
+                                    {todayDiaryImage ? (
+                                        <img src={todayDiaryImage} alt="Today's Diary" style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: 'white', borderRadius: '15px', border: '1px solid #E1E7EF', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }} />
+                                    ) : (
+                                        <div style={{ width: '100%', height: '100%', backgroundColor: 'white', borderRadius: '15px', border: '1px solid #E1E7EF', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#A0A0A0' }}>
+                                            오늘의 다이어리를 작성해보세요!
+                                        </div>
+                                    )}
+                                </div>
                             )}
                         </div>
                     </div>

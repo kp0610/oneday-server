@@ -204,12 +204,14 @@ const Diary = ({ selectedDate, userId }) => {
         const container = containerRef.current;
         const displayWidth = container.clientWidth;
         const displayHeight = container.clientHeight;
+        const dpr = window.devicePixelRatio || 1;
 
-        // Create a temporary canvas at the display resolution
+        // Create a temporary canvas at the high resolution
         const finalCanvas = document.createElement('canvas');
-        finalCanvas.width = displayWidth;
-        finalCanvas.height = displayHeight;
+        finalCanvas.width = displayWidth * dpr;
+        finalCanvas.height = displayHeight * dpr;
         const finalCtx = finalCanvas.getContext('2d');
+        finalCtx.scale(dpr, dpr);
 
         let initialCanvasBase64 = null;
         if (historyStep >= 0 && history[historyStep]) {

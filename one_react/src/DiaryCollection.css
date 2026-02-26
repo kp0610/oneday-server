@@ -42,11 +42,11 @@
 
 .diary-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(261px, 1fr)); /* Consistent card width */
-    gap: 39px 19px; /* Row gap 39px, Column gap 19px */
-    padding-bottom: 20px;
-    margin-top: 39px; /* Consistent spacing from top */
-    justify-content: center;
+    grid-template-columns: repeat(auto-fill, minmax(261px, 1fr));
+    gap: 39px 19px;
+    margin-top: 39px;
+    justify-items: center;
+    width: 100%;
 }
 
 @keyframes fadeIn {
@@ -95,6 +95,7 @@
     font-size: 15px;
     font-weight: 500;
     flex-shrink: 0; /* Prevent date from shrinking */
+    padding-left: 5px; /* Match placement with Healthcare card */
 }
 
 .empty-state {
@@ -118,7 +119,6 @@
     display: flex;
     align-items: center;
     gap: 9px; /* 9px gap between date and title */
-    padding-left: 5px; /* Align with healthcare card's padding */
     padding-bottom: 14px; /* Mimic space below date/title before preview */
 }
 
@@ -162,16 +162,17 @@
 
 /* Styling for the image thumbnail within Diary Card */
 .diary-card-image-thumbnail {
-    position: absolute; /* Position relative to .diary-card */
-    bottom: 15px; /* Adjust from bottom */
-    right: 15px; /* Adjust from right */
-    width: 60px; /* Small fixed width */
-    height: 60px; /* Small fixed height */
-    object-fit: cover; /* Cover the area */
-    border-radius: 8px; /* Slightly rounded corners */
+    position: absolute;
+    bottom: 8.6px;
+    right: 8.6px;
+    width: 240px;
+    height: 91px;
+    object-fit: cover;
+    border-radius: 15px;
     border: 1px solid #E1E7EF;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    z-index: 5; /* Ensure it's above other content if necessary */
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    background-color: white;
 }
 
 

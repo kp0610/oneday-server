@@ -29,7 +29,7 @@ const MealSummaryDisplay = ({ mealsByDate, selectedStartDate, selectedEndDate, s
             let totalCalories = 0;
             if (mealsByDate[date]) {
                 mealsByDate[date].forEach(mealCard => {
-                    mealCard.foods.forEach(food => {
+        (mealCard.foods || []).forEach(food => {
                         totalCalories += (parseFloat(food.calories) || 0) * (food.qty || 1); // Use parseFloat for calories
                     });
                 });
@@ -66,7 +66,7 @@ const MealSummaryDisplay = ({ mealsByDate, selectedStartDate, selectedEndDate, s
 
         const meals = [];
         mealsByDate[targetDayData.date].forEach(mealCard => {
-            mealCard.foods.forEach(food => {
+(mealCard.foods || []).forEach(food => {
                 meals.push({
                     name: food.name,
                     qty: food.qty || 1,
