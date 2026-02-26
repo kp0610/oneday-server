@@ -85,7 +85,7 @@ const Pedometer = ({ userId }) => {
                             {profileLoading ? (
                                 <p>로딩 중...</p>
                             ) : (
-                                <div className="weight-display-container" onClick={() => !isEditingWeight && setIsEditingWeight(true)}>
+                                <div className="weight-display-container">
                                     <span className="weight-scale-icon">
                                         <svg width="41" height="41" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                           <rect x="4" y="6" width="16" height="14" rx="1.5" stroke="#4F5355" strokeWidth="2"/>
@@ -93,20 +93,18 @@ const Pedometer = ({ userId }) => {
                                         </svg>
                                     </span>
                                     <div className="weight-value-container">
-                                        {isEditingWeight ? (
-                                            <input
-                                                className="weight-input-inplace"
-                                                type="number"
-                                                step="0.1"
-                                                value={weightInput}
-                                                onChange={(e) => setWeightInput(e.target.value)}
-                                                onBlur={handleSaveWeight}
-                                                onKeyDown={handleWeightInputKeyDown}
-                                                autoFocus
-                                            />
-                                        ) : (
-                                            <p>{profile.weight || '입력'}</p>
-                                        )}
+                                        <input
+                                            className="weight-input-inplace"
+                                            type="number"
+                                            step="0.1"
+                                            value={weightInput}
+                                            onChange={(e) => setWeightInput(e.target.value)}
+                                            onBlur={handleSaveWeight}
+                                            onKeyDown={handleWeightInputKeyDown}
+                                            readOnly={!isEditingWeight}
+                                            onClick={() => setIsEditingWeight(true)}
+                                            {...(isEditingWeight && { autoFocus: true })}
+                                        />
                                         <span className="weight-unit">kg</span>
                                     </div>
                                 </div>

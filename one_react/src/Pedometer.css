@@ -24,10 +24,10 @@
     margin-top: 0px;
     box-shadow: 0 0px 4px rgba(0, 0, 0, 0.05);
     display: flex;
-    flex-direction: row; /* Changed to row for horizontal alignment */
-    align-items: center; /* Vertically align items in the center */
-    justify-content: flex-start; /* Align items to the start */
-    gap: 10px; /* Add gap between items */
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
 }
 
 .pedometer-info-wrapper {
@@ -42,34 +42,35 @@
     align-items: center;
 }
 
-.weight-column {
-    flex-basis: 50%;
-    text-align: center;
-}
-
-.calorie-column {
-    flex-basis: 50%;
-    text-align: center;
-}
-
-.weight-info input {
-    width: 80px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 1rem;
-}
-
 .weight-display-container {
     cursor: pointer;
-    padding: 4px;
+    padding: 0px;
     border-radius: 5px;
     transition: background-color 0.2s;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
     align-items: center;
+    width: 86%;
+}
+
+.weight-column {
+    flex: 0.8; /* Adjusted flex to shift calorie column left */
+    text-align: center;
+}
+
+.calorie-column {
+    flex: 1.2; /* Adjusted flex to shift calorie column left */
+    text-align: center;
+}
+
+.weight-info input {
+    width: 45px;
+    padding: 3px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1rem;
 }
 
 .weight-display-container:hover {
@@ -119,7 +120,7 @@
 
 .pedometer-graph-progress {
     fill: none;
-    stroke: #ff6347;
+    stroke: #FF7581; /* Changed active color to FF7581 as requested */
     stroke-width: 10;
     stroke-linecap: round;
     transition: stroke-dashoffset 0.5s ease-in-out;
@@ -142,8 +143,15 @@
 .weight-value-container {
     display: flex;
     align-items: center;
-    gap: 2px; /* Reduced gap */
-    width: 85px; /* Fixed width to prevent expansion during editing */
+    gap: 2px;
+}
+
+.weight-column {
+    flex: 0.8;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 .weight-unit {
@@ -153,16 +161,33 @@
     margin: 0;
 }
 
+.weight-value-container {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.weight-value-container p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #5a5a5a;
+    width: 50px; /* Fixed width to prevent layout shift */
+    text-align: right; /* Align text to the right within its fixed width */
+}
+
 .weight-input-inplace {
     border: none;
     background-color: transparent;
     font-family: inherit;
     font-size: 14px;
-    min-width: 30px; /* Adjusted to fit 14px font */
-    max-width: 60px; /* Adjusted to fit 14px font */
+    font-weight: 500; /* Match p tag font-weight */
+    width: 50px; /* Fixed width to prevent layout shift */
     height: 1.2em;
     line-height: 1.2em;
-    vertical-align: middle; /* Align with surrounding elements */
+    vertical-align: middle;
+    text-align: right; /* Align text to the right */
 }
 
 /* Hide spinner arrows for number input in WebKit browsers */
