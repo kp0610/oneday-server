@@ -21,6 +21,13 @@ const jsonParser = express.json();
 
 
 
+const allowedDomains = [
+  "gmail.com", "googlemail.com", "outlook.com", "hotmail.com", "live.com", "msn.com",
+  "yahoo.com", "yahoo.co.kr", "yahoo.co.jp", "icloud.com", "me.com", "mac.com",
+  "naver.com", "daum.net", "hanmail.net", "kakao.com", "nate.com",
+  "edu", "ac.kr", "co.kr", "or.kr", "go.kr"
+];
+
 // @route   POST /api/auth/send-verification-code
 // @desc    Send email verification code
 // @access  Public
@@ -29,6 +36,22 @@ router.post('/send-verification-code', jsonParser, async (req, res) => {
 
     if (!email) {
         return res.status(400).json({ msg: '이메일을 입력해주세요.' });
+    }
+
+    // 1. 이메일 형식 정규식 검증
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: "존재하지 않는 메일입니다." });
+    }
+
+    // 2. 허용 도메인 확장 검사
+    const domain = email.split("@")[1];
+    const isAllowed = allowedDomains.some(d =>
+        domain === d || domain.endsWith("." + d)
+    );
+
+    if (!isAllowed) {
+        return res.status(400).json({ message: "존재하지 않는 메일입니다." });
     }
 
     let connection;

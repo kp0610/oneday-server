@@ -6,6 +6,13 @@ import googleIcon from './icons/Google Logo.svg'; // Import Google icon
 // import appleIcon from './icons/Apple Logo.svg'; // Import Apple icon
 import naverIcon from './icons/naver logo.svg'; // Import Naver icon
 
+const PUBLIC_EMAIL_DOMAINS = [
+    'gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'live.com', 'msn.com',
+    'yahoo.com', 'yahoo.co.kr', 'yahoo.co.jp', 'icloud.com', 'me.com', 'mac.com',
+    'naver.com', 'daum.net', 'hanmail.net', 'kakao.com', 'nate.com',
+    'edu', 'ac.kr', 'co.kr', 'or.kr', 'go.kr'
+];
+
 const Login = ({ onLogin }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
@@ -18,6 +25,16 @@ const Login = ({ onLogin }) => {
     const [error, setError] = useState('');
     const [isAutoLogin, setIsAutoLogin] = useState(false); // New state for auto-login
     const { refreshProfile } = useProfile(); // Get the refresh function
+
+    // Effect to clear error message after a delay
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError('');
+            }, 3000); // Clear error after 3 seconds
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     const handleResponse = (data) => {
         if (data.userId) {
@@ -57,7 +74,7 @@ const Login = ({ onLogin }) => {
                 body: JSON.stringify({ email, password }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.msg || '로그인 실패');
+            if (!res.ok) throw new Error(data.msg || data.message || '로그인 실패');
             handleResponse(data);
         } catch (err) {
             setError(err.message);
@@ -82,8 +99,8 @@ const Login = ({ onLogin }) => {
                 body: JSON.stringify({ email, password, nickname }), // Include nickname
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.msg || '회원가입 실패');
-            alert(data.msg); // Display message from backend (e.g., "회원가입이 완료되었습니다. 이메일을 확인하여 인증해주세요.")
+            if (!res.ok) throw new Error(data.msg || data.message || '회원가입 실패');
+            setError(data.msg); // Display message from backend
             setIsLogin(true); // Switch to login form
         } catch (err) {
             setError(err.message);
@@ -96,6 +113,21 @@ const Login = ({ onLogin }) => {
             setError('이메일을 입력해주세요.');
             return;
         }
+
+        // Validate email format
+        const emailRegex = /^[^\@]+@[\S@]+\.[^\@]+$/;
+        if (!emailRegex.test(email)) {
+            setError('유효하지 않은 이메일 형식입니다.');
+            return;
+        }
+
+        // Validate against known public email domains
+        const domain = email.split('@')[1];
+        if (!PUBLIC_EMAIL_DOMAINS.includes(domain)) {
+            setError('존재하지 않는 이메일입니다. 다시 확인해주세요.'); // Specific message for this case
+            return;
+        }
+
         try {
             const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/send-verification-code`, {
                 method: 'POST',
@@ -103,9 +135,12 @@ const Login = ({ onLogin }) => {
                 body: JSON.stringify({ email }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.msg || '인증번호 발송 실패');
-            alert(data.msg);
-            setIsEmailSent(true);
+            if (!res.ok) {
+                setError(data.msg || data.message || '인증번호 발송 실패');
+            } else {
+                setError(data.msg); // Display success message
+                setIsEmailSent(true);
+            }
         } catch (err) {
             setError(err.message);
         }
@@ -124,10 +159,12 @@ const Login = ({ onLogin }) => {
                 body: JSON.stringify({ email, code: verificationCode }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.msg || '인증번호 확인 실패');
-            alert(data.msg);
-            setIsEmailVerified(true);
-            setError(''); // Clear error on successful verification
+            if (!res.ok) {
+                setError(data.msg || data.message || '인증번호 확인 실패');
+            } else {
+                setError(data.msg); // Display success message
+                setIsEmailVerified(true);
+            }
         } catch (err) {
             setError(err.message);
         }

@@ -423,3 +423,27 @@ button[type="submit"]:hover,
     background-color: #cccccc;
     cursor: not-allowed;
 }
+
+.error-message {
+    position: fixed; /* Position as an overlay */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white; /* Changed to white */
+    color: red; /* Changed to red */
+    border: 1px solid gray; /* Added gray border */
+    padding: 15px 25px;
+    border-radius: 20px; /* Changed to 20px */
+    z-index: 1000; /* Ensure it's on top of other content */
+    font-size: 16px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeOut 3s forwards; /* Fade out after 3 seconds */
+    white-space: pre-line; /* Allow newlines in text */
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
