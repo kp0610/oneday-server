@@ -176,17 +176,19 @@ const CollectionView = () => {
                                 formatDateRange(selectedStartDate, selectedEndDate)
                             )}
                         </div>
-                        {selectedCollection === 'healthcare' && (
-                            <MealSummaryDisplay
-                                mealsByDate={mealsByDate}
-                                selectedStartDate={selectedStartDate}
-                                selectedEndDate={selectedEndDate}
-                                sortOrder={sortOrder}
-                            />
-                        )}
-                        {selectedCollection === 'stopwatch' && (
-                            <StopwatchCollection displayMode="summary" sortOrder={sortOrder} setSortOrder={setSortOrder} selectedStartDate={selectedStartDate} selectedEndDate={selectedEndDate} />
-                        )}
+                        <div className="collection-scrollable-content">
+                            {selectedCollection === 'healthcare' && (
+                                <MealSummaryDisplay
+                                    mealsByDate={mealsByDate}
+                                    selectedStartDate={selectedStartDate}
+                                    selectedEndDate={selectedEndDate}
+                                    sortOrder={sortOrder}
+                                />
+                            )}
+                            {selectedCollection === 'stopwatch' && (
+                                <StopwatchCollection displayMode="summary" sortOrder={sortOrder} setSortOrder={setSortOrder} selectedStartDate={selectedStartDate} selectedEndDate={selectedEndDate} />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

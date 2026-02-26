@@ -1,12 +1,10 @@
 /* StopwatchCollection.css (New Design) */
 .stopwatch-collection-container {
     width: 100%;
-    height: 100%;
-    padding-right: 22px;
-    padding-bottom: 10px;
+    padding-top: 10px; /* Small buffer at the top of the scrollable area */
+    padding-bottom: 15px; /* Added padding at the bottom */
     box-sizing: border-box;
     font-family: 'Pretendard', sans-serif;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
