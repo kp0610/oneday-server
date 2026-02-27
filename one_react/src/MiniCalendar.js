@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import './MiniCalendar.css';
 
-const MiniCalendar = ({ selectedStartDate, selectedEndDate, onDateSelect, currentMonthYear, setCurrentMonthYear }) => {
+const MiniCalendar = ({ selectedStartDate, selectedEndDate, onDateSelect, currentMonthYear, setCurrentMonthYear = () => {} }) => {
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
     const renderHeader = () => {
+        if (!currentMonthYear || !(currentMonthYear instanceof Date)) {
+            // Fallback or loading state if currentMonthYear is not a valid Date object
+            return (
+                <div className="mini-calendar-header">
+                    <button onClick={() => setCurrentMonthYear(new Date())}>&lt;</button>
+                    <span>Loading...</span>
+                    <button onClick={() => setCurrentMonthYear(new Date())}>&gt;</button>
+                </div>
+            );
+        }
         return (
             <div className="mini-calendar-header">
                 <button onClick={() => setCurrentMonthYear(new Date(currentMonthYear.getFullYear(), currentMonthYear.getMonth() - 1))}>&lt;</button>
@@ -17,6 +27,9 @@ const MiniCalendar = ({ selectedStartDate, selectedEndDate, onDateSelect, curren
     };
 
     const renderDays = () => {
+        if (!currentMonthYear || !(currentMonthYear instanceof Date)) {
+            return []; // Return empty array if currentMonthYear is not valid
+        }
         const monthStart = new Date(currentMonthYear.getFullYear(), currentMonthYear.getMonth(), 1);
         const monthEnd = new Date(currentMonthYear.getFullYear(), currentMonthYear.getMonth() + 1, 0);
         const startDate = new Date(monthStart);

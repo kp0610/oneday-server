@@ -164,11 +164,11 @@
 }
 
 .food-qty {
-    width: 25px; /* Updated width as per user request */
+    width: 35px; /* Increased width to provide more space */
     text-align: center;
     border: 1px solid #e0e6ed;
     border-radius: 8px;
-    padding: 1px 6px; /* Updated padding as per user request */
+    padding: 0 5px; /* Adjusted padding */
     /* Removed margin-left: 10px; as gap will handle spacing */
     font-size: 11px; /* Updated font-size as per user request */
     color: #5a5a5a;
