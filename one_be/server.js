@@ -153,7 +153,7 @@ passport.use(
             email: profile.emails[0].value,
             password: hashedPassword, // Store the hashed random password
             provider: 'google', // Add provider field
-            profile_image_url: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : null, // Add profile image
+            profile_image_url: null, // Do not fetch profile image from Google, use default instead
           };
           const [result] = await connection.query('INSERT INTO users SET ?', newUser);
           const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
@@ -280,7 +280,12 @@ passport.deserializeUser(async (id, done) => {
     // Fetch the user from our database using the internal ID
     const [users] = await connection.query('SELECT id, username, real_name, email, profile_image_url, weight, provider FROM users WHERE id = ?', [id]);
     if (users.length > 0) {
-      done(null, users[0]); // Attach our internal user object to req.user
+      const user = users[0];
+      // Set a default profile image if none is provided or if it's broken
+      if (!user.profile_image_url || user.profile_image_url === '') {
+        user.profile_image_url = '/uploads/default_image.png'; // Assuming a default image exists here
+      }
+      done(null, user); // Attach our internal user object to req.user
     } else {
       done(null, false); // Indicate authentication failure, but not an error
     }
