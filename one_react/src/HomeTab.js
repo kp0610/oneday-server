@@ -58,12 +58,12 @@ const HomeTab = ({
     const [newScheduleSetReminder, setNewScheduleSetReminder] = useState(false);
     const [showScheduleTimePicker, setShowScheduleTimePicker] = useState(false); // New state for time chip
     const [showScheduleRepeat, setShowScheduleRepeat] = useState(false); // New state for repeat chip
-    const [newScheduleRepeatSelectedDays, setNewScheduleRepeatSelectedDays] = useState([]);
-    const [showScheduleRepeatDayPicker, setShowScheduleRepeatDayPicker] = useState(false);
-
-
-
-    // New states for irregular dates (new "요일" functionality)
+        const [newScheduleRepeatSelectedDays, setNewScheduleRepeatSelectedDays] = useState([]);
+        const [showScheduleRepeatDayPicker, setShowScheduleRepeatDayPicker] = useState(false);
+    
+        const [currentMonthYear, setCurrentMonthYear] = useState(new Date()); // New state for MiniCalendar
+    
+        // New states for irregular dates (new "요일" functionality)
     const [showScheduleIrregularDatesPicker, setShowScheduleIrregularDatesPicker] = useState(false);
     const [newScheduleIrregularSelectedDates, setNewScheduleIrregularSelectedDates] = useState([]);
 
@@ -523,8 +523,39 @@ const HomeTab = ({
         };
 
         try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/events`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-            if (!res.ok) throw new Error('Failed to save schedule');
+            if (showScheduleIrregularDatesPicker && selectedDatesToSend.length > 0) {
+                // Create multiple events for irregular dates
+                for (const date of selectedDatesToSend) {
+                    const irregularBody = {
+                        userId,
+                        title: newScheduleTitle,
+                        time: newScheduleTime || null,
+                        setReminder: newScheduleSetReminder,
+                        startDate: date, // Use the selected irregular date as startDate
+                        endDate: date, // For irregular dates, start and end date are the same
+                        selectedDays: [], // No repeating days for irregular dates
+                        selectedDates: [], // No need to send this in the body for individual events
+                        color: newScheduleColor,
+                    };
+                    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/events`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(irregularBody) });
+                    if (!res.ok) throw new Error(`Failed to save schedule for ${date}`);
+                }
+            } else {
+                // Existing logic for single or repeating events
+                const body = {
+                    userId,
+                    title: newScheduleTitle,
+                    time: newScheduleTime || null,
+                    setReminder: newScheduleSetReminder,
+                    startDate: newScheduleStartDate,
+                    endDate: newScheduleEndDate,
+                    selectedDays: selectedDaysToSend,
+                    selectedDates: selectedDatesToSend,
+                    color: newScheduleColor,
+                };
+                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/events`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                if (!res.ok) throw new Error('Failed to save schedule');
+            }
             onDataUpdate();
             resetScheduleForm();
         } catch (error) {
@@ -836,7 +867,9 @@ const HomeTab = ({
                     <div className="schedule-option-box mini-calendar-option-box">
                         <MiniCalendar
                             selectedDates={newScheduleIrregularSelectedDates}
-                            onDateChange={handleScheduleIrregularDateChange}
+                            onDateSelect={handleScheduleIrregularDateChange}
+                            currentMonthYear={currentMonthYear} // Pass currentMonthYear
+                            setCurrentMonthYear={setCurrentMonthYear} // Pass setCurrentMonthYear
                         />
                     </div>
                 )}
