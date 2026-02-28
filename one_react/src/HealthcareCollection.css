@@ -63,6 +63,7 @@
     grid-template-rows: auto auto 1fr; /* Rows for date, calories/weight, macros */
     gap: 0px 0px; /* Adjust gap as needed for precise positioning */
     position: relative; /* For absolute positioning if needed */
+    animation: fadeIn 0.5s ease-in-out; /* Add animation */
 }
 
 .card-date-display {
@@ -77,6 +78,7 @@
     grid-column: 1; /* First column */
     padding-top: 14px; /* 14px below date, adjusted for grid */
     padding-left: 5px; /* Align with date */
+    padding-right: 22px;
     display: flex;
     flex-direction: column;
 }
@@ -141,15 +143,15 @@
     grid-column: 1 / -1; /* Span across both columns */
     margin-top: 23px; /* 23px below calories value (adjust for grid layout) */
     display: flex;
-    gap: 20px; /* Distribute items with 20px gap */
-    padding: 0 5px; /* Align with other content */
+    gap: 0px; /* Distribute items with 0px gap */
+    padding: 0px; /* Align with other content */
     flex-wrap: nowrap; /* Prevent wrapping */
 }
 
 .macro-item {
     display: flex;
     align-items: flex-end; /* Align baseline */
-    gap: 3px; /* Gap between label and value, adjusted to 3px */
+    gap: 4px; /* Gap between label and value, adjusted to 4px */
 }
 
 .macro-label {

@@ -50,7 +50,7 @@ const HealthcareCollection = ({ sortOrder, setSortOrder, selectedStartDate, sele
 
             const macros = { calories: 0, carbs: 0, protein: 0, fat: 0 };
             mealCards.forEach(card => {
-                card.foods.forEach(food => {
+                (card.foods || []).forEach(food => {
                     macros.calories += (food.calories || 0) * (food.qty || 1);
                     macros.carbs += (food.carbs || 0) * (food.qty || 1);
                     macros.protein += (food.protein || 0) * (food.qty || 1);

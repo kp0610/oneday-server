@@ -161,6 +161,9 @@
     font-weight: 400; /* Updated font-weight as per user request */
     font-size: 10px; /* Updated font-size as per user request */
     color: #4a4a4a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .food-qty {

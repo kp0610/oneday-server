@@ -501,7 +501,12 @@
 
 /* Styles for new Macros section */
 .macros-section {
+    grid-column: 1 / -1;
     margin-top: 20px;
+    display: flex;
+    gap: 0px;
+    padding: 0 1px;
+    flex-wrap: nowrap;
 }
 
 .macros-section h3 {
@@ -596,7 +601,7 @@
     color: #7D8084;
     text-align: right;
     flex-shrink: 0;
-    width: 24px;
+    width: 37px;
 }
 
 .macro-divider {
