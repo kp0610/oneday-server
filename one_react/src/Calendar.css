@@ -288,7 +288,7 @@
 }
 
 .todo-list-box {
-  background-color: #f8f9fa; /* Light background */
+  /* background-color: #f8f9fa; Light background */
   border: 1px solid #e9ecef; /* Light border */
   border-radius: 6px;
   padding: 5px;
@@ -296,4 +296,9 @@
   color: #495057;
   min-height: 130px; /* Minimum height for the todo box */
   overflow-y: auto; /* Allow scrolling if many todos */
+}
+
+.todo-list-label {
+  font-weight: bold;
+  margin-top: 40px;
 }
