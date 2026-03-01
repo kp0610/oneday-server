@@ -302,3 +302,7 @@
   font-weight: bold;
   margin-top: 40px;
 }
+
+.empty-todo-label {
+  min-height: 20px; /* Adjust this value as needed */
+}
