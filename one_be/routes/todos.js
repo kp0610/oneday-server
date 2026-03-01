@@ -3,6 +3,29 @@ const router = express.Router();
 router.use(express.json());
 const db = require('../config/db');
 
+// @route   GET /api/todos/range/:userId
+// @desc    Get all todos for a user within a date range
+// @access  Private
+router.get('/range/:userId', async (req, res) => {
+    const { userId } = req.params;
+    const { startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+        return res.status(400).json({ msg: 'Start date and end date are required.' });
+    }
+
+    try {
+        const [todos] = await db.query(
+            'SELECT * FROM todos WHERE user_id = ? AND `date` >= ? AND `date` <= ? ORDER BY `date`',
+            [userId, startDate, endDate]
+        );
+        res.json(todos);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ msg: `Database error: ${err.message}` });
+    }
+});
+
 // @route   GET /api/todos/:userId/:date
 // @desc    Get all todos for a user on a specific date
 // @access  Private

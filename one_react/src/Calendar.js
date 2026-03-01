@@ -10,6 +10,7 @@ const Calendar = ({
     weekOffset,
     setWeekOffset,
     events,
+    todos, // Add todos prop
     isDragging,
     dragStartDayString,
     dragEndDayString,
@@ -22,6 +23,7 @@ const Calendar = ({
     dailySummaryDate, // New prop
     onSetDailySummaryDate, // Renamed prop
 }) => {
+    console.log('Calendar received todos:', todos);
     const { selectedDate, setSelectedDate, pedometerDataByDate } = useData();
     const calendarDaysRef = useRef(null);
     const [userProfile, setUserProfile] = useState(null); // New state for user profile
@@ -393,24 +395,51 @@ const Calendar = ({
                                                             })}
                                                         </div>
                                                     </div>
-                                                                                    <div className="todo-list-box">
-                                                                                        {/* Simulate todo events */}
-                                                                                        {Array.from({ length: 3 }).map((_, i) => (
-                                                                                            <div key={i} style={{
-                                                                                                backgroundColor: '#e6ffe6', // Light green for todos
-                                                                                                padding: '2px 4px',
-                                                                                                borderRadius: '3px',
-                                                                                                fontSize: '9px',
-                                                                                                marginBottom: '2px',
-                                                                                                whiteSpace: 'nowrap',
-                                                                                                overflow: 'hidden',
-                                                                                                textOverflow: 'ellipsis',
-                                                                                                borderLeft: '3px solid #4CAF50' // Green border
-                                                                                            }}>
-                                                                                                Todo Item {i + 1} for {dayInfo.dayString}
-                                                                                            </div>
-                                                                                        ))}
-                                                                                    </div>                                                </div>
+                                                    <div className="todo-list-box">
+                                                        {todos && (() => {
+                                                            const dailyTodos = todos.filter(todo => {
+                                                                const todoDate = new Date(todo.date).toISOString().split('T')[0];
+                                                                return todoDate === dayInfo.dayString;
+                                                            });
+
+                                                            if (dailyTodos && dailyTodos.length > 0) {
+                                                                console.log(`Todos for ${dayInfo.dayString}:`, dailyTodos);
+                                                            } else {
+                                                                console.log(`No todos for ${dayInfo.dayString}`);
+                                                            }
+
+                                                            return dailyTodos.map(todo => {
+                                                                const style = {
+                                                                    padding: '2px 4px',
+                                                                    borderRadius: '3px',
+                                                                    fontSize: '9px',
+                                                                    marginBottom: '2px',
+                                                                    whiteSpace: 'nowrap',
+                                                                    overflow: 'hidden',
+                                                                    textOverflow: 'ellipsis',
+                                                                };
+                                                                if (todo.color) {
+                                                                    style.borderStyle = 'solid';
+                                                                    style.borderColor = todo.color;
+                                                                    style.borderWidth = '0.7px';
+                                                                    style.borderLeftWidth = '4px';
+                                                                    style.backgroundColor = hexToRgba(todo.color, 0.5);
+                                                                    style.color = darkenColor(todo.color, 0.7);
+                                                                }
+                                
+                                                                return (
+                                                                    <div
+                                                                        key={todo.id}
+                                                                        className={`todo-item ${todo.completed ? 'completed' : ''}`}
+                                                                        style={style}
+                                                                    >
+                                                                        {todo.title}
+                                                                    </div>
+                                                                );
+                                                            });
+                                                        })()}
+                                                    </div>
+                                                </div>
                                             ) : ( // Original month view rendering
                                                 <div
                                                     key={index}
