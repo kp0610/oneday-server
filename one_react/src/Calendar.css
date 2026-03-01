@@ -41,7 +41,7 @@
 .view-toggle button.active {
   background-color: #ff6f61;
   color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 2px 4px rgba(0,0,0,0.1);
 }
 
 .month-year-container {
@@ -113,8 +113,7 @@
 .weekday {
   text-align: center;
   font-weight: bold;
-  font-size: 11px;
-  color: white;
+  color: #868e96;
 }
 
 .calendar-days {
@@ -136,7 +135,7 @@
   cursor: pointer;
   border-radius: 6px;
   position: relative;
-  height: 90px; /* Increased height by 7px */
+  height: 80px; /* Decreased height by 5px */
   overflow: hidden; /* Clip overflowing content */
   -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
 }
@@ -150,8 +149,9 @@
   z-index: 1; /* Ensure day number is above indicator */
 }
 
-.day-cell.today p {
-  color: #ff6f61;
+.day-cell.today .day-number-wrapper p {
+  color: white !important; /* Change text color to white for contrast */
+  font-weight: bold; /* Make the number bold */
 }
 
 .selected-day-indicator {
@@ -219,4 +219,42 @@
 }
 .day-cell.other-month {
     color: #D3D3D3; /* Light gray color */
+}
+
+.weekday.sunday {
+  color: #E57373;
+  font-weight: 900; /* Make it bolder */
+}
+
+.day-cell.sunday-day .day-number-wrapper p {
+  color: #E57373;
+  font-weight: 900; /* Make it bolder */
+}
+
+.weekday.saturday {
+  color: #2196F3;
+}
+
+.day-cell.saturday-day .day-number-wrapper p {
+  color: #2196F3;
+}
+
+.day-cell.today .day-number-wrapper {
+  background-color: #ff6f61; /* Key color */
+  border-radius: 50%; /* Make it circular */
+  width: 20px; /* Adjusted size */
+  height: 20px; /* Adjusted size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-1px); /* Move slightly upwards */
+}
+
+.day-number-wrapper p {
+  font-weight: 600;
+  font-size: 11px; /* Explicitly set font size */
+}
+
+.calendar-grid.week-view .day-cell:not(:last-child) {
+  border-right: 1px dotted #ccc; /* Dotted line, light gray color */
 }

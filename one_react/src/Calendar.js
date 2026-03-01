@@ -31,8 +31,8 @@ const Calendar = ({
 
     // States for DailySummaryPopup
 
-    const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+    const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
 
     const userId = localStorage.getItem('userId'); // Get userId
 
@@ -266,14 +266,14 @@ const Calendar = ({
 
             <div className={`calendar-grid ${!isMonthView ? 'week-view' : ''}`}> {/* Conditionally add week-view class */}
                 <div className="calendar-weekdays">
-                    {weekdays.map(day => <div key={day} className="weekday">{day}</div>)}
+                    {weekdays.map(day => <div key={day} className={`weekday ${day === '일' ? 'sunday' : ''}`}>{day}</div>)}
                 </div>
                 <div className="calendar-days" ref={calendarDaysRef}>
                     {days.map((dayInfo, index) => (
                         <div
                             key={index}
                             data-date={dayInfo.dayString} // Add data-date for easy selection
-                            className={`day-cell ${dayInfo.isOtherMonth ? 'other-month' : ''} ${dayInfo.isToday ? 'today' : ''} ${dayInfo.isSelected ? 'selected' : ''} ${isDateInDraggedRange(dayInfo.dayString) ? 'drag-selected' : ''}`}
+                            className={`day-cell ${dayInfo.isOtherMonth ? 'other-month' : ''} ${dayInfo.isToday ? 'today' : ''} ${dayInfo.isSelected ? 'selected' : ''} ${isDateInDraggedRange(dayInfo.dayString) ? 'drag-selected' : ''} ${index % 7 === 0 ? 'sunday-day' : ''} ${index % 7 === 6 ? 'saturday-day' : ''}`}
                             onClick={(e) => dayInfo.dayString && handleDateClick(e, dayInfo)}
                             onMouseDown={() => dayInfo.dayString && onDragStart(dayInfo.dayString)}
                             onMouseEnter={() => dayInfo.dayString && onDragMove(dayInfo.dayString)}
