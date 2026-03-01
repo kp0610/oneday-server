@@ -269,296 +269,272 @@ const Calendar = ({
                     {weekdays.map(day => <div key={day} className={`weekday ${day === '일' ? 'sunday' : ''}`}>{day}</div>)}
                 </div>
                 <div className="calendar-days" ref={calendarDaysRef}>
-                    {days.map((dayInfo, index) => (
-                        <div
-                            key={index}
-                            data-date={dayInfo.dayString} // Add data-date for easy selection
-                            className={`day-cell ${dayInfo.isOtherMonth ? 'other-month' : ''} ${dayInfo.isToday ? 'today' : ''} ${dayInfo.isSelected ? 'selected' : ''} ${isDateInDraggedRange(dayInfo.dayString) ? 'drag-selected' : ''} ${index % 7 === 0 ? 'sunday-day' : ''} ${index % 7 === 6 ? 'saturday-day' : ''}`}
-                            onClick={(e) => dayInfo.dayString && handleDateClick(e, dayInfo)}
-                            onMouseDown={() => dayInfo.dayString && onDragStart(dayInfo.dayString)}
-                            onMouseEnter={() => dayInfo.dayString && onDragMove(dayInfo.dayString)}
-                            onMouseUp={onDragEnd}
-                        >
-                                                                                                                <div className="day-number-wrapper">
-                                                                                                                    <p>{dayInfo.day}</p>
-                                                                                                                </div>                                                                                    {/* Menstrual Cycle Indicator */}
-                                                                                    {menstrualCycles.filter(cycle => dayInfo.dayString >= cycle.startDate && dayInfo.dayString <= cycle.endDate).map(cycle => (
-                                                                                        <div
-                                                                                            key={cycle.id}
-                                                                                                                                                                    className="menstrual-cycle-indicator"
-                                                                                                                                                                    style={{
-                                                                                                                                                                        backgroundColor: 'rgba(255, 131, 131, 0.1)', // #FF8383 with 10% transparency
-                                                                                                                                                                        height: '22px', // Increased height by 2px
-                                                                                                                                                                        position: 'absolute',
-                                                                                                                                                                        left: 0,
-                                                                                                                                                                        right: 0,
-                                                                                                                                                                        top: '4px', // Adjusted top to extend 1px upwards
-                                                                                                                                                                        zIndex: 0, // Underneath day number
-                                                                                                                                                                        borderRadius: dayInfo.dayString === cycle.startDate ? '15px 0 0 15px' :
-                                                                                                                                                                                      dayInfo.dayString === cycle.endDate ? '0 15px 15px 0' : '0',
-                                                                                                                                                                        borderTop: 'none',
-                                                                                                                                                                        borderBottom: 'none',
-                                                                                                                                                                        borderLeft: 'none',
-                                                                                                                                                                        borderRight: 'none',
-                                                                                                                                                                        boxSizing: 'border-box', // Ensure border doesn't increase total size
-                                                                                                                                                                    }}
-                                                                                                                                                                ></div>
-                                                                                                                                                            ))}
-                                                                                                                                
-                                                                                                                                                                                        {/* Predicted Menstrual Cycle Indicator */}
-                                                                                                                                
-                                                                                                                                                                                        {predictedMenstrualCycle &&
-                                                                                                                                
-                                                                                                                                                                                         dayInfo.dayString >= predictedMenstrualCycle.startDate &&
-                                                                                                                                
-                                                                                                                                                                                         dayInfo.dayString <= predictedMenstrualCycle.endDate && (
-                                                                                                                                
-                                                                                                                                                                                            <div
-                                                                                                                                
-                                                                                                                                                                                                key={predictedMenstrualCycle.id}
-                                                                                                                                
-                                                                                                                                                                                                className="predicted-menstrual-cycle-indicator" // New class for styling
-                                                                                                                                
-                                                                                                                                                                                                style={{
-                                                                                                                                
-                                                                                                                                                                                                    backgroundColor: 'rgba(255, 131, 131, 0.1)', // Lighter shade
-                                                                                                                                
-                                                                                                                                                                                                    height: '22px',
-                                                                                                                                
-                                                                                                                                                                                                    position: 'absolute',
-                                                                                                                                
-                                                                                                                                                                                                    left: 0,
-                                                                                                                                
-                                                                                                                                                                                                    right: 0,
-                                                                                                                                
-                                                                                                                                                                                                    top: '4px',
-                                                                                                                                
-                                                                                                                                                                                                    zIndex: 0,
-                                                                                                                                
-                                                                                                                                                                                                    borderRadius: dayInfo.dayString === predictedMenstrualCycle.startDate ? '15px 0 0 15px' :
-                                                                                                                                
-                                                                                                                                                                                                                  dayInfo.dayString === predictedMenstrualCycle.endDate ? '0 15px 15px 0' : '0',
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                        borderTop: 'none',
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                        borderBottom: 'none',
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                        borderLeft: 'none',
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                        borderRight: 'none',
-                                                                                                                                
-                                                                                                                                                                                                    boxSizing: 'border-box', // Ensure border doesn't increase total size
-                                                                                                                                
-                                                                                                                                                                                                }}
-                                                                                                                                
-                                                                                                                                                                                            ></div>
-                                                                                                                                
-                                                                                                                                                                                        )}
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                    {/* Multi-day Event Indicator */}
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                    {(() => {
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                        const multiDayEventsForDay = events.filter(e => {
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                            if (!e.start_date || !e.end_date || e.type === 'menstrualCycle') return false;
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                        
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                            const filterStartDate = new Date(e.start_date).toISOString().split('T')[0];
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                            const filterEndDate = new Date(e.end_date).toISOString().split('T')[0];
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                        
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                            return filterStartDate !== filterEndDate && dayInfo.dayString >= filterStartDate && dayInfo.dayString <= filterEndDate;
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                        });
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                        // console.log(`Day: ${dayInfo.dayString}, All Events Prop:`, events);
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                        // console.log(`Day: ${dayInfo.dayString}, Filtered Multi-day Events for Day:`, multiDayEventsForDay);
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                        
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                        return multiDayEventsForDay.map(event => {
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                            const eventColor = event.color || '#A0A0A0'; // Default grey if no color
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                            const eventStartDate = new Date(event.start_date).toISOString().split('T')[0];
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                            const eventEndDate = new Date(event.end_date).toISOString().split('T')[0];
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                        
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                            return (
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                <div
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                    key={event.id}
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                    className="multi-day-event-indicator"
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                    style={{
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                        backgroundColor: hexToRgba(eventColor, 0.1), // 10% transparent
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                        height: '22px',
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                        position: 'absolute',
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                        left: 0,
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                        right: 0,
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                        top: '4px',
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                        zIndex: 0,
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                        borderRadius: dayInfo.dayString === eventStartDate ? '15px 0 0 15px' :
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                      dayInfo.dayString === eventEndDate ? '0 15px 15px 0' : '0',
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     borderTop: 'none',
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                borderBottom: 'none',
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                borderLeft: 'none',
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                borderRight: 'none',
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                        boxSizing: 'border-box',
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                    }}
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                ></div>
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                            );
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                        });
-                                                                                                                                
-                                                                                                                                                            
-                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                    })()}                            <div className="events-container">
-                                {dayInfo.events && dayInfo.events.map(event => {
-                                    const style = {};
-                                    if (event.color) {
-                                        style.borderStyle = 'solid';
-                                        style.borderColor = event.color;
-                                        style.borderWidth = '0.7px';
-                                        style.borderLeftWidth = '4px';
-                                        style.backgroundColor = hexToRgba(event.color, 0.5);
-                                        style.color = darkenColor(event.color, 0.7);
-                                        style.fontSize = '9px';
-                                    }
-
-                                    return (
-                                        <div
-                                            key={event.id}
-                                            className="event"
-                                            style={style}
-                                        >
-                                            {event.title}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    ))}
+                                        {days.map((dayInfo, index) => (
+                                            // Conditional rendering for week view
+                                            !isMonthView ? (
+                                                <div key={index} className="day-and-todo-wrapper">
+                                                    <div
+                                                        data-date={dayInfo.dayString}
+                                                        className={`day-cell ${dayInfo.isOtherMonth ? 'other-month' : ''} ${dayInfo.isToday ? 'today' : ''} ${dayInfo.isSelected ? 'selected' : ''} ${isDateInDraggedRange(dayInfo.dayString) ? 'drag-selected' : ''} ${index % 7 === 0 ? 'sunday-day' : ''} ${index % 7 === 6 ? 'saturday-day' : ''}`}
+                                                        onClick={(e) => dayInfo.dayString && handleDateClick(e, dayInfo)}
+                                                        onMouseDown={() => dayInfo.dayString && onDragStart(dayInfo.dayString)}
+                                                        onMouseEnter={() => dayInfo.dayString && onDragMove(dayInfo.dayString)}
+                                                        onMouseUp={onDragEnd}
+                                                    >
+                                                        {/* Menstrual Cycle Indicator */}
+                                                        {menstrualCycles.filter(cycle => dayInfo.dayString >= cycle.startDate && dayInfo.dayString <= cycle.endDate).map(cycle => (
+                                                            <div
+                                                                key={cycle.id}
+                                                                className="menstrual-cycle-indicator"
+                                                                style={{
+                                                                    backgroundColor: 'rgba(255, 131, 131, 0.1)', // #FF8383 with 10% transparency
+                                                                    height: '22px', // Increased height by 2px
+                                                                    position: 'absolute',
+                                                                    left: 0,
+                                                                    right: 0,
+                                                                    top: '4px', // Adjusted top to extend 1px upwards
+                                                                    zIndex: 0, // Underneath day number
+                                                                    borderRadius: dayInfo.dayString === cycle.startDate ? '15px 0 0 15px' :
+                                                                                  dayInfo.dayString === cycle.endDate ? '0 15px 15px 0' : '0',
+                                                                    borderTop: 'none',
+                                                                    borderBottom: 'none',
+                                                                    borderLeft: 'none',
+                                                                    borderRight: 'none',
+                                                                    boxSizing: 'border-box', // Ensure border doesn't increase total size
+                                                                }}>
+                                                            </div>
+                                                        ))}
+                                                        {/* Predicted Menstrual Cycle Indicator */}
+                                                        {predictedMenstrualCycle &&
+                                                         dayInfo.dayString >= predictedMenstrualCycle.startDate &&
+                                                         dayInfo.dayString <= predictedMenstrualCycle.endDate && (
+                                                            <div
+                                                                key={predictedMenstrualCycle.id}
+                                                                className="predicted-menstrual-cycle-indicator" // New class for styling
+                                                                style={{
+                                                                    backgroundColor: 'rgba(255, 131, 131, 0.1)', // Lighter shade
+                                                                    height: '22px',
+                                                                    position: 'absolute',
+                                                                    left: 0,
+                                                                    right: 0,
+                                                                    top: '4px',
+                                                                    zIndex: 0,
+                                                                    borderRadius: dayInfo.dayString === predictedMenstrualCycle.startDate ? '15px 0 0 15px' :
+                                                                                  dayInfo.dayString === predictedMenstrualCycle.endDate ? '0 15px 15px 0' : '0',
+                                                                    borderTop: 'none',
+                                                                    borderBottom: 'none',
+                                                                    borderLeft: 'none',
+                                                                    borderRight: 'none',
+                                                                    boxSizing: 'border-box', // Ensure border doesn't increase total size
+                                                                }}>
+                                                            </div>
+                                                        )}
+                                                        {/* Multi-day Event Indicator */}
+                                                        {(() => {
+                                                            const multiDayEventsForDay = events.filter(e => {
+                                                                if (!e.start_date || !e.end_date || e.type === 'menstrualCycle') return false;
+                                                                const filterStartDate = new Date(e.start_date).toISOString().split('T')[0];
+                                                                const filterEndDate = new Date(e.end_date).toISOString().split('T')[0];
+                                                                return filterStartDate !== filterEndDate && dayInfo.dayString >= filterStartDate && dayInfo.dayString <= filterEndDate;
+                                                            });
+                                                            return multiDayEventsForDay.map(event => {
+                                                                const eventColor = event.color || '#A0A0A0'; // Default grey if no color
+                                                                const eventStartDate = new Date(event.start_date).toISOString().split('T')[0];
+                                                                const eventEndDate = new Date(event.end_date).toISOString().split('T')[0];
+                                                                return (
+                                                                    <div
+                                                                        key={event.id}
+                                                                        className="multi-day-event-indicator"
+                                                                        style={{
+                                                                            backgroundColor: hexToRgba(eventColor, 0.1), // 10% transparent
+                                                                            height: '22px',
+                                                                            position: 'absolute',
+                                                                            left: 0,
+                                                                            right: 0,
+                                                                            top: '4px',
+                                                                            zIndex: 0,
+                                                                            borderRadius: dayInfo.dayString === eventStartDate ? '15px 0 0 15px' :
+                                                                                          dayInfo.dayString === eventEndDate ? '0 15px 15px 0' : '0',
+                                                                            borderTop: 'none',
+                                                                            borderBottom: 'none',
+                                                                            borderLeft: 'none',
+                                                                            borderRight: 'none',
+                                                                            boxSizing: 'border-box',
+                                                                        }}>
+                                                                    </div>
+                                                                );
+                                                            });
+                                                        })()}
+                                                        <div className="day-number-wrapper">
+                                                            <p>{dayInfo.day}</p>
+                                                        </div>
+                                                        <div className="events-container">
+                                                            {dayInfo.events && dayInfo.events.map(event => {
+                                                                const style = {};
+                                                                if (event.color) {
+                                                                    style.borderStyle = 'solid';
+                                                                    style.borderColor = event.color;
+                                                                    style.borderWidth = '0.7px';
+                                                                    style.borderLeftWidth = '4px';
+                                                                    style.backgroundColor = hexToRgba(event.color, 0.5);
+                                                                    style.color = darkenColor(event.color, 0.7);
+                                                                    style.fontSize = '9px';
+                                                                }
+                    
+                                                                return (
+                                                                    <div
+                                                                        key={event.id}
+                                                                        className="event"
+                                                                        style={style}
+                                                                    >
+                                                                        {event.title}
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                                                    <div className="todo-list-box">
+                                                                                        {/* Simulate todo events */}
+                                                                                        {Array.from({ length: 3 }).map((_, i) => (
+                                                                                            <div key={i} style={{
+                                                                                                backgroundColor: '#e6ffe6', // Light green for todos
+                                                                                                padding: '2px 4px',
+                                                                                                borderRadius: '3px',
+                                                                                                fontSize: '9px',
+                                                                                                marginBottom: '2px',
+                                                                                                whiteSpace: 'nowrap',
+                                                                                                overflow: 'hidden',
+                                                                                                textOverflow: 'ellipsis',
+                                                                                                borderLeft: '3px solid #4CAF50' // Green border
+                                                                                            }}>
+                                                                                                Todo Item {i + 1} for {dayInfo.dayString}
+                                                                                            </div>
+                                                                                        ))}
+                                                                                    </div>                                                </div>
+                                            ) : ( // Original month view rendering
+                                                <div
+                                                    key={index}
+                                                    data-date={dayInfo.dayString}
+                                                    className={`day-cell ${dayInfo.isOtherMonth ? 'other-month' : ''} ${dayInfo.isToday ? 'today' : ''} ${dayInfo.isSelected ? 'selected' : ''} ${isDateInDraggedRange(dayInfo.dayString) ? 'drag-selected' : ''} ${index % 7 === 0 ? 'sunday-day' : ''} ${index % 7 === 6 ? 'saturday-day' : ''}`}
+                                                    onClick={(e) => dayInfo.dayString && handleDateClick(e, dayInfo)}
+                                                    onMouseDown={() => dayInfo.dayString && onDragStart(dayInfo.dayString)}
+                                                    onMouseEnter={() => dayInfo.dayString && onDragMove(dayInfo.dayString)}
+                                                    onMouseUp={onDragEnd}
+                                                >
+                                                    {/* Menstrual Cycle Indicator */}
+                                                    {menstrualCycles.filter(cycle => dayInfo.dayString >= cycle.startDate && dayInfo.dayString <= cycle.endDate).map(cycle => (
+                                                        <div
+                                                            key={cycle.id}
+                                                            className="menstrual-cycle-indicator"
+                                                            style={{
+                                                                backgroundColor: 'rgba(255, 131, 131, 0.1)', // #FF8383 with 10% transparency
+                                                                height: '22px', // Increased height by 2px
+                                                                position: 'absolute',
+                                                                left: 0,
+                                                                right: 0,
+                                                                top: '4px', // Adjusted top to extend 1px upwards
+                                                                zIndex: 0, // Underneath day number
+                                                                borderRadius: dayInfo.dayString === cycle.startDate ? '15px 0 0 15px' :
+                                                                              dayInfo.dayString === cycle.endDate ? '0 15px 15px 0' : '0',
+                                                                borderTop: 'none',
+                                                                borderBottom: 'none',
+                                                                borderLeft: 'none',
+                                                                borderRight: 'none',
+                                                                boxSizing: 'border-box', // Ensure border doesn't increase total size
+                                                            }}>
+                                                        </div>
+                                                    ))}
+                                                    {/* Predicted Menstrual Cycle Indicator */}
+                                                    {predictedMenstrualCycle &&
+                                                     dayInfo.dayString >= predictedMenstrualCycle.startDate &&
+                                                     dayInfo.dayString <= predictedMenstrualCycle.endDate && (
+                                                        <div
+                                                            key={predictedMenstrualCycle.id}
+                                                            className="predicted-menstrual-cycle-indicator" // New class for styling
+                                                            style={{
+                                                                backgroundColor: 'rgba(255, 131, 131, 0.1)', // Lighter shade
+                                                                height: '22px',
+                                                                position: 'absolute',
+                                                                left: 0,
+                                                                right: 0,
+                                                                top: '4px',
+                                                                zIndex: 0,
+                                                                borderRadius: dayInfo.dayString === predictedMenstrualCycle.startDate ? '15px 0 0 15px' :
+                                                                              dayInfo.dayString === predictedMenstrualCycle.endDate ? '0 15px 15px 0' : '0',
+                                                                borderTop: 'none',
+                                                                borderBottom: 'none',
+                                                                borderLeft: 'none',
+                                                                borderRight: 'none',
+                                                                boxSizing: 'border-box', // Ensure border doesn't increase total size
+                                                            }}>
+                                                        </div>
+                                                    )}
+                                                    {/* Multi-day Event Indicator */}
+                                                    {(() => {
+                                                        const multiDayEventsForDay = events.filter(e => {
+                                                            if (!e.start_date || !e.end_date || e.type === 'menstrualCycle') return false;
+                                                            const filterStartDate = new Date(e.start_date).toISOString().split('T')[0];
+                                                            const filterEndDate = new Date(e.end_date).toISOString().split('T')[0];
+                                                            return filterStartDate !== filterEndDate && dayInfo.dayString >= filterStartDate && dayInfo.dayString <= filterEndDate;
+                                                        });
+                                                        return multiDayEventsForDay.map(event => {
+                                                            const eventColor = event.color || '#A0A0A0'; // Default grey if no color
+                                                            const eventStartDate = new Date(event.start_date).toISOString().split('T')[0];
+                                                            const eventEndDate = new Date(event.end_date).toISOString().split('T')[0];
+                                                            return (
+                                                                <div
+                                                                    key={event.id}
+                                                                    className="multi-day-event-indicator"
+                                                                    style={{
+                                                                        backgroundColor: hexToRgba(eventColor, 0.1), // 10% transparent
+                                                                        height: '22px',
+                                                                        position: 'absolute',
+                                                                        left: 0,
+                                                                        right: 0,
+                                                                        top: '4px',
+                                                                        zIndex: 0,
+                                                                        borderRadius: dayInfo.dayString === eventStartDate ? '15px 0 0 15px' :
+                                                                                      dayInfo.dayString === eventEndDate ? '0 15px 15px 0' : '0',
+                                                                        borderTop: 'none',
+                                                                        borderBottom: 'none',
+                                                                        borderLeft: 'none',
+                                                                        borderRight: 'none',
+                                                                        boxSizing: 'border-box',
+                                                                    }}>
+                                                                </div>
+                                                            );
+                                                        });
+                                                    })()}
+                                                    <div className="day-number-wrapper">
+                                                        <p>{dayInfo.day}</p>
+                                                    </div>
+                                                    <div className="events-container">
+                                                        {dayInfo.events && dayInfo.events.map(event => {
+                                                            const style = {};
+                                                            if (event.color) {
+                                                                style.borderStyle = 'solid';
+                                                                style.borderColor = event.color;
+                                                                style.borderWidth = '0.7px';
+                                                                style.borderLeftWidth = '4px';
+                                                                style.backgroundColor = hexToRgba(event.color, 0.5);
+                                                                style.color = darkenColor(event.color, 0.7);
+                                                                style.fontSize = '9px';
+                                                            }
+                    
+                                                            return (
+                                                                <div
+                                                                    key={event.id}
+                                                                    className="event"
+                                                                    style={style}
+                                                                >
+                                                                    {event.title}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            )
+                                        ))}
                 </div>
             </div>
         </div>
