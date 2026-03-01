@@ -41,7 +41,7 @@
 .view-toggle button.active {
   background-color: #ff6f61;
   color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 2px 4px rgba(0,0,0,0.1);
 }
 
 .month-year-container {
@@ -113,8 +113,7 @@
 .weekday {
   text-align: center;
   font-weight: bold;
-  font-size: 11px;
-  color: white;
+  color: #868e96;
 }
 
 .calendar-days {
@@ -136,9 +135,19 @@
   cursor: pointer;
   border-radius: 6px;
   position: relative;
-  height: 90px; /* Increased height by 7px */
-  overflow: hidden; /* Clip overflowing content */
+  /* height: 80px; Removed fixed height */
+  /* overflow: hidden; Removed overflow hidden */
   -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+}
+
+.calendar-grid.week-view .day-cell::before {
+  content: '';
+  position: absolute;
+  top: 28px; /* Move line slightly up */
+  left: 5px; /* Shortened from left */
+  right: 5px; /* Shortened from right */
+  height: 1px;
+  background-color: #e9ecef;
 }
 
 .day-number-wrapper {
@@ -150,8 +159,9 @@
   z-index: 1; /* Ensure day number is above indicator */
 }
 
-.day-cell.today p {
-  color: #ff6f61;
+.day-cell.today .day-number-wrapper p {
+  color: white !important; /* Change text color to white for contrast */
+  font-weight: bold; /* Make the number bold */
 }
 
 .selected-day-indicator {
@@ -164,6 +174,20 @@
 }
 
 .day-cell.selected p {
+  /* font-size: 15px; Removed */
+  /* font-weight: bold; Removed */
+}
+
+.todo-list-box.selected .todo-day-number {
+  /* font-size: 15px; Removed */
+  /* font-weight: bold; Removed */
+}
+
+.day-and-todo-wrapper.selected {
+  background-color: #e6f7ff; /* Example background color for selection */
+}
+
+.day-and-todo-wrapper.selected .todo-day-number {
   font-size: 15px;
   font-weight: bold;
 }
@@ -210,7 +234,7 @@
 
 .calendar-grid.week-view .day-cell {
   height: auto; /* Allow height to expand based on content */
-  min-height: 60px; /* Maintain a minimum height */
+  min-height: 160px; /* Maintain a minimum height */
   overflow: visible; /* Ensure all content is visible */
 }
 
@@ -219,4 +243,136 @@
 }
 .day-cell.other-month {
     color: #D3D3D3; /* Light gray color */
+}
+
+.weekday.sunday {
+  color: #E57373;
+  font-weight: 900; /* Make it bolder */
+}
+
+.day-cell.sunday-day .day-number-wrapper p {
+  color: #E57373;
+  font-weight: 900; /* Make it bolder */
+}
+
+.weekday.saturday {
+  color: #2196F3;
+}
+
+.day-cell.saturday-day .day-number-wrapper p {
+  color: #2196F3;
+}
+
+.day-cell.today .day-number-wrapper {
+  background-color: #ff6f61; /* Key color */
+  border-radius: 50%; /* Make it circular */
+  width: 20px; /* Adjusted size */
+  height: 20px; /* Adjusted size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-1px); /* Move slightly upwards */
+}
+
+.day-number-wrapper p {
+  font-weight: 600;
+  font-size: 11px; /* Explicitly set font size */
+}
+
+.calendar-grid.week-view .day-cell:not(:last-child) {
+  border-right: none; /* Removed right border */
+}
+
+.todos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow-y: auto; /* Enable vertical scrolling */
+  /* Hide scrollbar for Webkit browsers */
+  &::-webkit-scrollbar {
+      display: none;
+  }
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide scrollbar for Internet Explorer/Edge */
+  -ms-overflow-style: none;
+  margin-top: 7px; /* Increased gap between day number and first event */
+}
+
+.calendar-grid.week-view .day-and-todo-wrapper {
+  display: flex;
+  flex-direction: column;
+  /* Ensure it takes full width of its grid column */
+  width: 100%;
+  /* Add some spacing between day-cell and todo-list-box */
+  gap: 5px;
+}
+
+.todo-list-box {
+  /* background-color: #f8f9fa; Light background */
+  /* border-top: 1px solid #e9ecef; Removed to use pseudo-element */
+  border-radius: 0; /* No rounding for the top border */
+  padding: 5px;
+  font-size: 10px;
+  color: #495057;
+  min-height: 130px; /* Minimum height for the todo box */
+  overflow-y: auto; /* Allow scrolling if many todos */
+  position: relative; /* Needed for pseudo-element positioning */
+}
+
+.todo-list-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 5px; /* Adjust this value to control shortening from left */
+  right: 5px; /* Adjust this value to control shortening from right */
+  height: 1px;
+  background-color: #e9ecef;
+}
+
+.todo-list-label {
+  font-weight: bold;
+  margin-top: 40px;
+  text-align: center; /* Default alignment for all days */
+}
+
+.sunday-todo-label {
+  text-align: left; /* Override default for Sunday */
+  height: 15px; /* Control overall vertical space */
+}
+
+.sunday-todo-text {
+  font-weight: bold;
+  text-align: left;
+  margin-top: -20px; /* Move '투두리스트' text up by 20px */
+}
+
+.sunday-day-number {
+  margin-top: 5px; /* Move day number down by 5px */
+  text-align: center;
+}
+
+.todo-day-number {
+  font-weight: 600;
+  font-size: 11px;
+  color: #343a40;
+}
+
+.todo-list-box.selected .todo-day-number {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.monday-todo-text {
+  font-weight: bold;
+  min-height: 20px; /* Adjusted for alignment */
+  margin-top: -20px; /* Move '투두리스트' text up by 20px */
+  /* Adjust font-size if needed, inheriting from .todo-list-label for now */
+}
+
+.monday-day-number {
+  margin-top: 0; /* Adjusted for alignment */
 }

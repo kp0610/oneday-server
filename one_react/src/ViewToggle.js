@@ -6,10 +6,10 @@ const ViewToggle = ({ isMonthView, setIsMonthView }) => { // Accept props
         <div className="view-toggle-container">
             <div className={`toggle-switch ${isMonthView ? 'month' : 'week'}`}>
                 <div className="toggle-option" onClick={() => setIsMonthView(true)}>
-                    Month
+                    월
                 </div>
                 <div className="toggle-option" onClick={() => setIsMonthView(false)}>
-                    Week
+                    주
                 </div>
                 <div className="toggle-slider"></div>
             </div>

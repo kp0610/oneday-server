@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './MiniCalendar.css';
 
-const MiniCalendar = ({ selectedStartDate, selectedEndDate, onDateSelect, currentMonthYear, setCurrentMonthYear = () => {} }) => {
+const MiniCalendar = ({ selectedDates, onDateSelect, currentMonthYear, setCurrentMonthYear = () => {} }) => {
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -40,23 +40,14 @@ const MiniCalendar = ({ selectedStartDate, selectedEndDate, onDateSelect, curren
         while (day <= monthEnd || days.length % 7 !== 0) { // Ensure full weeks are rendered
             const dayString = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`;
             const isCurrentMonth = day.getMonth() === currentMonthYear.getMonth();
-
-            const date = new Date(dayString);
-            const start = selectedStartDate ? new Date(selectedStartDate) : null;
-            const end = selectedEndDate ? new Date(selectedEndDate) : null;
-
-            const isStart = start && date.toDateString() === start.toDateString();
-            const isEnd = end && date.toDateString() === end.toDateString();
-            const isBetween = start && end && date >= start && date <= end;
+            const isSelected = selectedDates.includes(dayString);
 
             days.push(
                 <div
                     key={dayString}
                     className={`mini-day-cell
                                 ${isCurrentMonth ? '' : 'other-month'}
-                                ${isStart ? 'selected-start' : ''}
-                                ${isEnd ? 'selected-end' : ''}
-                                ${isBetween ? 'selected-between' : ''}
+                                ${isSelected ? 'selected' : ''}
                                 `}
                     onClick={() => onDateSelect(dayString)}
                 >

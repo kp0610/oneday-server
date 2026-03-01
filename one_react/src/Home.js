@@ -33,6 +33,7 @@ const Home = () => {
     const [dashboardEvents, setDashboardEvents] = useState([]);
     const [calendarEvents, setCalendarEvents] = useState([]);
     const [todos, setTodos] = useState([]);
+    const [calendarTodos, setCalendarTodos] = useState([]); // New state for the calendar
     const [lastUpdated, setLastUpdated] = useState(Date.now());
 
     const [isDragging, setIsDragging] = useState(false); // Re-introduced
@@ -91,18 +92,52 @@ const Home = () => {
     useEffect(() => {
         if (!userId) return;
 
-        const dt = new Date();
-        dt.setDate(1); // Prevent month overflow
-        if (monthOffset !== 0) {
-            dt.setMonth(new Date().getMonth() + monthOffset);
-        }
-        const year = dt.getFullYear();
-        const month = dt.getMonth();
-        const firstDayOfMonth = `${year}-${String(month + 1).padStart(2, '0')}-01`;
-        const lastDay = new Date(year, month + 1, 0).getDate();
-        const lastDayOfMonth = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+        let startDate, endDate;
 
-        fetch(`${process.env.REACT_APP_API_URL}/api/events/range/${userId}?startDate=${firstDayOfMonth}&endDate=${lastDayOfMonth}`, { cache: 'no-cache', credentials: 'include' })
+        if (isMonthView) {
+            const dt = new Date();
+            dt.setDate(1); // Prevent month overflow
+            if (monthOffset !== 0) {
+                dt.setMonth(new Date().getMonth() + monthOffset);
+            }
+            const year = dt.getFullYear();
+            const month = dt.getMonth();
+            startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+            const lastDay = new Date(year, month + 1, 0).getDate();
+            endDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+            
+            // Clear todos in month view
+            setCalendarTodos([]);
+
+        } else { // Week view
+            let currentWeekStart = new Date();
+            currentWeekStart.setDate(currentWeekStart.getDate() + (weekOffset * 7));
+            const startOfWeek = new Date(currentWeekStart);
+            startOfWeek.setDate(currentWeekStart.getDate() - startOfWeek.getDay());
+            
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+            startDate = `${startOfWeek.getFullYear()}-${String(startOfWeek.getMonth() + 1).padStart(2, '0')}-${String(startOfWeek.getDate()).padStart(2, '0')}`;
+            endDate = `${endOfWeek.getFullYear()}-${String(endOfWeek.getMonth() + 1).padStart(2, '0')}-${String(endOfWeek.getDate()).padStart(2, '0')}`;
+            
+            // Fetch todos only in week view
+            fetch(`${process.env.REACT_APP_API_URL}/api/todos/range/${userId}?startDate=${startDate}&endDate=${endDate}`, { cache: 'no-cache', credentials: 'include' })
+                .then(res => {
+                    if (!res.ok) {
+                        return res.json().then(err => { throw new Error(err.msg) });
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log('Fetched calendar todos:', data);
+                    setCalendarTodos(data);
+                })
+                .catch(error => console.error("Error fetching range todos:", error));
+        }
+
+        // Fetch events for both views
+        fetch(`${process.env.REACT_APP_API_URL}/api/events/range/${userId}?startDate=${startDate}&endDate=${endDate}`, { cache: 'no-cache', credentials: 'include' })
             .then(res => {
                 if (!res.ok) {
                     return res.json().then(err => { throw new Error(err.msg) });
@@ -110,11 +145,9 @@ const Home = () => {
                 return res.json();
             })
             .then(setCalendarEvents)
-            .catch(error => {
-                console.error("Error fetching month events:", error);
-            });
+            .catch(error => console.error("Error fetching range events:", error));
 
-    }, [userId, monthOffset, lastUpdated]);
+    }, [userId, isMonthView, monthOffset, weekOffset, lastUpdated]);
 
     const onDataUpdate = () => {
         setLastUpdated(Date.now());
@@ -170,6 +203,7 @@ const Home = () => {
                         weekOffset={weekOffset}
                         setWeekOffset={setWeekOffset}
                         events={calendarEvents}
+                        todos={calendarTodos}
                         isDragging={isDragging}
                         dragStartDayString={dragStartDayString}
                         dragEndDayString={dragEndDayString}

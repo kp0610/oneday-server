@@ -58,6 +58,13 @@
     color: #ced4da;
 }
 
+.mini-day-cell.selected {
+    background-color: #FF7581; /* Similar to selected-start/end */
+    color: white;
+    font-weight: bold;
+    border-radius: 50%; /* Make it a circle */
+}
+
 .mini-day-cell.selected-start {
     background-color: #FF7581;
     color: white;
