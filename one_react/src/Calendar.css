@@ -337,7 +337,7 @@
 }
 
 .sunday-day-number {
-  /* margin-top: -15px; Removed */
+  margin-top: 5px; /* Move day number down by 5px */
   text-align: center;
 }
 
