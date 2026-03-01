@@ -395,6 +395,7 @@ const Calendar = ({
                                                             })}
                                                         </div>
                                                     </div>
+                                                    <div className="todo-list-label">투두리스트</div>
                                                     <div className="todo-list-box">
                                                         {todos && (() => {
                                                             const dailyTodos = todos.filter(todo => {
@@ -422,7 +423,7 @@ const Calendar = ({
                                                                     style.borderStyle = 'solid';
                                                                     style.borderColor = todo.color;
                                                                     style.borderWidth = '0.7px';
-                                                                    style.borderLeftWidth = '4px';
+                                                                    style.borderLeftWidth = '0.7px';
                                                                     style.backgroundColor = hexToRgba(todo.color, 0.5);
                                                                     style.color = darkenColor(todo.color, 0.7);
                                                                 }
