@@ -289,20 +289,59 @@
 
 .todo-list-box {
   /* background-color: #f8f9fa; Light background */
-  border: 1px solid #e9ecef; /* Light border */
-  border-radius: 6px;
+  /* border-top: 1px solid #e9ecef; Removed to use pseudo-element */
+  border-radius: 0; /* No rounding for the top border */
   padding: 5px;
   font-size: 10px;
   color: #495057;
   min-height: 130px; /* Minimum height for the todo box */
   overflow-y: auto; /* Allow scrolling if many todos */
+  position: relative; /* Needed for pseudo-element positioning */
+}
+
+.todo-list-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 5px; /* Adjust this value to control shortening from left */
+  right: 5px; /* Adjust this value to control shortening from right */
+  height: 1px;
+  background-color: #e9ecef;
 }
 
 .todo-list-label {
   font-weight: bold;
   margin-top: 40px;
+  text-align: center; /* Default alignment for all days */
 }
 
-.empty-todo-label {
-  min-height: 20px; /* Adjust this value as needed */
+.sunday-todo-label {
+  text-align: left; /* Override default for Sunday */
+  min-height: 0; /* Adjusted for alignment */
+}
+
+.sunday-todo-text {
+  font-weight: bold;
+  text-align: left;
+}
+
+.sunday-day-number {
+  margin-top: 5px; /* Adjust as needed to position below '투두리스트' */
+  text-align: center;
+}
+
+.todo-day-number {
+  font-weight: 600;
+  font-size: 11px;
+  color: #343a40;
+}
+
+.monday-todo-text {
+  font-weight: bold;
+  min-height: 0; /* Adjusted for alignment */
+  /* Adjust font-size if needed, inheriting from .todo-list-label for now */
+}
+
+.monday-day-number {
+  margin-top: 0; /* Adjusted for alignment */
 }

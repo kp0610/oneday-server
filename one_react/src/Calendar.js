@@ -395,8 +395,14 @@ const Calendar = ({
                                                             })}
                                                         </div>
                                                     </div>
-                                                    <div className={`todo-list-label ${new Date(dayInfo.dayString).getDay() !== 3 ? 'empty-todo-label' : ''}`}>
-                                                        {new Date(dayInfo.dayString).getDay() === 3 ? '투두리스트' : ''}
+                                                    <div className={`todo-list-label ${new Date(dayInfo.dayString).getDay() === 0 ? 'sunday-todo-label' : ''}`}>
+                                                        {new Date(dayInfo.dayString).getDay() === 0 && (
+                                                            <>
+                                                                투두리스트
+                                                                <br />
+                                                            </>
+                                                        )}
+                                                        <span className="todo-day-number">{dayInfo.day}</span>일
                                                     </div>
                                                     <div className="todo-list-box">
                                                         {todos && (() => {
