@@ -317,16 +317,17 @@
 
 .sunday-todo-label {
   text-align: left; /* Override default for Sunday */
-  min-height: 0; /* Adjusted for alignment */
+  height: 30px; /* Control overall vertical space */
 }
 
 .sunday-todo-text {
   font-weight: bold;
   text-align: left;
+  /* margin-top: -20px; Removed */
 }
 
 .sunday-day-number {
-  margin-top: 5px; /* Adjust as needed to position below '투두리스트' */
+  /* margin-top: -15px; Removed */
   text-align: center;
 }
 

@@ -396,13 +396,27 @@ const Calendar = ({
                                                         </div>
                                                     </div>
                                                     <div className={`todo-list-label ${new Date(dayInfo.dayString).getDay() === 0 ? 'sunday-todo-label' : ''}`}>
-                                                        {new Date(dayInfo.dayString).getDay() === 0 && (
+                                                        {new Date(dayInfo.dayString).getDay() === 0 && ( // Sunday
                                                             <>
-                                                                투두리스트
-                                                                <br />
+                                                                <div className="sunday-todo-text">투두리스트</div>
+                                                                <div className="sunday-day-number">
+                                                                    <span className="todo-day-number">{dayInfo.day}</span>
+                                                                </div>
                                                             </>
                                                         )}
-                                                        <span className="todo-day-number">{dayInfo.day}</span>일
+                                                        {new Date(dayInfo.dayString).getDay() === 1 && ( // Monday
+                                                            <>
+                                                                <div className="monday-todo-text"></div>
+                                                                <div className="monday-day-number">
+                                                                    <span className="todo-day-number">{dayInfo.day}</span>
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                        {new Date(dayInfo.dayString).getDay() !== 0 && new Date(dayInfo.dayString).getDay() !== 1 && ( // Other days
+                                                            <>
+                                                                <span className="todo-day-number">{dayInfo.day}</span>
+                                                            </>
+                                                        )}
                                                     </div>
                                                     <div className="todo-list-box">
                                                         {todos && (() => {
