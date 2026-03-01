@@ -395,7 +395,9 @@ const Calendar = ({
                                                             })}
                                                         </div>
                                                     </div>
-                                                    <div className="todo-list-label">투두리스트</div>
+                                                    <div className="todo-list-label">
+                                                        {new Date(dayInfo.dayString).getDay() === 3 ? '투두리스트' : ''}
+                                                    </div>
                                                     <div className="todo-list-box">
                                                         {todos && (() => {
                                                             const dailyTodos = todos.filter(todo => {
