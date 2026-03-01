@@ -274,11 +274,14 @@ const Calendar = ({
                                         {days.map((dayInfo, index) => (
                                             // Conditional rendering for week view
                                             !isMonthView ? (
-                                                <div key={index} className="day-and-todo-wrapper">
+                                                <div
+                                                    key={index}
+                                                    className={`day-and-todo-wrapper ${dayInfo.isSelected ? 'selected' : ''}`}
+                                                    onClick={(e) => dayInfo.dayString && handleDateClick(e, dayInfo)}
+                                                >
                                                     <div
                                                         data-date={dayInfo.dayString}
-                                                        className={`day-cell ${dayInfo.isOtherMonth ? 'other-month' : ''} ${dayInfo.isToday ? 'today' : ''} ${dayInfo.isSelected ? 'selected' : ''} ${isDateInDraggedRange(dayInfo.dayString) ? 'drag-selected' : ''} ${index % 7 === 0 ? 'sunday-day' : ''} ${index % 7 === 6 ? 'saturday-day' : ''}`}
-                                                        onClick={(e) => dayInfo.dayString && handleDateClick(e, dayInfo)}
+                                                        className={`day-cell ${dayInfo.isOtherMonth ? 'other-month' : ''} ${dayInfo.isToday ? 'today' : ''} ${isDateInDraggedRange(dayInfo.dayString) ? 'drag-selected' : ''} ${index % 7 === 0 ? 'sunday-day' : ''} ${index % 7 === 6 ? 'saturday-day' : ''}`}
                                                         onMouseDown={() => dayInfo.dayString && onDragStart(dayInfo.dayString)}
                                                         onMouseEnter={() => dayInfo.dayString && onDragMove(dayInfo.dayString)}
                                                         onMouseUp={onDragEnd}
@@ -418,7 +421,10 @@ const Calendar = ({
                                                             </>
                                                         )}
                                                     </div>
-                                                    <div className="todo-list-box">
+                                                    <div
+                                                        className={`todo-list-box ${dayInfo.isSelected ? 'selected' : ''}`}
+                                                        onClick={(e) => dayInfo.dayString && handleDateClick(e, dayInfo)}
+                                                    >
                                                         {todos && (() => {
                                                             const dailyTodos = todos.filter(todo => {
                                                                 const todoDate = new Date(todo.date).toISOString().split('T')[0];
