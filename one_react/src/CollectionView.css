@@ -115,8 +115,8 @@
     left: 0;
     right: 0;
     overflow-y: auto;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 /* Individual collection content styling within boxes might be needed */

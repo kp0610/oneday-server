@@ -207,17 +207,17 @@
 
 .stopwatch-daily-category-chip {
     height: 25.35px;
-    padding: 0 10px; /* Adjust padding for visual appeal */
-    border-radius: 12px; /* Half of height for pill shape */
+    padding: 0 10px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12.5px; /* Smaller font for chip text */
-    white-space: nowrap; /* Prevent text from wrapping */
-    overflow: hidden; /* Hide overflow content */
-    text-overflow: ellipsis; /* Show ellipsis for truncated text */
-    max-width: 29px; /* Limit chip width before ellipsis (adjust as needed) */
-    flex-shrink: 0; /* Prevent chip from shrinking */
+    font-size: 12.4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 39px;
+    flex-shrink: 0;
 }
 
 .stopwatch-daily-category-time {

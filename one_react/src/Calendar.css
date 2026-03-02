@@ -102,18 +102,18 @@
 }
 
 .calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 10px;
-  background-color: #E1E7EF; /* Light grey background */
-  padding: 8px 0; /* Removed horizontal padding */
-  border-radius: 8px; /* Rounded corners */
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 10px;
+    background-color: #f4f4f4;
+    padding: 7px 0;
+    border-radius: 8px;
 }
 
 .weekday {
-  text-align: center;
-  font-weight: bold;
-  color: #868e96;
+    text-align: center;
+    font-weight: 500;
+    color: #868e96;
 }
 
 .calendar-days {

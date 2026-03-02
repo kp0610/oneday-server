@@ -64,6 +64,11 @@ const Diary = ({ selectedDate, userId }) => {
     const [history, setHistory] = useState([]);
     const [historyStep, setHistoryStep] = useState(-1);
 
+    const longPressTimerRef = useRef(null);
+    const startPosRef = useRef({ x: 0, y: 0 });
+    const isLongPressTriggeredRef = useRef(false);
+
+    const [backgroundImageSrc, setBackgroundImageSrc] = useState(null);
     const containerRef = useRef(null); // Ref for the canvas's parent container
 
     // Effect to adjust canvas dimensions to its container's size
@@ -116,8 +121,9 @@ const Diary = ({ selectedDate, userId }) => {
         const ctx = canvas.getContext('2d');
         const img = new Image();
         img.onload = () => {
+            const dpr = window.devicePixelRatio || 1;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Draw image to fill canvas
+            ctx.drawImage(img, 0, 0, canvas.width / dpr, canvas.height / dpr); // Draw image to fill canvas, adjusted for DPR
         };
         img.src = canvasData;
     };
@@ -128,6 +134,7 @@ const Diary = ({ selectedDate, userId }) => {
             const canvas = canvasRef.current;
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            setBackgroundImageSrc(null);
             
             try {
                 const res = await fetch(`${process.env.REACT_APP_API_URL}/api/diaries/${userId}/${selectedDate}`);
@@ -140,47 +147,10 @@ const Diary = ({ selectedDate, userId }) => {
                 setTitle(data?.title || '');
 
                 if (data?.canvasImagePath) {
-                    const img = new Image();
-                    img.crossOrigin = 'anonymous'; // Handle potential CORS issues
-                    img.onload = () => {
-                        const canvas = canvasRef.current;
-                        const ctx = canvas.getContext('2d');
-                        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the dpr-scaled canvas
-
-                        const sourceWidth = img.width;
-                        const sourceHeight = img.height;
-                        const dpr = window.devicePixelRatio || 1;
-
-                        // Calculate draw dimensions for the *display* size first
-                        const canvasCssWidth = canvas.clientWidth;
-                        const canvasCssHeight = canvas.clientHeight;
-
-                        const aspectRatio = sourceWidth / sourceHeight;
-
-                        let drawCssWidth = canvasCssWidth;
-                        let drawCssHeight = canvasCssWidth / aspectRatio;
-
-                        if (drawCssHeight > canvasCssHeight) {
-                            drawCssHeight = canvasCssHeight;
-                            drawCssWidth = canvasCssHeight * aspectRatio;
-                        }
-
-                        // Center the image within the canvas
-                        const drawX = (canvasCssWidth - drawCssWidth) / 2;
-                        const drawY = (canvasCssHeight - drawCssHeight) / 2;
-
-
-                        // Now, draw onto the dpr-scaled canvas context using the calculated CSS dimensions
-                        // multiplied by dpr to get the correct drawing buffer coordinates.
-                        ctx.drawImage(img, 0, 0, sourceWidth, sourceHeight, // Source image (entire image)
-                            drawX, drawY,                                          // Destination x, y on canvas
-                            drawCssWidth, drawCssHeight);                  // Destination width, height on canvas (already scaled by ctx.scale(dpr, dpr))
-
-                        const initialState = { canvasData: canvas.toDataURL(), texts: loadedTexts, images: loadedImages };
-                        setHistory([initialState]);
-                        setHistoryStep(0);
-                    };
-                    img.src = `${process.env.REACT_APP_API_URL}${data.canvasImagePath}`;
+                    setBackgroundImageSrc(`${process.env.REACT_APP_API_URL}${data.canvasImagePath}`);
+                    const initialState = { canvasData: canvas.toDataURL(), texts: loadedTexts, images: loadedImages };
+                    setHistory([initialState]);
+                    setHistoryStep(0);
                 } else {
                     const initialState = { canvasData: canvas.toDataURL(), texts: loadedTexts, images: loadedImages };
                     setHistory([initialState]);
@@ -218,21 +188,15 @@ const Diary = ({ selectedDate, userId }) => {
         const finalCtx = finalCanvas.getContext('2d');
         finalCtx.scale(dpr, dpr);
 
-        let initialCanvasBase64 = null;
-        if (historyStep >= 0 && history[historyStep]) {
-            initialCanvasBase64 = history[historyStep].canvasData;
-        } else {
-            initialCanvasBase64 = canvas.toDataURL();
-        }
-
-        if (initialCanvasBase64) {
-            const tempImg = new Image();
-            tempImg.src = initialCanvasBase64;
-            await new Promise(resolve => tempImg.onload = resolve);
-
-            const sourceWidth = tempImg.width;
-            const sourceHeight = tempImg.height;
-
+        // 1. Draw background image
+        if (backgroundImageSrc) {
+            const bgImg = new Image();
+            bgImg.crossOrigin = 'anonymous';
+            bgImg.src = backgroundImageSrc;
+            await new Promise(resolve => bgImg.onload = resolve);
+            
+            const sourceWidth = bgImg.width;
+            const sourceHeight = bgImg.height;
             const aspectRatio = sourceWidth / sourceHeight;
             let drawWidth = displayWidth;
             let drawHeight = displayWidth / aspectRatio;
@@ -241,13 +205,12 @@ const Diary = ({ selectedDate, userId }) => {
                 drawHeight = displayHeight;
                 drawWidth = displayHeight * aspectRatio;
             }
-            // Center the image if it doesn't fill the entire canvas
             const drawX = (displayWidth - drawWidth) / 2;
             const drawY = (displayHeight - drawHeight) / 2;
-
-            finalCtx.drawImage(tempImg, 0, 0, sourceWidth, sourceHeight, drawX, drawY, drawWidth, drawHeight);
+            finalCtx.drawImage(bgImg, 0, 0, sourceWidth, sourceHeight, drawX, drawY, drawWidth, drawHeight);
         }
 
+        // 2. Draw images (DOM images)
         const imageLoadPromises = images.map(image => {
             return new Promise(resolve => {
                 const img = new Image();
@@ -259,9 +222,24 @@ const Diary = ({ selectedDate, userId }) => {
                 img.onerror = () => resolve();
             });
         });
-
         await Promise.all(imageLoadPromises);
 
+        // 3. Draw strokes (canvas.toDataURL)
+        let initialCanvasBase64 = null;
+        if (historyStep >= 0 && history[historyStep]) {
+            initialCanvasBase64 = history[historyStep].canvasData;
+        } else {
+            initialCanvasBase64 = canvas.toDataURL();
+        }
+
+        if (initialCanvasBase64) {
+            const tempImg = new Image();
+            tempImg.src = initialCanvasBase64;
+            await new Promise(resolve => tempImg.onload = resolve);
+            finalCtx.drawImage(tempImg, 0, 0, displayWidth, displayHeight); // Stroke canvas is already exact size
+        }
+
+        // 4. Draw texts
         texts.forEach(text => {
             finalCtx.font = `${parseInt(text.size) || 16}px sans-serif`;
             finalCtx.fillStyle = text.color || 'black';
@@ -316,23 +294,56 @@ const Diary = ({ selectedDate, userId }) => {
         setEditingText(id);
     };
 
-    const handleCanvasMouseDown = ({ nativeEvent }) => {
-        setSelectedItem(null);
+    const handleCanvasMouseDown = ({ nativeEvent, clientX, clientY }) => {
         if (drawingTool === 'text') {
-            if(editingText) {
-                setEditingText(null);
-                return;
-            }
-            // Add text on single click
-            const { offsetX, offsetY } = nativeEvent;
-            const newText = { id: Date.now(), x: offsetX, y: offsetY, value: '', color: penColor, size: textSize };
-            const newTexts = [...texts, newText];
-            setTexts(newTexts);
-            startEditingText(newText.id);
-            pushToHistory({ texts: newTexts, images, canvasData: canvasRef.current.toDataURL() });
-            return;
+            setSelectedItem(null);
+            return; // Handled by container wrapper now
         }
         const { offsetX, offsetY } = nativeEvent;
+
+        // Find back-layer image under cursor
+        const backImage = images.slice().reverse().find(img => 
+            img.isTopLayer === false && 
+            offsetX >= img.x && offsetX <= img.x + img.width &&
+            offsetY >= img.y && offsetY <= img.y + img.height
+        );
+
+        if (backImage) {
+            // Select it immediately so it can be moved or deleted
+            setSelectedItem({ type: 'image', id: backImage.id });
+            setDraggingItem({ type: 'image', id: backImage.id });
+            setDragStart({ x: clientX, y: clientY });
+
+            startPosRef.current = { x: clientX, y: clientY };
+            isLongPressTriggeredRef.current = false;
+            
+            if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+            longPressTimerRef.current = setTimeout(() => {
+                isLongPressTriggeredRef.current = true;
+                setIsDrawing(false);
+                setDraggingItem(null); // Cancel drag if it was a long press
+                
+                // Clear the tiny dot that might have been drawn
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                if (historyStep >= 0 && history[historyStep]) {
+                     const img = new Image();
+                     img.onload = () => {
+                         const dpr = window.devicePixelRatio || 1;
+                         ctx.clearRect(0, 0, canvas.width, canvas.height);
+                         ctx.drawImage(img, 0, 0, canvas.width / dpr, canvas.height / dpr);
+                     };
+                     img.src = history[historyStep].canvasData;
+                } else {
+                     ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+                
+                toggleImageLayer(backImage.id);
+            }, 300);
+        } else {
+            setSelectedItem(null);
+        }
+
         const ctx = canvasRef.current.getContext('2d');
         ctx.beginPath();
         ctx.moveTo(offsetX, offsetY);
@@ -408,8 +419,8 @@ const Diary = ({ selectedDate, userId }) => {
             const img = new Image();
             img.onload = () => {
                 const canvas = canvasRef.current;
-                const MAX_WIDTH = canvas.width * 0.5;
-                const MAX_HEIGHT = canvas.height * 0.5;
+                const MAX_WIDTH = canvas.width * 0.35;
+                const MAX_HEIGHT = canvas.height * 0.35;
                 let width = img.width;
                 let height = img.height;
 
@@ -425,7 +436,7 @@ const Diary = ({ selectedDate, userId }) => {
                     }
                 }
                 
-                const newImage = { id: Date.now(), src: img.src, x: 0, y: 0, width, height, ratio: width / height };
+                const newImage = { id: Date.now(), src: img.src, x: 0, y: 0, width, height, ratio: width / height, isTopLayer: true };
                 const newImages = [...images, newImage];
                 setImages(newImages);
                 pushToHistory({ texts, images: newImages, canvasData: canvasRef.current.toDataURL() });
@@ -437,6 +448,42 @@ const Diary = ({ selectedDate, userId }) => {
     };
 
     // Drag and Resize Handlers
+    const toggleImageLayer = (id) => {
+        let updatedImages;
+        setImages(prev => {
+            updatedImages = prev.map(img => {
+                if (img.id === id) {
+                    const currentTop = img.isTopLayer !== false; // default true
+                    return { ...img, isTopLayer: !currentTop };
+                }
+                return img;
+            });
+            return updatedImages;
+        });
+        setTimeout(() => {
+             pushToHistory({ texts: textsRef.current, images: updatedImages, canvasData: canvasRef.current.toDataURL() });
+        }, 0);
+    };
+
+    const handleImageMouseDown = (id, e) => {
+        e.stopPropagation();
+        setSelectedItem({ type: 'image', id });
+        setDraggingItem({ type: 'image', id });
+        setDragStart({ x: e.clientX, y: e.clientY });
+        
+        startPosRef.current = { x: e.clientX, y: e.clientY };
+        isLongPressTriggeredRef.current = false;
+        
+        if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+        
+        longPressTimerRef.current = setTimeout(() => {
+            isLongPressTriggeredRef.current = true;
+            setDraggingItem(null); 
+            setSelectedItem(null); 
+            toggleImageLayer(id);
+        }, 300);
+    };
+
     const handleItemDragStart = (type, id, e) => {
         e.stopPropagation();
         setSelectedItem({ type, id });
@@ -448,9 +495,24 @@ const Diary = ({ selectedDate, userId }) => {
         e.stopPropagation();
         setResizingImage(id);
         setDragStart({ x: e.clientX, y: e.clientY });
+        if (longPressTimerRef.current) {
+            clearTimeout(longPressTimerRef.current);
+            longPressTimerRef.current = null;
+        }
     };
 
     const handleMouseMove = (e) => {
+        if (longPressTimerRef.current) {
+            const dx = e.clientX - startPosRef.current.x;
+            const dy = e.clientY - startPosRef.current.y;
+            if (Math.sqrt(dx * dx + dy * dy) > 5) {
+                clearTimeout(longPressTimerRef.current);
+                longPressTimerRef.current = null;
+            }
+        }
+        
+        if (isLongPressTriggeredRef.current) return;
+
         if (draggingItem) {
             const dx = e.clientX - dragStart.x;
             const dy = e.clientY - dragStart.y;
@@ -476,6 +538,19 @@ const Diary = ({ selectedDate, userId }) => {
     };
 
     const handleMouseUp = () => {
+        if (longPressTimerRef.current) {
+            clearTimeout(longPressTimerRef.current);
+            longPressTimerRef.current = null;
+        }
+
+        if (isLongPressTriggeredRef.current) {
+            isLongPressTriggeredRef.current = false;
+            setDraggingItem(null);
+            setResizingImage(null);
+            setIsDrawing(false);
+            return;
+        }
+
         if (draggingItem || resizingImage) {
             pushToHistory();
         }
@@ -545,8 +620,28 @@ const Diary = ({ selectedDate, userId }) => {
                             <HexColorPicker color={penColor} onChange={setPenColor} />
                         </div>
                     )}
-                    <div ref={containerRef} className="canvas-wrapper">
-                        <button className="save-btn" onClick={saveDiary}>저장</button> {/* Moved save button here */}
+                    <div ref={containerRef} className="canvas-wrapper" onMouseDown={(e) => {
+                        if (drawingTool === 'text') {
+                            const rect = containerRef.current.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            const y = e.clientY - rect.top;
+                            if (editingText) {
+                                setEditingText(null);
+                                return;
+                            }
+                            const newText = { id: Date.now(), x, y, value: '', color: penColor, size: textSize };
+                            const newTexts = [...texts, newText];
+                            setTexts(newTexts);
+                            startEditingText(newText.id);
+                            pushToHistory({ texts: newTexts, images, canvasData: canvasRef.current.toDataURL() });
+                        }
+                    }}>
+                        <button className="save-btn" onClick={saveDiary} style={{ zIndex: 100 }}>저장</button> {/* Moved save button here */}
+                        
+                        {backgroundImageSrc && (
+                            <img src={backgroundImageSrc} alt="diary-background" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', zIndex: 0 }} />
+                        )}
+
                         <canvas
                             id="diary-canvas"
                             ref={canvasRef}
@@ -554,10 +649,17 @@ const Diary = ({ selectedDate, userId }) => {
                             // width and height are now managed by useEffect
                             onMouseDown={handleCanvasMouseDown}
                             onDoubleClick={handleCanvasDoubleClick}
-                            style={{ display: 'block' }} // Prevent extra space below canvas
+                            style={{ 
+                                display: 'block', 
+                                position: 'relative', 
+                                zIndex: (drawingTool === 'pen' || drawingTool === 'eraser') ? 10 : 2,
+                                pointerEvents: (drawingTool === 'pen' || drawingTool === 'eraser') ? 'auto' : 'none'
+                            }} 
                         ></canvas>
+                        
                         {/* Render Images */}
                         {images.map(image => {
+                            const isTop = image.isTopLayer !== false; // true by default
                             const isSelected = selectedItem?.type === 'image' && selectedItem?.id === image.id;
                             return (
                                 <div
@@ -568,10 +670,16 @@ const Diary = ({ selectedDate, userId }) => {
                                         left: image.x,
                                         width: image.width,
                                         height: image.height,
+                                        zIndex: isSelected ? 20 : (isTop ? 15 : 5),
+                                        pointerEvents: (isTop || isSelected) ? 'auto' : ((drawingTool === 'pen' || drawingTool === 'eraser') ? 'none' : 'auto')
                                     }}
-                                    onMouseDown={(e) => handleItemDragStart('image', image.id, e)}
+                                    onMouseDown={(e) => {
+                                        if (isTop || isSelected || (drawingTool !== 'pen' && drawingTool !== 'eraser')) {
+                                            handleImageMouseDown(image.id, e);
+                                        }
+                                    }}
                                 >
-                                    <img src={image.src} alt="" style={{ width: '100%', height: '100%' }} />
+                                    <img src={image.src} alt="" style={{ width: '100%', height: '100%' }} draggable={false} />
                                     {isSelected && (
                                         <>
                                             <button onClick={(e) => { e.stopPropagation(); deleteImage(image.id); }} className="item-action-btn delete">&times;</button>
@@ -589,7 +697,14 @@ const Diary = ({ selectedDate, userId }) => {
                                     key={text.id}
                                     ref={el => textRefs.current[text.id] = el}
                                     className={`diary-text-box ${isSelected ? 'selected' : ''} ${editingText === text.id ? 'editing' : ''}`}
-                                    style={{ top: text.y, left: text.x, color: text.color || 'black', fontSize: `${text.size}px` }} // Use text.size
+                                    style={{ 
+                                        top: text.y, 
+                                        left: text.x, 
+                                        color: text.color || 'black', 
+                                        fontSize: `${parseInt(text.size) || 16}px`,
+                                        zIndex: 15,
+                                        pointerEvents: (drawingTool === 'pen' || drawingTool === 'eraser') ? 'none' : 'auto'
+                                    }} 
                                     onMouseDown={(e) => handleItemDragStart('text', text.id, e)}
                                     onDoubleClick={(e) => { e.stopPropagation(); startEditingText(text.id); }}
                                 >
