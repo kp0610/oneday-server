@@ -276,7 +276,7 @@ const Calendar = ({
                                             !isMonthView ? (
                                                 <div
                                                     key={index}
-                                                    className={`day-and-todo-wrapper ${dayInfo.isSelected ? 'selected' : ''} ${index % 7 === 0 ? 'sunday-day' : ''} ${index % 7 === 6 ? 'saturday-day' : ''}`}
+                                                    className={`day-and-todo-wrapper ${dayInfo.isSelected ? 'selected' : ''}`}
                                                     onClick={(e) => dayInfo.dayString && handleDateClick(e, dayInfo)}
                                                 >
                                                     <div
@@ -403,7 +403,7 @@ const Calendar = ({
                                                             <>
                                                                 <div className="sunday-todo-text">투두리스트</div>
                                                                 <div className="sunday-day-number">
-                                                                    <span className="todo-day-number">{dayInfo.day}</span>
+                                                                    <span className="todo-day-number sunday-todo-day-number">{dayInfo.day}</span>
                                                                 </div>
                                                             </>
                                                         )}
@@ -415,7 +415,12 @@ const Calendar = ({
                                                                 </div>
                                                             </>
                                                         )}
-                                                        {new Date(dayInfo.dayString).getDay() !== 0 && new Date(dayInfo.dayString).getDay() !== 1 && ( // Other days
+                                                        {new Date(dayInfo.dayString).getDay() === 6 && ( // Saturday
+                                                            <>
+                                                                <span className="todo-day-number saturday-todo-day-number">{dayInfo.day}</span>
+                                                            </>
+                                                        )}
+                                                        {new Date(dayInfo.dayString).getDay() !== 0 && new Date(dayInfo.dayString).getDay() !== 1 && new Date(dayInfo.dayString).getDay() !== 6 && ( // Other days (not Sunday, Monday, or Saturday)
                                                             <>
                                                                 <span className="todo-day-number">{dayInfo.day}</span>
                                                             </>
@@ -463,11 +468,6 @@ const Calendar = ({
                                                                         style={style}
                                                                     >
                                                                         {todo.title}
-                                                                        {todo.completed && (
-                                                                            <svg className="checkmark-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                                                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                                                                            </svg>
-                                                                        )}
                                                                     </div>
                                                                 );
                                                             });

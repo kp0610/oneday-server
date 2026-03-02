@@ -332,7 +332,7 @@
 .todo-list-box::before {
   content: '';
   position: absolute;
-  top: -2px; /* Moved up by 2px */
+  top: 0;
   left: 5px; /* Adjust this value to control shortening from left */
   right: 5px; /* Adjust this value to control shortening from right */
   height: 1px;
@@ -347,14 +347,13 @@
 .other-day-label {
   display: flex;
   justify-content: center;
-  align-items: center;
   margin-top: 20px; /* Reduced margin */
   min-height: 25px; /* Reserve space for consistency */
 }
 
 .sunday-todo-label {
   text-align: left; /* Override default for Sunday */
-  margin-top: 5px; /* Moved up by 15px */
+  margin-top: 8px; /* Reduced margin */
   min-height: 25px; /* Reserve space for consistency */
 }
 
@@ -366,45 +365,54 @@
 
 .sunday-day-number {
   text-align: center;
+  margin-top: 3px;
+  margin-bottom: 2px;
 }
 
 .todo-day-number {
   font-weight: 600;
   font-size: 11px;
   color: #343a40;
+  margin-top: 7px;
 }
 
-.todo-list-box.selected .todo-day-number {
-  font-size: 15px;
-  font-weight: bold;
+.monday-day-number {
+  margin-top: 7px;
 }
 
+.todo-list-box.selected::before {
+  top: 0 !important;
+}
 
+.todo-list-box.selected {
+  margin-top: 0 !important;
+}
 
 .todo-item.completed {
   background-color: #f0f0f0 !important;
   color: #aaa !important;
+  text-decoration: line-through;
   border-color: #ddd !important;
 }
 
-.sunday-day .todo-day-number {
-  color: #E57373;
+.sunday-todo-day-number {
+  color: #E57373; /* Red color for Sunday */
 }
 
-.saturday-day .todo-day-number {
-  color: #2196F3;
+.saturday-todo-day-number {
+  color: #2196F3; /* Blue color for Saturday */
 }
 
-.todo-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.todo-item.completed {
+  position: relative; /* Needed for absolute positioning of ::after */
 }
 
-.checkmark-icon {
-  width: 16px;
-  height: 16px;
-  color: #4CAF50; /* Green color for checkmark */
-  flex-shrink: 0;
-  margin-left: 5px;
+.todo-item.completed::after {
+  content: '\2713'; /* Unicode checkmark character */
+  color: #adb5bd; /* Gray color */
+  font-size: 12px;
+  position: absolute;
+  right: 5px; /* Position to the right */
+  top: 50%;
+  transform: translateY(-50%);
 }
