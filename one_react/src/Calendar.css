@@ -187,8 +187,9 @@
   /* background-color: #e6f7ff; */ /* Example background color for selection */
 }
 
-.day-cell:active {
+.day-and-todo-wrapper:active {
   background-color: #e6f7ff;
+  border-radius: 6px;
 }
 
 .day-and-todo-wrapper.selected .todo-day-number,
