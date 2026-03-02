@@ -276,7 +276,7 @@ const Calendar = ({
                                             !isMonthView ? (
                                                 <div
                                                     key={index}
-                                                    className={`day-and-todo-wrapper ${dayInfo.isSelected ? 'selected' : ''}`}
+                                                    className={`day-and-todo-wrapper ${dayInfo.isSelected ? 'selected' : ''} ${index % 7 === 0 ? 'sunday-day' : ''} ${index % 7 === 6 ? 'saturday-day' : ''}`}
                                                     onClick={(e) => dayInfo.dayString && handleDateClick(e, dayInfo)}
                                                 >
                                                     <div
@@ -463,6 +463,11 @@ const Calendar = ({
                                                                         style={style}
                                                                     >
                                                                         {todo.title}
+                                                                        {todo.completed && (
+                                                                            <svg className="checkmark-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                                                            </svg>
+                                                                        )}
                                                                     </div>
                                                                 );
                                                             });
