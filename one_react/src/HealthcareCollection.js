@@ -10,7 +10,7 @@ const getDatesInRange = (startDate, endDate) => {
     let currentDate = new Date(startDate);
     const end = new Date(endDate);
     while (currentDate <= end) {
-        dates.push(currentDate.toISOString().split('T')[0]);
+        dates.push(new Date(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000).toISOString().split('T')[0]);
         currentDate.setDate(currentDate.getDate() + 1);
     }
     return dates;
@@ -21,7 +21,7 @@ const getLastSevenDays = () => {
     for (let i = 0; i < 7; i++) {
         const d = new Date();
         d.setDate(d.getDate() - i);
-        dates.push(d.toISOString().split('T')[0]);
+        dates.push(new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().split('T')[0]);
     }
     return dates.reverse();
 };

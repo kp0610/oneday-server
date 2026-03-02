@@ -77,7 +77,7 @@ const CyclePrediction = ({ userId, selectedCycleStartDate }) => {
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
-        return date.toISOString().split('T')[0];
+        return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0];
     };
 
     const resetForm = () => {

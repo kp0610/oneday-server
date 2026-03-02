@@ -109,8 +109,8 @@ const Calendar = ({
                     // Process history to YYYY-MM-DD format
                     const processedCycles = data.history.map(cycle => ({
                         id: cycle.id,
-                        startDate: new Date(cycle.start_date).toISOString().split('T')[0],
-                        endDate: new Date(cycle.end_date).toISOString().split('T')[0],
+                        startDate: new Date(new Date(cycle.start_date).getTime() - new Date(cycle.start_date).getTimezoneOffset() * 60000).toISOString().split('T')[0],
+                        endDate: new Date(new Date(cycle.end_date).getTime() - new Date(cycle.end_date).getTimezoneOffset() * 60000).toISOString().split('T')[0],
                     }));
                     setMenstrualCycles(processedCycles);
 
@@ -338,14 +338,14 @@ const Calendar = ({
                                                         {(() => {
                                                             const multiDayEventsForDay = events.filter(e => {
                                                                 if (!e.start_date || !e.end_date || e.type === 'menstrualCycle') return false;
-                                                                const filterStartDate = new Date(e.start_date).toISOString().split('T')[0];
-                                                                const filterEndDate = new Date(e.end_date).toISOString().split('T')[0];
+                                                                const filterStartDate = new Date(new Date(e.start_date).getTime() - new Date(e.start_date).getTimezoneOffset() * 60000).toISOString().split('T')[0];
+                                                                const filterEndDate = new Date(new Date(e.end_date).getTime() - new Date(e.end_date).getTimezoneOffset() * 60000).toISOString().split('T')[0];
                                                                 return filterStartDate !== filterEndDate && dayInfo.dayString >= filterStartDate && dayInfo.dayString <= filterEndDate;
                                                             });
                                                             return multiDayEventsForDay.map(event => {
                                                                 const eventColor = event.color || '#A0A0A0'; // Default grey if no color
-                                                                const eventStartDate = new Date(event.start_date).toISOString().split('T')[0];
-                                                                const eventEndDate = new Date(event.end_date).toISOString().split('T')[0];
+                                                                const eventStartDate = new Date(new Date(event.start_date).getTime() - new Date(event.start_date).getTimezoneOffset() * 60000).toISOString().split('T')[0];
+                                                                const eventEndDate = new Date(new Date(event.end_date).getTime() - new Date(event.end_date).getTimezoneOffset() * 60000).toISOString().split('T')[0];
                                                                 return (
                                                                     <div
                                                                         key={event.id}
@@ -432,7 +432,7 @@ const Calendar = ({
                                                     >
                                                         {todos && (() => {
                                                             const dailyTodos = todos.filter(todo => {
-                                                                const todoDate = new Date(todo.date).toISOString().split('T')[0];
+                                                                const todoDate = new Date(new Date(todo.date).getTime() - new Date(todo.date).getTimezoneOffset() * 60000).toISOString().split('T')[0];
                                                                 return todoDate === dayInfo.dayString;
                                                             });
 
@@ -536,14 +536,14 @@ const Calendar = ({
                                                     {(() => {
                                                         const multiDayEventsForDay = events.filter(e => {
                                                             if (!e.start_date || !e.end_date || e.type === 'menstrualCycle') return false;
-                                                            const filterStartDate = new Date(e.start_date).toISOString().split('T')[0];
-                                                            const filterEndDate = new Date(e.end_date).toISOString().split('T')[0];
+                                                            const filterStartDate = new Date(new Date(e.start_date).getTime() - new Date(e.start_date).getTimezoneOffset() * 60000).toISOString().split('T')[0];
+                                                            const filterEndDate = new Date(new Date(e.end_date).getTime() - new Date(e.end_date).getTimezoneOffset() * 60000).toISOString().split('T')[0];
                                                             return filterStartDate !== filterEndDate && dayInfo.dayString >= filterStartDate && dayInfo.dayString <= filterEndDate;
                                                         });
                                                         return multiDayEventsForDay.map(event => {
                                                             const eventColor = event.color || '#A0A0A0'; // Default grey if no color
-                                                            const eventStartDate = new Date(event.start_date).toISOString().split('T')[0];
-                                                            const eventEndDate = new Date(event.end_date).toISOString().split('T')[0];
+                                                            const eventStartDate = new Date(new Date(event.start_date).getTime() - new Date(event.start_date).getTimezoneOffset() * 60000).toISOString().split('T')[0];
+                                                            const eventEndDate = new Date(new Date(event.end_date).getTime() - new Date(event.end_date).getTimezoneOffset() * 60000).toISOString().split('T')[0];
                                                             return (
                                                                 <div
                                                                     key={event.id}

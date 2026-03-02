@@ -8,7 +8,7 @@ const getDatesInRange = (startDate, endDate) => {
     let currentDate = new Date(startDate);
     const end = new Date(endDate);
     while (currentDate <= end) {
-        dates.push(currentDate.toISOString().split('T')[0]);
+        dates.push(new Date(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000).toISOString().split('T')[0]);
         currentDate.setDate(currentDate.getDate() + 1);
     }
     return dates;
@@ -55,7 +55,7 @@ const StopwatchCollection = ({ displayMode = 'summary', sortOrder, setSortOrder,
         const datesInSelectedRange = getDatesInRange(selectedStartDate, selectedEndDate);
 
         allRecords.forEach(record => {
-            const recordDate = new Date(record.date).toISOString().split('T')[0];
+            const recordDate = new Date(new Date(record.date).getTime() - new Date(record.date).getTimezoneOffset() * 60000).toISOString().split('T')[0];
             // Only include records within the selected date range
             if (datesInSelectedRange.includes(recordDate)) {
                 if (!grouped[recordDate]) {

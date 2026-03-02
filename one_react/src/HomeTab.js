@@ -232,7 +232,7 @@ const HomeTab = ({
             const startDate = selectedDate;
             const endDate = new Date(startDate);
             endDate.setFullYear(endDate.getFullYear() + 1);
-            const endDateString = endDate.toISOString().split('T')[0];
+            const endDateString = new Date(endDate.getTime() - endDate.getTimezoneOffset() * 60000).toISOString().split('T')[0];
             try {
                 const res = await fetch(`${process.env.REACT_APP_API_URL}/api/events/range/${userId}?startDate=${startDate}&endDate=${endDateString}`);
                 const data = await res.json();

@@ -51,7 +51,7 @@ const getDatesInRange = (startDate, endDate) => {
     let currentDate = new Date(startDate);
     const end = new Date(endDate);
     while (currentDate <= end) {
-        dates.push(currentDate.toISOString().split('T')[0]);
+        dates.push(new Date(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000).toISOString().split('T')[0]);
         currentDate.setDate(currentDate.getDate() + 1);
     }
     return dates;

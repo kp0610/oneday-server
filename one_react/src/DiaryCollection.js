@@ -25,7 +25,7 @@ const DiaryCollection = ({ selectedStartDate, selectedEndDate }) => {
                 console.log("DiaryCollection raw data from API:", data); // DEBUG
                 const formattedData = data.map(diary => ({
                     ...diary,
-                    navDate: new Date(diary.date).toISOString().split('T')[0],
+                    navDate: new Date(new Date(diary.date).getTime() - new Date(diary.date).getTimezoneOffset() * 60000).toISOString().split('T')[0],
                     displayDate: `${String(new Date(diary.date).getMonth() + 1).padStart(2, '0')}/${String(new Date(diary.date).getDate()).padStart(2, '0')}`,
                     image: diary.canvasImagePath ? `${process.env.REACT_APP_API_URL}${diary.canvasImagePath}` : null,
                 }));

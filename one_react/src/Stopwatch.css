@@ -150,10 +150,11 @@ h2, h3 {
 .add-category-wrapper {
     display: flex;
     align-items: center;
+    justify-content: space-between; /* push elements to edges */
     border: 1px solid #F0F3F6;
     border-radius: 20px;
-    padding: 3px; /* Reduced padding */
-    max-width: 180px; /* Limit its width */
+    padding: 3px 13px 3px 15px; /* Adjust padding for wrapper: top right bottom left */
+    width: 154px; /* fixed width to control layout */
     flex-shrink: 0; /* Prevent shrinking too much */
     margin-top: auto; /* Pushes it to the bottom within the flex column parent */
     align-self: center; /* Centers it horizontally if parent is wider than max-width */
@@ -162,10 +163,11 @@ h2, h3 {
 .add-category-wrapper input {
     border: none;
     outline: none;
-    flex-grow: 0;
-    padding: 1px 29px;
+    flex-grow: 1; /* take up available space */
+    padding: 1px 0px 1px 0px; /* remove horizontal padding, handled by wrapper */
     background-color: transparent;
     font-size: 13px; /* Decreased font size as requested */
+    width: 100px; /* constrain width */
 }
 
 .color-picker-palette {
@@ -203,6 +205,7 @@ h2, h3 {
     font-size: 16px; /* Reduced font size */
     color: #383838;
     cursor: pointer;
+    margin-right: -9px; /* Move an additional 3px to the right */
 }
 
 .add-category-popup-overlay {

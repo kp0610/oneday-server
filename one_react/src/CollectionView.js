@@ -34,13 +34,13 @@ const CollectionButton = ({ label, isActive, onClick }) => {
 
 // Helper functions for date calculations
 const getToday = () => {
-    return new Date().toISOString().split('T')[0];
+    return new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0];
 };
 
 const getSevenDaysAgo = () => {
     const d = new Date();
     d.setDate(d.getDate() - 7);
-    return d.toISOString().split('T')[0];
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().split('T')[0];
 };
 
 // Helper to format MM/DD or MM/DD-MM/DD
@@ -217,7 +217,7 @@ const CollectionView = () => {
                                 <StopwatchCollection displayMode="summary" sortOrder={sortOrder} setSortOrder={setSortOrder} selectedStartDate={selectedStartDate} selectedEndDate={selectedEndDate} />
                             )}
                             {selectedCollection === 'diary' && (
-                                <div className="today-diary-preview-container" style={{ width: '371px', height: '207px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px', position: 'relative', zIndex: 10, top: '1.4px' }}>
+                                <div className="today-diary-preview-container" style={{ width: '371px', height: '207px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '5px', position: 'relative', zIndex: 10, top: '1.4px', margin: '0 auto' }}>
                                     {todayDiaryImage ? (
                                         <img src={todayDiaryImage} alt="Today's Diary" style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: 'white', borderRadius: '15px', border: '1px solid #E1E7EF', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }} />
                                     ) : (
