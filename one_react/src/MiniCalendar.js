@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './MiniCalendar.css';
 
-const MiniCalendar = ({ selectedDates, onDateSelect, currentMonthYear, setCurrentMonthYear = () => {} }) => {
+const MiniCalendar = ({ selectedDates = [], onDateSelect, currentMonthYear, setCurrentMonthYear = () => {} }) => {
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
