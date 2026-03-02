@@ -184,10 +184,15 @@
 }
 
 .day-and-todo-wrapper.selected {
-  background-color: #e6f7ff; /* Example background color for selection */
+  /* background-color: #e6f7ff; */ /* Example background color for selection */
 }
 
-.day-and-todo-wrapper.selected .todo-day-number {
+.day-cell:active {
+  background-color: #e6f7ff;
+}
+
+.day-and-todo-wrapper.selected .todo-day-number,
+.day-and-todo-wrapper.selected .day-number-wrapper p {
   font-size: 15px;
   font-weight: bold;
 }
@@ -348,6 +353,7 @@
   font-weight: bold;
   text-align: left;
   margin-top: -20px; /* Move '투두리스트' text up by 20px */
+  font-size: 14px;
 }
 
 .sunday-day-number {
@@ -375,4 +381,11 @@
 
 .monday-day-number {
   margin-top: 0; /* Adjusted for alignment */
+}
+
+.todo-item.completed {
+  background-color: #f0f0f0 !important;
+  color: #aaa !important;
+  text-decoration: line-through;
+  border-color: #ddd !important;
 }
