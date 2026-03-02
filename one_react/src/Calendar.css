@@ -341,8 +341,15 @@
 
 .todo-list-label {
   font-weight: bold;
-  margin-top: 40px;
   text-align: center; /* Default alignment for all days */
+}
+
+.other-day-label {
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
 }
 
 .sunday-todo-label {

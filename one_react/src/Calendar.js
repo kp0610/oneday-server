@@ -398,7 +398,7 @@ const Calendar = ({
                                                             })}
                                                         </div>
                                                     </div>
-                                                    <div className={`todo-list-label ${new Date(dayInfo.dayString).getDay() === 0 ? 'sunday-todo-label' : ''}`}>
+                                                    <div className={`todo-list-label ${new Date(dayInfo.dayString).getDay() === 0 ? 'sunday-todo-label' : 'other-day-label'}`}>
                                                         {new Date(dayInfo.dayString).getDay() === 0 && ( // Sunday
                                                             <>
                                                                 <div className="sunday-todo-text">투두리스트</div>
