@@ -42,9 +42,15 @@
 }
 
 .mini-day-cell {
-    padding: 5px 0; /* Reduced */
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 50%;
     transition: background-color 0.2s;
     font-size: 0.8em; /* Reduced */
     color: #343a40;
@@ -62,28 +68,27 @@
     background-color: #FF7581; /* Similar to selected-start/end */
     color: white;
     font-weight: bold;
-    border-radius: 50%; /* Make it a circle */
+    border-radius: 50%;
 }
 
 .mini-day-cell.selected-start {
     background-color: #FF7581;
     color: white;
     font-weight: bold;
-    border-top-left-radius: 1000%;
-    border-bottom-left-radius: 1000%;
+    border-radius: 50%;
 }
 
 .mini-day-cell.selected-end {
     background-color: #FF7581;
     color: white;
     font-weight: bold;
-    border-top-right-radius: 50%;
-    border-bottom-right-radius: 50%;
+    border-radius: 50%;
 }
 
 .mini-day-cell.selected-between {
     background-color: #ffe1e3; /* Light pink for dates within the range */
     color: #FF7581;
+    border-radius: 50%;
 }
 
 /* If a single day is selected, it's both start and end */

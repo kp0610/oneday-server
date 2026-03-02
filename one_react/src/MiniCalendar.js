@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './MiniCalendar.css';
 
-const MiniCalendar = ({ selectedDates = [], onDateSelect, currentMonthYear, setCurrentMonthYear = () => {} }) => {
+const MiniCalendar = ({ selectedDates = [], selectedStartDate, selectedEndDate, onDateSelect, currentMonthYear, setCurrentMonthYear = () => {} }) => {
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -40,14 +40,40 @@ const MiniCalendar = ({ selectedDates = [], onDateSelect, currentMonthYear, setC
         while (day <= monthEnd || days.length % 7 !== 0) { // Ensure full weeks are rendered
             const dayString = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`;
             const isCurrentMonth = day.getMonth() === currentMonthYear.getMonth();
-            const isSelected = selectedDates.includes(dayString);
+            
+            let isSelected = false;
+            let isStart = false;
+            let isEnd = false;
+            let isBetween = false;
+
+            if (selectedDates.length > 0) {
+                isSelected = selectedDates.includes(dayString);
+            } else if (selectedStartDate && selectedEndDate) {
+                const date = new Date(dayString);
+                const start = new Date(selectedStartDate);
+                const end = new Date(selectedEndDate);
+                
+                isStart = date.toDateString() === start.toDateString();
+                isEnd = date.toDateString() === end.toDateString();
+                isBetween = date > start && date < end;
+                isSelected = isStart || isEnd || isBetween;
+            } else if (selectedStartDate) {
+                const date = new Date(dayString);
+                const start = new Date(selectedStartDate);
+                isStart = date.toDateString() === start.toDateString();
+                isEnd = isStart;
+                isSelected = isStart;
+            }
 
             days.push(
                 <div
                     key={dayString}
                     className={`mini-day-cell
                                 ${isCurrentMonth ? '' : 'other-month'}
-                                ${isSelected ? 'selected' : ''}
+                                ${isSelected ? (selectedDates.length > 0 ? 'selected' : '') : ''}
+                                ${isStart ? 'selected-start' : ''}
+                                ${isEnd ? 'selected-end' : ''}
+                                ${isBetween ? 'selected-between' : ''}
                                 `}
                     onClick={() => onDateSelect(dayString)}
                 >
