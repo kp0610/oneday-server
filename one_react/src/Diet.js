@@ -207,7 +207,7 @@ const Diet = () => {
                                                 onChange={(e) => updateFoodQty(card.id, food.id, e.target.value)}
                                                 data-node-id="771:2394"
                                             />
-                                            <span className="food-cal" data-node-id="771:2399">{Math.round((food.calories || 0) * (food.qty || 1))} kcal</span>
+                                            <span className="food-cal" data-node-id="771:2399">{Math.round((food.calories || 0) * (food.qty === '' ? 0 : (parseFloat(food.qty) || 0)))} kcal</span>
                                             <button className="remove-food-btn" onClick={() => removeFoodFromCard(card.id, food.id)}>x</button>
                                         </li>
                                     ))}
@@ -225,7 +225,7 @@ const Diet = () => {
                                 </div>
                             </div>
                             <div className="meal-card-footer">
-                                <span>총: <span className="meal-card-total-calories" data-node-id="771:2385">{Math.round((card.foods || []).reduce((acc, food) => acc + (food.calories || 0) * (food.qty || 1), 0))}</span> kcal</span>
+                                <span>총: <span className="meal-card-total-calories" data-node-id="771:2385">{Math.round((card.foods || []).reduce((acc, food) => acc + (food.calories || 0) * (food.qty === '' ? 0 : (parseFloat(food.qty) || 0)), 0))}</span> kcal</span>
                             </div>
                         </div>
                     ))}

@@ -189,7 +189,7 @@ export const DataProvider = ({ children }) => {
     const handleCategoryChange = (cardId, newCategory) => updateCurrentMeals(cards => cards.map(card => card.id === cardId ? { ...card, category: newCategory } : card));
     const deleteMealCard = (cardId) => updateCurrentMeals(cards => cards.filter(card => card.id !== cardId));
     const removeFoodFromCard = (cardId, foodId) => updateCurrentMeals(cards => cards.map(card => card.id === cardId ? { ...card, foods: card.foods.filter(f => f.id !== foodId) } : card));
-    const updateFoodQty = (cardId, foodId, qty) => updateCurrentMeals(cards => cards.map(card => card.id === cardId ? { ...card, foods: card.foods.map(f => f.id === foodId ? { ...f, qty: parseFloat(qty) || 1 } : f) } : cards));
+    const updateFoodQty = (cardId, foodId, qty) => updateCurrentMeals(cards => cards.map(card => card.id === cardId ? { ...card, foods: card.foods.map(f => f.id === foodId ? { ...f, qty: qty } : f) } : card));
     const addFoodToCard = (cardId, food) => updateCurrentMeals(cards => cards.map(card => card.id === cardId ? { ...card, foods: [...card.foods, { ...food, qty: 1, id: Date.now() }], searchQuery: '' } : card));
     const setSearchQuery = (cardId, query) => updateCurrentMeals(cards => cards.map(card => card.id === cardId ? { ...card, searchQuery: query } : card));
 

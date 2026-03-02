@@ -110,13 +110,13 @@
 
 .collection-scrollable-content {
     position: absolute;
-    top: 60px; /* Reduced gap: 20px (date top) + 20px (date height) + 20px (new gap) */
+    top: 60px;
     bottom: 0;
     left: 0;
     right: 0;
     overflow-y: auto;
-    padding-left: 20px; /* Align with the date display */
-    padding-right: 20px; /* Match the right padding of the parent */
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 /* Individual collection content styling within boxes might be needed */

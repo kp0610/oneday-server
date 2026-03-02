@@ -52,6 +52,10 @@ const Diary = ({ selectedDate, userId }) => {
     }, [editingText]);
     
     const [images, setImages] = useState([]);
+    const textsRef = useRef(texts);
+    const imagesRef = useRef(images);
+    useEffect(() => { textsRef.current = texts; }, [texts]);
+    useEffect(() => { imagesRef.current = images; }, [images]);
     const [selectedItem, setSelectedItem] = useState(null); // { type: 'text' | 'image', id }
     const [draggingItem, setDraggingItem] = useState(null); // { type: 'text' | 'image', id }
     const [resizingImage, setResizingImage] = useState(null);
@@ -96,9 +100,10 @@ const Diary = ({ selectedDate, userId }) => {
         };
     }, []); // Removed history dependencies to prevent canvas reset on every history change
 
-    const pushToHistory = (currentState = { texts, images, canvasData: canvasRef.current.toDataURL() }) => {
+    const pushToHistory = (currentState) => {
+        const stateToSave = currentState || { texts: textsRef.current, images: imagesRef.current, canvasData: canvasRef.current.toDataURL() };
         const newHistory = history.slice(0, historyStep + 1);
-        newHistory.push(currentState);
+        newHistory.push(stateToSave);
         setHistory(newHistory);
         setHistoryStep(newHistory.length - 1);
     };
@@ -258,7 +263,7 @@ const Diary = ({ selectedDate, userId }) => {
         await Promise.all(imageLoadPromises);
 
         texts.forEach(text => {
-            finalCtx.font = `${text.size}px sans-serif`;
+            finalCtx.font = `${parseInt(text.size) || 16}px sans-serif`;
             finalCtx.fillStyle = text.color || 'black';
             finalCtx.fillText(text.value, text.x, text.y);
         });
@@ -349,11 +354,10 @@ const Diary = ({ selectedDate, userId }) => {
             // This part is complex and might be revisited. For now, it erases canvas content.
         }
         
-        const ctx = canvas.getContext('2d');
-        ctx.strokeStyle = penColor;
-        ctx.lineWidth = drawingTool === 'eraser' ? penSize * 2 : penSize;
-        ctx.globalCompositeOperation = drawingTool === 'pen' ? 'source-over' : 'destination-out';
-        ctx.lineTo(offsetX, offsetY);
+                const ctx = canvasRef.current.getContext('2d');
+                ctx.strokeStyle = penColor;
+                ctx.lineWidth = drawingTool === 'eraser' ? (parseInt(penSize) || 8) * 2 : (parseInt(penSize) || 8);
+                ctx.globalCompositeOperation = drawingTool === 'pen' ? 'source-over' : 'destination-out';        ctx.lineTo(offsetX, offsetY);
         ctx.stroke();
     };
 
@@ -429,6 +433,7 @@ const Diary = ({ selectedDate, userId }) => {
             img.src = event.target.result;
         };
         reader.readAsDataURL(e.target.files[0]);
+        e.target.value = ''; // Reset input value to allow re-uploading the same file
     };
 
     // Drag and Resize Handlers
@@ -511,7 +516,7 @@ const Diary = ({ selectedDate, userId }) => {
                                         <input
                                             type="number"
                                             value={penSize}
-                                            onChange={(e) => setPenSize(parseInt(e.target.value) || 1)}
+                                            onChange={(e) => setPenSize(e.target.value === '' ? '' : parseInt(e.target.value) || 1)}
                                             min="1"
                                             max="50"
                                             className="size-input"
@@ -524,7 +529,7 @@ const Diary = ({ selectedDate, userId }) => {
                                         <input
                                             type="number"
                                             value={textSize}
-                                            onChange={(e) => setTextSize(parseInt(e.target.value) || 1)}
+                                            onChange={(e) => setTextSize(e.target.value === '' ? '' : parseInt(e.target.value) || 1)}
                                             min="1"
                                             max="72"
                                             className="size-input"
@@ -601,7 +606,7 @@ const Diary = ({ selectedDate, userId }) => {
                                             style={{ color: text.color || 'black', fontSize: `${text.size}px` }} // Use text.size
                                         />
                                      ) : (
-                                        <div className="diary-display-text" style={{ fontSize: `${text.size}px` }}>{text.value}</div> // Use text.size
+                                        <div className="diary-display-text" style={{ fontSize: `${parseInt(text.size) || 16}px` }}>{text.value}</div> // Use text.size
                                     )}
                                 </div>
                             );
