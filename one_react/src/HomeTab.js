@@ -403,6 +403,7 @@ const HomeTab = ({
 
     const handleScheduleTemplateSelectInModal = (template) => {
         setNewScheduleTitle(template.title);
+        setNewScheduleColor(template.color); // Also set the color from the template
         // Optionally, if template has other properties like time, reminder, etc., set them here too.
         // For now, just title.
     };

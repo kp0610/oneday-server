@@ -238,14 +238,58 @@
   /* margin-top: 2px; Removed */
 }
 
+.calendar-grid.week-view .calendar-days {
+  grid-template-rows: minmax(0, 1fr); /* Constrain row height to available space */
+}
+
+.calendar-grid.week-view .day-and-todo-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 5px;
+  height: 100%; /* Make wrapper fill the constrained grid cell height */
+  overflow: hidden; /* Prevent children from breaking out */
+}
+
 .calendar-grid.week-view .day-cell {
-  height: auto; /* Allow height to expand based on content */
-  min-height: 160px; /* Maintain a minimum height */
-  overflow: visible; /* Ensure all content is visible */
+  height: 160px; /* Set a fixed height */
+  min-height: 160px;
+  overflow: hidden; /* Prevent children from overflowing */
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0; /* Prevent this item from shrinking */
 }
 
 .calendar-grid.week-view .day-cell .events-container {
-  overflow-y: visible; /* Allow events to push the day-cell height */
+  overflow-y: auto; /* Enable scrolling */
+  flex-grow: 1; /* Take up available space */
+  min-height: 0; /* Fix for scrolling in flexbox */
+}
+
+.todo-list-label {
+  font-weight: bold;
+  text-align: center; /* Default alignment for all days */
+  flex-shrink: 0; /* Prevent this item from shrinking */
+}
+
+.todo-list-box {
+  /* background-color: #f8f9fa; Light background */
+  /* border-top: 1px solid #e9ecef; Removed to use pseudo-element */
+  border-radius: 0; /* No rounding for the top border */
+  padding: 5px;
+  font-size: 10px;
+  color: #495057;
+  position: relative; /* Needed for pseudo-element positioning */
+  height: 180px; /* Set a fixed height */
+  overflow-y: auto; /* Allow scrolling if many todos */
+  /* Hide scrollbar for Webkit browsers */
+  &::-webkit-scrollbar {
+      display: none;
+  }
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide scrollbar for Internet Explorer/Edge */
+  -ms-overflow-style: none;
 }
 .day-cell.other-month {
     color: #D3D3D3; /* Light gray color */
@@ -415,4 +459,9 @@
   right: 5px; /* Position to the right */
   top: 50%;
   transform: translateY(-50%);
+}
+
+.calendar-grid.week-view .todo-item {
+  width: 65px;
+  box-sizing: border-box; /* Ensure padding and border are included in the width */
 }
