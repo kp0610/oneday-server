@@ -173,9 +173,10 @@
   margin: 2px auto 0;
 }
 
-.day-cell.selected p {
-  /* font-size: 15px; Removed */
-  /* font-weight: bold; Removed */
+.day-cell.selected .day-number-wrapper p {
+  font-weight: 900 !important;
+  font-size: 12px !important;
+  color: #FF7581 !important; /* Change color to primary color */
 }
 
 .todo-list-box.selected .todo-day-number {

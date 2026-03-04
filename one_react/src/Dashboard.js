@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 import HomeTab from './HomeTab';
 import RecordsTab from './RecordsTab';
@@ -19,6 +19,20 @@ const Dashboard = ({
     clearInitialEventDates, // New prop
 }) => {
     const [activeTab, setActiveTab] = useState('home-tab');
+
+    // Determine if selectedDate is a future date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of day
+    const dateToCheck = new Date(selectedDate);
+    dateToCheck.setHours(0, 0, 0, 0); // Normalize to start of day
+    const isFutureDate = dateToCheck > today;
+
+    // If activeTab is records or healthcare and selectedDate is future, switch to home
+    useEffect(() => {
+        if (isFutureDate && (activeTab === 'records-tab' || activeTab === 'healthcare-tab')) {
+            setActiveTab('home-tab');
+        }
+    }, [selectedDate, isFutureDate, activeTab]);
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -68,8 +82,20 @@ const Dashboard = ({
             <div className="dashboard-container">
                 <div className="dashboard-tabs">
                     <button className={`dash-tab-link dash-tab-home ${activeTab === 'home-tab' ? 'active' : ''}`} onClick={() => setActiveTab('home-tab')}>홈</button>
-                    <button className={`dash-tab-link dash-tab-records ${activeTab === 'records-tab' ? 'active' : ''}`} onClick={() => setActiveTab('records-tab')}>기록</button>
-                    <button className={`dash-tab-link dash-tab-healthcare ${activeTab === 'healthcare-tab' ? 'active' : ''}`} onClick={() => setActiveTab('healthcare-tab')}>헬스케어</button>
+                    <button
+                        className={`dash-tab-link dash-tab-records ${activeTab === 'records-tab' ? 'active' : ''} ${isFutureDate ? 'disabled-tab' : ''}`}
+                        onClick={() => setActiveTab('records-tab')}
+                        disabled={isFutureDate}
+                    >
+                        기록
+                    </button>
+                    <button
+                        className={`dash-tab-link dash-tab-healthcare ${activeTab === 'healthcare-tab' ? 'active' : ''} ${isFutureDate ? 'disabled-tab' : ''}`}
+                        onClick={() => setActiveTab('healthcare-tab')}
+                        disabled={isFutureDate}
+                    >
+                        헬스케어
+                    </button>
                 </div>
                 <div className={`dashboard-content-wrapper content-for-${activeTab}`}>
                     {renderTabContent()}
