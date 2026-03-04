@@ -299,7 +299,15 @@ const Diary = ({ selectedDate, userId }) => {
             setSelectedItem(null);
             return; // Handled by container wrapper now
         }
-        const { offsetX, offsetY } = nativeEvent;
+        const canvas = canvasRef.current;
+        const rect = canvas.getBoundingClientRect();
+        // Calculate the scale to adjust for CSS transform: scale()
+        const scaleX = canvas.offsetWidth ? rect.width / canvas.offsetWidth : 1;
+        const scaleY = canvas.offsetHeight ? rect.height / canvas.offsetHeight : 1;
+        
+        // Use clientX/Y and un-scale them for accurate canvas coordinates
+        const offsetX = (clientX - rect.left) / scaleX;
+        const offsetY = (clientY - rect.top) / scaleY;
 
         // Find back-layer image under cursor
         const backImage = images.slice().reverse().find(img => 
@@ -358,8 +366,10 @@ const Diary = ({ selectedDate, userId }) => {
         if (!isDrawing) return;
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
-        const offsetX = e.clientX - rect.left;
-        const offsetY = e.clientY - rect.top;
+        const scaleX = canvas.offsetWidth ? rect.width / canvas.offsetWidth : 1;
+        const scaleY = canvas.offsetHeight ? rect.height / canvas.offsetHeight : 1;
+        const offsetX = (e.clientX - rect.left) / scaleX;
+        const offsetY = (e.clientY - rect.top) / scaleY;
 
         if (drawingTool === 'eraser') {
             // This part is complex and might be revisited. For now, it erases canvas content.
@@ -514,8 +524,13 @@ const Diary = ({ selectedDate, userId }) => {
         if (isLongPressTriggeredRef.current) return;
 
         if (draggingItem) {
-            const dx = e.clientX - dragStart.x;
-            const dy = e.clientY - dragStart.y;
+            const canvas = canvasRef.current;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.offsetWidth ? rect.width / canvas.offsetWidth : 1;
+            const scaleY = canvas.offsetHeight ? rect.height / canvas.offsetHeight : 1;
+
+            const dx = (e.clientX - dragStart.x) / scaleX;
+            const dy = (e.clientY - dragStart.y) / scaleY;
             if (draggingItem.type === 'text') {
                 setTexts(texts.map(t => t.id === draggingItem.id ? { ...t, x: t.x + dx, y: t.y + dy } : t));
             } else if (draggingItem.type === 'image') {
@@ -523,7 +538,10 @@ const Diary = ({ selectedDate, userId }) => {
             }
             setDragStart({ x: e.clientX, y: e.clientY });
         } else if (resizingImage) {
-            const dx = e.clientX - dragStart.x;
+            const canvas = canvasRef.current;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.offsetWidth ? rect.width / canvas.offsetWidth : 1;
+            const dx = (e.clientX - dragStart.x) / scaleX;
             setImages(images.map(img => {
                 if (img.id === resizingImage) {
                     const newWidth = img.width + dx;
@@ -623,8 +641,10 @@ const Diary = ({ selectedDate, userId }) => {
                     <div ref={containerRef} className="canvas-wrapper" onMouseDown={(e) => {
                         if (drawingTool === 'text') {
                             const rect = containerRef.current.getBoundingClientRect();
-                            const x = e.clientX - rect.left;
-                            const y = e.clientY - rect.top;
+                            const scaleX = containerRef.current.offsetWidth ? rect.width / containerRef.current.offsetWidth : 1;
+                            const scaleY = containerRef.current.offsetHeight ? rect.height / containerRef.current.offsetHeight : 1;
+                            const x = (e.clientX - rect.left) / scaleX;
+                            const y = (e.clientY - rect.top) / scaleY;
                             if (editingText) {
                                 setEditingText(null);
                                 return;
