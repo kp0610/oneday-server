@@ -11,8 +11,8 @@ const CyclePrediction = ({ userId, selectedCycleStartDate }) => {
     // --- Component State ---
     const [cycleHistory, setCycleHistory] = useState([]);
     const [dDay, setDDay] = useState('?');
-    const [predictedStartDate, setPredictedStartDate] = useState('----.--.--');
-    const [predictedEndDate, setPredictedEndDate] = useState('----.--.--');
+    const [predictedStartDate, setPredictedStartDate] = useState('00.00');
+    const [predictedEndDate, setPredictedEndDate] = useState('00.00');
     const [showCycleModal, setShowCycleModal] = useState(false);
     const [startDateInput, setStartDateInput] = useState('');
     const [endDateInput, setEndDateInput] = useState('');
@@ -48,22 +48,22 @@ const CyclePrediction = ({ userId, selectedCycleStartDate }) => {
                     setPredictedEndDate(data.prediction.endDate);
                 } else {
                     setDDay('?');
-                    setPredictedStartDate('----.--.--');
-                    setPredictedEndDate('----.--.--');
+                    setPredictedStartDate('00.00');
+                    setPredictedEndDate('00.00');
                 }
             } else {
                 // Reset on failure
                 setCycleHistory([]);
                 setDDay('?');
-                setPredictedStartDate('----.--.--');
-                setPredictedEndDate('----.--.--');
+                setPredictedStartDate('00.00');
+                setPredictedEndDate('00.00');
             }
         } catch (error) {
             console.error("Error fetching cycle history:", error);
             setCycleHistory([]);
             setDDay('?');
-            setPredictedStartDate('----.--.--');
-            setPredictedEndDate('----.--.--');
+            setPredictedStartDate('00.00');
+            setPredictedEndDate('00.00');
         }
     };
 
@@ -86,10 +86,19 @@ const CyclePrediction = ({ userId, selectedCycleStartDate }) => {
         setEditingCycleId(null);
     };
 
+    const isFutureDate = (dateString) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize to start of day
+        const inputDate = new Date(dateString);
+        inputDate.setHours(0, 0, 0, 0); // Normalize to start of day
+        return inputDate > today;
+    };
+
     const handleSaveCycleRecord = async () => {
         if (!userId) { console.warn('User not logged in. Cannot save cycle record.'); return; }
-        if (!startDateInput || !endDateInput) { console.warn('Start and end dates are required.'); return; }
-        if (new Date(startDateInput) > new Date(endDateInput)) { console.warn('End date cannot be earlier than start date.'); return; }
+        if (!startDateInput || !endDateInput) { alert('시작일과 종료일을 입력해주세요.'); return; }
+        if (new Date(startDateInput) > new Date(endDateInput)) { alert('종료일은 시작일보다 빠를 수 없습니다.'); return; }
+        if (isFutureDate(startDateInput) || isFutureDate(endDateInput)) { alert('미래 날짜는 입력할 수 없습니다.'); return; }
 
         try {
             const res = await fetch(`${process.env.REACT_APP_API_URL}/api/healthcare/cycles`, {
@@ -113,8 +122,9 @@ const CyclePrediction = ({ userId, selectedCycleStartDate }) => {
 
     const handleUpdateCycleRecord = async () => {
         if (!editingCycleId) return;
-        if (!startDateInput || !endDateInput) { console.warn('Start and end dates are required for update.'); return; }
-        if (new Date(startDateInput) > new Date(endDateInput)) { console.warn('End date cannot be earlier than start date for update.'); return; }
+        if (!startDateInput || !endDateInput) { alert('시작일과 종료일을 입력해주세요.'); return; }
+        if (new Date(startDateInput) > new Date(endDateInput)) { alert('종료일은 시작일보다 빠를 수 없습니다.'); return; }
+        if (isFutureDate(startDateInput) || isFutureDate(endDateInput)) { alert('미래 날짜는 입력할 수 없습니다.'); return; }
 
         try {
             const res = await fetch(`${process.env.REACT_APP_API_URL}/api/healthcare/cycles/${editingCycleId}`, {
@@ -166,8 +176,8 @@ const CyclePrediction = ({ userId, selectedCycleStartDate }) => {
     };
 
     const formatCycleDate = (dateString) => {
-        if (!dateString || dateString === '----.--.--') {
-            return { mmdd: '--.--', day: '---' };
+        if (!dateString || dateString === '00.00' || dateString === '----.--.--') {
+            return { mmdd: '00.00', day: '월, 일' };
         }
         const date = new Date(dateString);
         const mm = String(date.getMonth() + 1).padStart(2, '0');

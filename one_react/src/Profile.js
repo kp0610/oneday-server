@@ -321,20 +321,19 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                 <button className="close-profile-button" onClick={onClose}>x</button> {/* Added close button */}
                 <h1>My Profile</h1>
                 <div className="profile-image-and-name">
-                    <div
-                        className="profile-picture-container"
-                        style={{
-                            border: '1px solid #E1E7EF',
-                            backgroundImage: backgroundImageUrl,
-                            backgroundSize: previewImage ? 'cover' : '60%', // Use cover for uploaded image, 60% for default
-                            backgroundPosition: previewImage ? 'center' : '49% 55%', // Center for uploaded image, specific for default
-                        }}
-                    >
-                        <ImageUploader onImageUpload={handleImageUpload} className="profile-upload-button">
-                            <MdOutlineCameraAlt />
-                        </ImageUploader>
-                    </div>
-                    <div className="nickname-display-wrapper">
+                        <div
+                            className="profile-picture-container"
+                            style={{
+                                border: '1px solid #E1E7EF',
+                                ...(previewImage ? { backgroundImage: backgroundImageUrl } : {}), // Only apply backgroundImage if present
+                                backgroundSize: previewImage ? 'cover' : '70%', // Use 70% as default size based on previous discussion
+                                backgroundPosition: previewImage ? 'center' : 'center', // Default center for silhouette
+                            }}
+                        >
+                            <ImageUploader onImageUpload={handleImageUpload} className="profile-upload-button">
+                                <MdOutlineCameraAlt />
+                            </ImageUploader>
+                        </div>                    <div className="nickname-display-wrapper">
                         {isEditingNickname ? (
                             <input
                                 type="text"
