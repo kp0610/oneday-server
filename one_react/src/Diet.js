@@ -203,7 +203,7 @@ const Diet = () => {
                                         <li key={food.id} data-node-id="661:2912">
                                             <span className="food-name">{food.name}</span>
                                             <input 
-                                                className="food-qty" type="number" value={food.qty} min="0.1" step="0.1" 
+                                                className="food-qty" type="number" value={food.qty % 1 === 0 ? Math.round(food.qty).toString() : food.qty.toFixed(1)} min="0.1" step="0.1" 
                                                 onChange={(e) => updateFoodQty(card.id, food.id, e.target.value)}
                                                 data-node-id="771:2394"
                                             />
