@@ -117,51 +117,50 @@ passport.use(
     async (req, accessToken, refreshToken, profile, done) => { // Add req here
       const connection = await db.getConnection();
       try {
-        // Check if user already exists in our DB
-        const [users] = await connection.query('SELECT * FROM users WHERE google_id = ?', [profile.id]);
+        await connection.beginTransaction(); // START TRANSACTION
+        const userEmail = profile.emails[0].value.trim().toLowerCase();
+
+        // Check if user already exists by google_id, and lock the row
+        const [users] = await connection.query('SELECT * FROM users WHERE google_id = ? FOR UPDATE', [profile.id]);
 
         if (users.length > 0) {
-          // User found, update only real_name if it's NULL or empty
-          let user = users[0];
-          const updates = [];
-          const params = [];
-
-          // Only update real_name if it's currently NULL or an empty string
-          if (user.real_name === null || user.real_name === '') {
-            updates.push('real_name = ?');
-            params.push(profile.displayName);
-          }
-          // username and profile_image_url are NOT updated to preserve user customizations
-
-          if (updates.length > 0) {
-            params.push(user.id);
-            const updateSql = `UPDATE users SET ${updates.join(', ')} WHERE id = ?`;
-            await connection.query(updateSql, params);
-            // Re-fetch user to get updated data
-            const [updatedUsers] = await connection.query('SELECT * FROM users WHERE id = ?', [user.id]);
-            user = updatedUsers[0];
-          }
-          return done(null, user);
-        } else {
-          // No user found with this google_id, create a new one
-          const randomPassword = crypto.randomBytes(16).toString('hex'); // Generate a random string
-          const hashedPassword = await bcrypt.hash(randomPassword, 10); // Hash the random string
-
-          const newUser = {
-            google_id: profile.id,
-            username: profile.displayName,
-            real_name: profile.displayName, // Add real_name field
-            email: profile.emails[0].value,
-            password: hashedPassword, // Store the hashed random password
-            provider: 'google', // Add provider field
-            profile_image_url: null, // Do not fetch profile image from Google, use default instead
-          };
-          const [result] = await connection.query('INSERT INTO users SET ?', newUser);
-          const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
-          req.session.isNewUser = true; // Set flag for new user
-          return done(null, createdUser[0]);
+          // User found, no need to update anything here unless necessary
+          await connection.commit(); // COMMIT
+          return done(null, users[0]);
         }
+
+        // No user with google_id, check for existing email and lock the row
+        const [existingUsers] = await connection.query('SELECT * FROM users WHERE email = ? FOR UPDATE', [userEmail]);
+
+        if (existingUsers.length > 0) {
+          // User with email exists, link google_id
+          const user = existingUsers[0];
+          await connection.query('UPDATE users SET google_id = ? WHERE id = ?', [profile.id, user.id]);
+          await connection.commit(); // COMMIT
+          return done(null, user);
+        }
+
+        // No user found, create a new one
+        const randomPassword = crypto.randomBytes(16).toString('hex');
+        const hashedPassword = await bcrypt.hash(randomPassword, 10);
+        const newUser = {
+          google_id: profile.id,
+          username: profile.displayName,
+          real_name: profile.displayName,
+          email: userEmail,
+          password: hashedPassword,
+          provider: 'google',
+          profile_image_url: null,
+        };
+        const [result] = await connection.query('INSERT INTO users SET ?', newUser);
+        const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
+        
+        await connection.commit(); // COMMIT
+        req.session.isNewUser = true;
+        return done(null, createdUser[0]);
+
       } catch (err) {
+        if (connection) await connection.rollback(); // ROLLBACK on error
         console.error("GoogleStrategy error:", err);
         return done(err, null);
       } finally {
@@ -184,31 +183,50 @@ passport.use(
               },    async (req, accessToken, refreshToken, profile, done) => { // Add req here
       const connection = await db.getConnection();
       try {
-        // Check if user already exists in our DB
-        const [users] = await connection.query('SELECT * FROM users WHERE kakao_id = ?', [profile.id]);
+        await connection.beginTransaction(); // START TRANSACTION
+
+        // Check if user already exists by kakao_id and lock the row
+        const [users] = await connection.query('SELECT * FROM users WHERE kakao_id = ? FOR UPDATE', [profile.id]);
 
         if (users.length > 0) {
-          // User found, return our internal user object
+          await connection.commit(); // COMMIT
           return done(null, users[0]);
-        } else {
-          // No user found with this kakao_id, create a new one
-          const randomPassword = crypto.randomBytes(16).toString('hex'); // Generate a random string
-          const hashedPassword = await bcrypt.hash(randomPassword, 10); // Hash the random string
-
-          const newUser = {
-            kakao_id: profile.id,
-            username: profile.username, // Use profile.username for nickname
-            real_name: profile.username, // Use profile.username for real_name as well
-            // email: profile._json.kakao_account.email, // 카카오 정책상 이메일 수집 안 함
-            password: hashedPassword, // Store the hashed random password
-            provider: 'kakao', // Add provider field
-          };
-          const [result] = await connection.query('INSERT INTO users SET ?', newUser);
-          const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
-          req.session.isNewUser = true; // Set flag for new user
-          return done(null, createdUser[0]);
         }
+
+        // No user with kakao_id, check for existing email
+        const userEmail = profile._json.kakao_account.email ? profile._json.kakao_account.email.trim().toLowerCase() : null;
+        if (userEmail) {
+          const [existingUsers] = await connection.query('SELECT * FROM users WHERE email = ? FOR UPDATE', [userEmail]);
+          if (existingUsers.length > 0) {
+            const user = existingUsers[0];
+            await connection.query('UPDATE users SET kakao_id = ? WHERE id = ?', [profile.id, user.id]);
+            await connection.commit(); // COMMIT
+            return done(null, user);
+          }
+        }
+
+        // No user found, create a new one
+        const finalEmail = userEmail ? userEmail : `kakao_${profile.id}@one.day`; // Use placeholder if email is null
+
+        const randomPassword = crypto.randomBytes(16).toString('hex');
+        const hashedPassword = await bcrypt.hash(randomPassword, 10);
+        const newUser = {
+          kakao_id: profile.id,
+          username: profile.username,
+          real_name: profile.username,
+          email: finalEmail,
+          password: hashedPassword,
+          provider: 'kakao',
+        };
+        const [result] = await connection.query('INSERT INTO users SET ?', newUser);
+        const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
+        
+        await connection.commit(); // COMMIT
+        req.session.isNewUser = true;
+        return done(null, createdUser[0]);
+
       } catch (err) {
+        if (connection) await connection.rollback(); // ROLLBACK on error
         console.error("KakaoStrategy error:", err);
         return done(err, null);
       } finally {
@@ -232,32 +250,52 @@ passport.use(
     async (req, accessToken, refreshToken, profile, done) => { // Add req here
       const connection = await db.getConnection();
       try {
-        // Check if user already exists in our DB
-        const [users] = await connection.query('SELECT * FROM users WHERE naver_id = ?', [profile.id]);
+        await connection.beginTransaction(); // START TRANSACTION
+
+        // Check if user already exists by naver_id and lock the row
+        const [users] = await connection.query('SELECT * FROM users WHERE naver_id = ? FOR UPDATE', [profile.id]);
 
         if (users.length > 0) {
-          // User found, return our internal user object
+          await connection.commit(); // COMMIT
           return done(null, users[0]);
-        } else {
-          // No user found with this naver_id, create a new one
-          console.log("Naver Profile:", profile); // Debug log for Naver profile
-          const randomPassword = crypto.randomBytes(16).toString('hex'); // Generate a random string
-          const hashedPassword = await bcrypt.hash(randomPassword, 10); // Hash the random string
-
-          const newUser = {
-            naver_id: profile.id,
-            username: profile.displayName,
-            real_name: profile.displayName,
-            email: profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null, // Naver may not always provide email
-            password: hashedPassword, // Store the hashed random password
-            provider: 'naver', // Add provider field
-          };
-          const [result] = await connection.query('INSERT INTO users SET ?', newUser);
-          const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
-          req.session.isNewUser = true; // Set flag for new user
-          return done(null, createdUser[0]);
         }
+
+        // No user with naver_id, check for existing email
+        const rawEmail = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
+        const userEmail = rawEmail ? rawEmail.trim().toLowerCase() : null;
+
+        if (userEmail) {
+          const [existingUsers] = await connection.query('SELECT * FROM users WHERE email = ? FOR UPDATE', [userEmail]);
+          if (existingUsers.length > 0) {
+            const user = existingUsers[0];
+            await connection.query('UPDATE users SET naver_id = ? WHERE id = ?', [profile.id, user.id]);
+            await connection.commit(); // COMMIT
+            return done(null, user);
+          }
+        }
+
+        // No user found, create a new one
+        const finalEmail = userEmail ? userEmail : `naver_${profile.id}@one.day`; // Use placeholder if email is null
+
+        const randomPassword = crypto.randomBytes(16).toString('hex');
+        const hashedPassword = await bcrypt.hash(randomPassword, 10);
+        const newUser = {
+          naver_id: profile.id,
+          username: profile.displayName,
+          real_name: profile.displayName,
+          email: finalEmail,
+          password: hashedPassword,
+          provider: 'naver',
+        };
+        const [result] = await connection.query('INSERT INTO users SET ?', newUser);
+        const [createdUser] = await connection.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
+        
+        await connection.commit(); // COMMIT
+        req.session.isNewUser = true;
+        return done(null, createdUser[0]);
+
       } catch (err) {
+        if (connection) await connection.rollback(); // ROLLBACK on error
         console.error("NaverStrategy error:", err);
         return done(err, null);
       } finally {
@@ -336,12 +374,9 @@ app.get(
 // ==================
 app.get(
   "/auth/kakao",
-  (req, res, next) => {
-    console.log("Kakao Auth Options:", { auth_type: "reauthenticate" });
-    passport.authenticate("kakao", {
-      auth_type: "reauthenticate" // Force reauthentication/consent screen
-    })(req, res, next);
-  }
+  passport.authenticate("kakao", {
+    scope: ["account_email"], // Request email from user
+  })
 );
 
 // ==================

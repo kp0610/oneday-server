@@ -372,7 +372,11 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                                                                                                                                                                                         <div className="my-info-chip">{profile.real_name || 'N/A'}</div>
                                                                                                                                                                                     </div>                                                                                        <div className="my-info-item-group">
                                                                                             <p className="my-info-label">아이디</p>
-                                                                                            <div className="my-info-chip">{profile.email || 'N/A'}</div>
+                                                                                            <div className="my-info-chip">
+                                                                                                {profile.provider === 'kakao' ? '카카오 로그인' :
+                                                                                                 profile.provider === 'naver' ? '네이버 로그인' :
+                                                                                                 profile.email || 'N/A'}
+                                                                                            </div>
                                                                                         </div>
                                                                                         {/* Add more profile details here if needed */}
                                                                                         <span onClick={() => setShowWithdrawModal(true)} className="withdraw-text-inside-info">탈퇴하기</span>
