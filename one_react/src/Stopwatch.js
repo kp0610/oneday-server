@@ -481,7 +481,7 @@ const Stopwatch = ({ userId, selectedDate }) => {
             {isAddCategoryPopupOpen && (
                 <div className="add-category-popup-overlay">
                     <div className="add-category-popup-content">
-                        <button className="add-category-popup-close-button" onClick={() => setIsAddCategoryPopupOpen(false)}>X</button>
+                        <button className="add-category-popup-close-button" onClick={() => setIsAddCategoryPopupOpen(false)}>x</button>
                         <h4>새 카테고리 추가</h4>
                         <div className="add-category-wrapper">
                             <input
