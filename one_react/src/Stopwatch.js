@@ -4,6 +4,7 @@ import { PREDEFINED_COLORS, BASE_CATEGORY_NAMES, BASE_CATEGORY_COLORS_MAP } from
 
 const Stopwatch = ({ userId, selectedDate }) => {
     const [tasks, setTasks] = useState([]);
+    const [isDataLoaded, setIsDataLoaded] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [categories, setCategories] = useState([]);
     const [newCategory, setNewCategory] = useState('');
@@ -88,33 +89,99 @@ const Stopwatch = ({ userId, selectedDate }) => {
                 const res = await fetch(`${process.env.REACT_APP_API_URL}/api/stopwatch/${userId}/${selectedDate}`);
                 if (res.ok) {
                     const data = await res.json();
-                    setTasks(data?.tasks_data || []);
+                    
+                    // Calculate elapsed time for tasks that were left running
+                    const processedTasks = (data?.tasks_data || []).map(task => {
+                        if (!task.isPaused && task.lastStartedAt) {
+                            const now = Date.now();
+                            let newElapsed = task.elapsedTime + (now - task.lastStartedAt);
+                            if (newElapsed >= 86400000) { // 24 hours in ms
+                                return { ...task, elapsedTime: 86400000, isPaused: true, isComplete: true, lastStartedAt: null };
+                            }
+                            return { ...task, elapsedTime: newElapsed, lastStartedAt: now };
+                        }
+                        return task;
+                    });
+                    
+                    setTasks(processedTasks);
                 } else {
                     setTasks([]);
                 }
             } catch (error) {
                 console.error("Error fetching stopwatch data:", error);
                 setTasks([]);
+            } finally {
+                setIsDataLoaded(true);
             }
         };
 
+        setIsDataLoaded(false);
         fetchTasks();
     }, [userId, selectedDate]);
 
     // Refs to store previous date and tasks for reliable saving on navigation
-    const prevDateRef = useRef();
-    const prevTasksRef = useRef();
+    const prevDateRef = useRef(selectedDate);
+    const prevTasksRef = useRef(tasks);
 
     useEffect(() => {
-        // When selectedDate changes, save the tasks for the *previous* date
         if (prevDateRef.current && prevDateRef.current !== selectedDate) {
             saveTasks(prevTasksRef.current, prevDateRef.current);
         }
-
-        // Update refs for the next render
         prevDateRef.current = selectedDate;
+    }, [selectedDate]);
+
+    useEffect(() => {
         prevTasksRef.current = tasks;
-    }, [selectedDate, tasks]);
+    }, [tasks]);
+
+    const isDataLoadedRef = useRef(isDataLoaded);
+    useEffect(() => { isDataLoadedRef.current = isDataLoaded; }, [isDataLoaded]);
+
+    // Save on unmount to ensure latest elapsed time is captured
+    useEffect(() => {
+        const handleUnload = () => {
+            // Only save if we actually loaded data from the server first to prevent overwriting with initial empty array
+            if (isDataLoadedRef.current && prevDateRef.current && prevTasksRef.current && userId) {
+                // Ensure latest time calculation is included right before unload
+                const now = Date.now();
+                const latestTasksToSave = prevTasksRef.current.map(task => {
+                    if (!task.isPaused && task.lastStartedAt) {
+                        let newElapsed = task.elapsedTime + (now - task.lastStartedAt);
+                        if (newElapsed >= 86400000) {
+                            return { ...task, elapsedTime: 86400000, isPaused: true, isComplete: true, lastStartedAt: null };
+                        }
+                        return { ...task, elapsedTime: newElapsed, lastStartedAt: now };
+                    }
+                    return task;
+                });
+
+                // Use navigator.sendBeacon for more reliable unmount/unload requests if payload is small enough
+                const payload = JSON.stringify({
+                    userId,
+                    date: prevDateRef.current,
+                    tasksData: latestTasksToSave,
+                });
+                
+                try {
+                    navigator.sendBeacon(`${process.env.REACT_APP_API_URL}/api/stopwatch`, new Blob([payload], { type: 'application/json' }));
+                } catch (e) {
+                    fetch(`${process.env.REACT_APP_API_URL}/api/stopwatch`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: payload,
+                        keepalive: true
+                    }).catch(err => console.error("Error saving on unmount:", err));
+                }
+            }
+        };
+
+        window.addEventListener('beforeunload', handleUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleUnload);
+            handleUnload(); // Also fire on React unmount (component switch)
+        };
+    }, [userId]); // Only depend on userId to avoid constantly re-binding the unmount handler
 
     const saveTasks = async (currentTasks, dateToSave) => {
         if (!userId || !dateToSave || !currentTasks) return;
@@ -151,16 +218,43 @@ const Stopwatch = ({ userId, selectedDate }) => {
 
     useEffect(() => {
         intervalRef.current = setInterval(() => {
-            setTasks(prevTasks =>
-                prevTasks.map(task => 
-                    (!task.isPaused && !task.isComplete) 
-                        ? { ...task, elapsedTime: task.elapsedTime + 1000 } 
-                        : task
-                )
-            );
+            const now = Date.now();
+            setTasks(prevTasks => {
+                let hasChanges = false;
+                const nextTasks = prevTasks.map(task => {
+                    if (!task.isPaused && !task.isComplete && task.lastStartedAt) {
+                        hasChanges = true;
+                        let newElapsed = task.elapsedTime + (now - task.lastStartedAt);
+                        
+                        if (newElapsed >= 86400000) { // 24 hours limit
+                            return { ...task, elapsedTime: 86400000, isPaused: true, isComplete: true, lastStartedAt: null };
+                        } else {
+                            return { ...task, elapsedTime: newElapsed, lastStartedAt: now };
+                        }
+                    }
+                    // For backward compatibility if someone started it without lastStartedAt
+                    if (!task.isPaused && !task.isComplete && !task.lastStartedAt) {
+                        hasChanges = true;
+                        return { ...task, elapsedTime: task.elapsedTime + 1000, lastStartedAt: now };
+                    }
+                    return task;
+                });
+                
+                // Save immediately every 5 seconds to prevent data loss on sudden exits
+                if (hasChanges) {
+                    const hitLimit = nextTasks.some((t, i) => t.isComplete !== prevTasks[i].isComplete);
+                    // Also save periodically (e.g. every ~5 seconds) even if not hitting limits
+                    const shouldPeriodicSave = Math.floor(now / 1000) % 5 === 0;
+                    if ((hitLimit || shouldPeriodicSave) && userId && selectedDate) {
+                         saveTasks(nextTasks, selectedDate);
+                    }
+                }
+                
+                return nextTasks;
+            });
         }, 1000);
         return () => clearInterval(intervalRef.current);
-    }, []);
+    }, [userId, selectedDate]);
 
     const formatTime = (ms) => {
         const totalSeconds = Math.floor(ms / 1000);
@@ -180,37 +274,52 @@ const Stopwatch = ({ userId, selectedDate }) => {
                 elapsedTime: 0,
                 isPaused: true,
                 isComplete: false,
+                lastStartedAt: null
             };
             const updatedTasks = [...tasks, newTask];
             setTasks(updatedTasks);
+            prevTasksRef.current = updatedTasks; // Instantly sync ref for unmount safety
             saveTasks(updatedTasks, selectedDate);
         }
     };
 
     const startTask = (task) => {
         if (!task || !task.isPaused) return;
-        const updatedTasks = tasks.map(t => t.id === task.id ? { ...t, isPaused: false } : t);
+        const updatedTasks = tasks.map(t => t.id === task.id ? { ...t, isPaused: false, lastStartedAt: Date.now() } : t);
         setTasks(updatedTasks);
+        prevTasksRef.current = updatedTasks; // Instantly sync ref for unmount safety
         saveTasks(updatedTasks, selectedDate);
     };
 
     const pauseTask = (task) => {
         if (!task || task.isPaused) return;
-        const updatedTasks = tasks.map(t => t.id === task.id ? { ...t, isPaused: true } : t);
+        const now = Date.now();
+        const additionalTime = task.lastStartedAt ? (now - task.lastStartedAt) : 0;
+        const updatedTasks = tasks.map(t => t.id === task.id ? { ...t, isPaused: true, elapsedTime: t.elapsedTime + additionalTime, lastStartedAt: null } : t);
         setTasks(updatedTasks);
+        prevTasksRef.current = updatedTasks; // Instantly sync ref for unmount safety
         saveTasks(updatedTasks, selectedDate);
     };
 
     const resetTask = (task) => {
         if (!task || !task.isPaused) return;
-        const updatedTasks = tasks.map(t => t.id === task.id ? { ...t, elapsedTime: 0 } : t);
+        const updatedTasks = tasks.map(t => t.id === task.id ? { ...t, elapsedTime: 0, lastStartedAt: null } : t);
         setTasks(updatedTasks);
+        prevTasksRef.current = updatedTasks; // Instantly sync ref for unmount safety
         saveTasks(updatedTasks, selectedDate);
     };
 
     const finishTask = (taskId) => {
-        const updatedTasks = tasks.map(t => t.id === taskId ? { ...t, isComplete: true, isPaused: true } : t);
+        const now = Date.now();
+        const updatedTasks = tasks.map(t => {
+            if (t.id === taskId) {
+                const additionalTime = (!t.isPaused && t.lastStartedAt) ? (now - t.lastStartedAt) : 0;
+                return { ...t, isComplete: true, isPaused: true, elapsedTime: t.elapsedTime + additionalTime, lastStartedAt: null };
+            }
+            return t;
+        });
         setTasks(updatedTasks);
+        prevTasksRef.current = updatedTasks; // Instantly sync ref for unmount safety
         saveTasks(updatedTasks, selectedDate);
         if (selectedCategory === tasks.find(t => t.id === taskId)?.category) {
             setSelectedCategory(null);
@@ -220,6 +329,7 @@ const Stopwatch = ({ userId, selectedDate }) => {
     const deleteTask = (taskId) => {
         const updatedTasks = tasks.filter(t => t.id !== taskId);
         setTasks(updatedTasks);
+        prevTasksRef.current = updatedTasks;
         saveTasks(updatedTasks, selectedDate);
     };
 

@@ -117,34 +117,44 @@ export const DataProvider = ({ children }) => {
 
     // --- DATA FETCHING EFFECT ---
     useEffect(() => {
-        if (!userId || !activeDateRange.startDate || !activeDateRange.endDate) return;
+        const fetchCurrentRangeData = () => {
+            if (!userId || !activeDateRange.startDate || !activeDateRange.endDate) return;
 
-        const datesToFetch = getDatesInRange(activeDateRange.startDate, activeDateRange.endDate);
+            const datesToFetch = getDatesInRange(activeDateRange.startDate, activeDateRange.endDate);
 
-        datesToFetch.forEach(date => {
-            // Fetch meals for each date in range if not already loaded
-            if (mealsByDate[date] === undefined) {
+            datesToFetch.forEach(date => {
+                // Fetch meals for each date in range if not already loaded or on focus
                 fetch(`${process.env.REACT_APP_API_URL}/api/meals/${userId}/${date}`)
                     .then(res => res.json())
                     .then(data => setMealsByDate(prev => ({ ...prev, [date]: data || [] })))
                     .catch(error => {
                         console.error(`Error fetching meals for ${date}:`, error);
-                        setMealsByDate(prev => ({ ...prev, [date]: [] }));
                     });
-            }
 
-            // Fetch pedometer data for each date in range if not already loaded
-            if (pedometerDataByDate[date] === undefined) {
+                // Fetch pedometer data for each date in range if not already loaded or on focus
                 fetch(`${process.env.REACT_APP_API_URL}/api/healthcare/steps/${userId}/${date}`)
                     .then(res => res.json())
                     .then(data => setPedometerDataByDate(prev => ({ ...prev, [date]: { steps: data.steps || 0, weight: data.weight || 0 } })))
                     .catch(error => {
                         console.error(`Error fetching pedometer data for ${date}:`, error);
-                        setPedometerDataByDate(prev => ({ ...prev, [date]: { steps: 0, weight: 0 } }));
                     });
-            }
-        });
-    }, [userId, activeDateRange, mealsByDate, pedometerDataByDate]); // Update dependencies
+            });
+        };
+
+        // Fetch immediately
+        fetchCurrentRangeData();
+
+        // Refetch on window focus to get latest background saves
+        const handleFocus = () => {
+            fetchCurrentRangeData();
+        };
+
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [userId, activeDateRange]); // Removed mealsByDate, pedometerDataByDate to avoid infinite loops on state updates when fetching
 
     // --- SAVE TO STORAGE EFFECT ---
     useEffect(() => {

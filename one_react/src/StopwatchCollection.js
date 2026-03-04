@@ -47,6 +47,16 @@ const StopwatchCollection = ({ displayMode = 'summary', sortOrder, setSortOrder,
             }
         };
         fetchRecords();
+
+        const handleFocus = () => {
+            fetchRecords();
+        };
+
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
     }, [userId]);
 
     // Group records by date for daily view
@@ -220,10 +230,8 @@ const StopwatchCollection = ({ displayMode = 'summary', sortOrder, setSortOrder,
                         })}
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                        <div className="empty-data-card">
-                            저장된 스톱워치 데이터가 없습니다.
-                        </div>
+                    <div className="empty-stopwatch-summary">
+                        저장된 스톱워치 데이터가 없습니다.
                     </div>
                 )}
             </div>

@@ -1,14 +1,12 @@
 /* StopwatchCollection.css (New Design) */
 .stopwatch-collection-container {
     width: 100%;
-    padding-top: 10px; /* Small buffer at the top of the scrollable area */
+    padding-top: 0px; /* Match meal summary container */
     padding-bottom: 15px; /* Added padding at the bottom */
     box-sizing: border-box;
     font-family: 'Pretendard', sans-serif;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 /* Removed header styles */
@@ -241,4 +239,12 @@
     color: #A0A0A0; /* Color for message */
     text-align: center;
     margin: 39px auto 0; /* Align with card grid, center horizontally */
+}
+
+.empty-stopwatch-summary {
+    font-size: 14px;
+    color: #A0A0A0;
+    text-align: center;
+    width: 100%;
+    padding-top: 50px;
 }
