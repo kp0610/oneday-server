@@ -72,8 +72,8 @@ export const DataProvider = ({ children }) => {
     });
     
     // --- DEBOUNCED SAVE FUNCTIONS ---
-    const debouncedSaveApiMealsRef = useRef(debounce((date, cards) => saveMeals(date, cards), 1500));
-    const debouncedSaveApiPedometerRef = useRef(debounce((date, pData) => savePedometerData(date, pData), 1500));
+    const debouncedSaveApiMealsRef = useRef(debounce((date, cards) => saveMeals(date, cards), 500)); // Reduced debounce time for faster saves
+    const debouncedSaveApiPedometerRef = useRef(debounce((date, pData) => savePedometerData(date, pData), 500));
     const debouncedSaveToStorageRef = useRef(debounce((data) => {
         try {
             sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -81,6 +81,24 @@ export const DataProvider = ({ children }) => {
             console.error("Failed to save state to sessionStorage", e);
         }
     }, 500));
+
+    // --- UNLOAD SAVER ---
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            const currentMealCards = mealsByDate[selectedDate] || [];
+            if (currentMealCards.length > 0) {
+                // Try synchronous-ish save or beacon
+                const payload = JSON.stringify({ userId, date: selectedDate, mealCards: currentMealCards });
+                try {
+                    navigator.sendBeacon(`${process.env.REACT_APP_API_URL}/api/meals`, new Blob([payload], { type: 'application/json' }));
+                } catch(e) {
+                     fetch(`${process.env.REACT_APP_API_URL}/api/meals`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true });
+                }
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [userId, selectedDate, mealsByDate]);
 
     // --- SAVE SELECTED DATE EFFECT ---
     useEffect(() => {
@@ -94,7 +112,7 @@ export const DataProvider = ({ children }) => {
     // --- API FUNCTIONS ---
     async function saveMeals(dateToSave, mealCardsToSave) {
         if (!userId || !dateToSave || !mealCardsToSave) return;
-        if (mealCardsToSave.length === 0 || (mealCardsToSave.length === 1 && mealCardsToSave[0].foods.length === 0)) return; 
+        // Removed the check that prevented saving empty meals, so deletions can be saved properly
         try {
             await fetch(`${process.env.REACT_APP_API_URL}/api/meals`, {
                 method: 'POST',
