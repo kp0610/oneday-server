@@ -323,7 +323,12 @@ const Profile = ({ show, onClose }) => { // Accept show and onClose props
                 <div className="profile-image-and-name">
                     <div
                         className="profile-picture-container"
-                        style={{ border: '1px solid #E1E7EF', backgroundImage: backgroundImageUrl }}
+                        style={{
+                            border: '1px solid #E1E7EF',
+                            backgroundImage: backgroundImageUrl,
+                            backgroundSize: previewImage ? 'cover' : '60%', // Use cover for uploaded image, 60% for default
+                            backgroundPosition: previewImage ? 'center' : '49% 55%', // Center for uploaded image, specific for default
+                        }}
                     >
                         <ImageUploader onImageUpload={handleImageUpload} className="profile-upload-button">
                             <MdOutlineCameraAlt />

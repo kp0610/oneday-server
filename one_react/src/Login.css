@@ -379,8 +379,7 @@ button[type="submit"]:hover,
     position: relative; /* Added for absolute positioning of button */
 }
 
-.email-input-wrapper input[type="email"],
-.verification-code-wrapper input[type="text"] {
+.email-input-wrapper input[type="email"] {
     flex-grow: 1; /* Take up available space */
     border: none; /* Remove border as wrapper has it */
     padding: 15px 15px 0 15px; /* Adjusted padding-top to push text further down */
@@ -393,8 +392,21 @@ button[type="submit"]:hover,
     padding-right: 70px; /* Increased padding to make more space for the button */
 }
 
+.verification-code-wrapper input[type="text"] {
+    flex-grow: 1;
+    border: none;
+    padding: 2px 15px 0 15px; /* New padding from user request */
+    height: 43px;
+    font-size: 13px;
+    color: #8E95A2;
+    background-color: transparent;
+    border-radius: 15px;
+    outline: none;
+    padding-right: 70px;
+}
+
 .email-input-wrapper input[type="email"]:disabled {
-    background-color: #f0f0f0; /* Light gray for disabled state */
+    background-color: #f0f0f000;
     cursor: not-allowed;
 }
 
