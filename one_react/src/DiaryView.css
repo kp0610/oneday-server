@@ -8,6 +8,8 @@
     border: 1px solid #E1E7EF;
     border-radius: 25px;
     margin-top: 10px;
+    max-height: 90vh; /* Fixed height for the container */
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
 }
 
 .diary-view-header {
@@ -74,7 +76,11 @@
     background-color: rgba(255, 255, 255, 0.8); /* Slightly opaque background for readability */
     padding: 2px 5px;
     border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Re-added box-shadow */
+    max-width: 100%; /* Ensure text wraps within its parent's width */
+    max-height: 150px; /* Limit the height of the text box */
+    overflow: auto; /* Enable scrolling within the text box */
+    box-sizing: border-box; /* Include padding in width/height calculations */
 }
 
 .diary-view-embedded-image {

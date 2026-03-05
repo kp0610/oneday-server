@@ -56,7 +56,7 @@ const DiaryView = () => {
     return (
         <div className="diary-view-container">
             <header className="diary-view-header">
-                <span className="diary-view-back-icon" onClick={handleGoBack}>←</span>
+                <span className="diary-view-back-icon" onClick={handleGoBack}>&lt;</span>
                 <h1 className="diary-view-title">{diary.title || '제목 없음'}</h1>
                 <span className="diary-view-date">{displayDate}</span>
             </header>

@@ -3,6 +3,7 @@ import './Dashboard.css';
 import HomeTab from './HomeTab';
 import RecordsTab from './RecordsTab';
 import HealthcareTab from './HealthcareTab';
+import Modal from './Modal'; // Import Modal
 
 const Dashboard = ({
     userId,
@@ -19,6 +20,8 @@ const Dashboard = ({
     clearInitialEventDates, // New prop
 }) => {
     const [activeTab, setActiveTab] = useState('home-tab');
+    const [showFutureDatePopup, setShowFutureDatePopup] = useState(false); // State for popup visibility
+    const [futureDatePopupMessage, setFutureDatePopupMessage] = useState(''); // State for popup message
 
     // Determine if selectedDate is a future date
     const today = new Date();
@@ -33,6 +36,15 @@ const Dashboard = ({
             setActiveTab('home-tab');
         }
     }, [selectedDate, isFutureDate, activeTab]);
+
+    const handleTabClick = (tabName) => {
+        if (isFutureDate && (tabName === 'records-tab' || tabName === 'healthcare-tab')) {
+            setFutureDatePopupMessage('미래 시간에는 기록을 미리 추가하거나<br />확인할 수 없습니다.');
+            setShowFutureDatePopup(true);
+        } else {
+            setActiveTab(tabName);
+        }
+    };
 
     const renderTabContent = () => {
         switch (activeTab) {
@@ -81,18 +93,16 @@ const Dashboard = ({
         <div className="right-column">
             <div className="dashboard-container">
                 <div className="dashboard-tabs">
-                    <button className={`dash-tab-link dash-tab-home ${activeTab === 'home-tab' ? 'active' : ''}`} onClick={() => setActiveTab('home-tab')}>홈</button>
+                    <button className={`dash-tab-link dash-tab-home ${activeTab === 'home-tab' ? 'active' : ''}`} onClick={() => handleTabClick('home-tab')}>홈</button>
                     <button
                         className={`dash-tab-link dash-tab-records ${activeTab === 'records-tab' ? 'active' : ''} ${isFutureDate ? 'disabled-tab' : ''}`}
-                        onClick={() => setActiveTab('records-tab')}
-                        disabled={isFutureDate}
+                        onClick={() => handleTabClick('records-tab')}
                     >
                         기록
                     </button>
                     <button
                         className={`dash-tab-link dash-tab-healthcare ${activeTab === 'healthcare-tab' ? 'active' : ''} ${isFutureDate ? 'disabled-tab' : ''}`}
-                        onClick={() => setActiveTab('healthcare-tab')}
-                        disabled={isFutureDate}
+                        onClick={() => handleTabClick('healthcare-tab')}
                     >
                         헬스케어
                     </button>
@@ -101,6 +111,21 @@ const Dashboard = ({
                     {renderTabContent()}
                 </div>
             </div>
+            {showFutureDatePopup && (
+                <Modal show={showFutureDatePopup} onClose={() => setShowFutureDatePopup(false)}>
+                    <div className="popup-header">
+                        <h3 style={{ color: '#383838', fontSize: '14px', margin: '0', marginRight: '5px' }}>안내</h3>
+                        <button onClick={() => setShowFutureDatePopup(false)} className="modal-close-btn">
+                            <svg width="8" height="8" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1L9 9M1 9L9 1" stroke="#383838" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div className="popup-content" style={{ padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <p style={{ textAlign: 'center' }} dangerouslySetInnerHTML={{ __html: futureDatePopupMessage }}></p>
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 };
