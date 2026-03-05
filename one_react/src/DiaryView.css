@@ -3,11 +3,11 @@
 .diary-view-container {
     padding: 30px;
     background-color: #FBFCFD;
-    min-height: 0vh;
     box-sizing: border-box;
     font-family: 'Arial', sans-serif;
     border: 1px solid #E1E7EF;
     border-radius: 25px;
+    margin-top: 10px;
 }
 
 .diary-view-header {
@@ -42,20 +42,24 @@
 
 .diary-view-content {
     position: relative;
-    padding: 20px; /* Increased padding */
+    padding: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    width: 90%; /* Make it wider */
-    margin: 0 auto; /* Center horizontally */
-    max-width: 800px; /* Optional: prevent it from becoming too wide on very large screens */
+    width: 90%;
+    margin: 0 auto;
+    max-width: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .diary-view-canvas-image {
-    width: 100%; /* Make the image fill its parent's width */
+    max-width: 100%;
+    max-height: 55vh; /* Limit the image height */
+    width: auto;
     height: auto;
-    display: block; /* Remove extra space below image */
-    margin-bottom: 15px;
+    display: block;
     border: 1px solid #eee;
     border-radius: 5px;
 }
@@ -106,4 +110,3 @@
     border-radius: 5px;
     border: 1px dashed #ddd;
 }
-
