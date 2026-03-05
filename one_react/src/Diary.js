@@ -4,6 +4,8 @@ import { HexColorPicker } from "react-colorful"; // Import HexColorPicker
 import { LuPen, LuEraser, LuType, LuImage, LuUndo, LuRedo } from 'react-icons/lu'; // Import Lucide Icons
 import './Diary.css'; // Import the new CSS file
 
+import Modal from './Modal'; // Import the Modal component
+
 const Diary = ({ selectedDate, userId }) => {
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
@@ -14,6 +16,9 @@ const Diary = ({ selectedDate, userId }) => {
     const [penSize, setPenSize] = useState(8);
     const [textSize, setTextSize] = useState(16); // New state for text size
     const [showMoreColors, setShowMoreColors] = useState(false);
+    const [showPopup, setShowPopup] = useState(false); // New state for popup visibility
+    const [popupMessage, setPopupMessage] = useState(''); // New state for popup message
+    const [isDiarySaved, setIsDiarySaved] = useState(false); // New state to track if diary is saved
     
     const moreColorsBtnRef = useRef(null); // Ref for the '+' button
     const expandedColorPaletteRef = useRef(null); // Ref for the expanded color palette
@@ -145,6 +150,7 @@ const Diary = ({ selectedDate, userId }) => {
                 setTexts(loadedTexts);
                 setImages(loadedImages);
                 setTitle(data?.title || '');
+                setIsDiarySaved(!!data); // Set isDiarySaved based on whether data exists
 
                 if (data?.canvasImagePath) {
                     setBackgroundImageSrc(`${process.env.REACT_APP_API_URL}${data.canvasImagePath}`);
@@ -158,6 +164,7 @@ const Diary = ({ selectedDate, userId }) => {
                 }
             } catch (error) {
                 console.error("Error fetching diary:", error);
+                setIsDiarySaved(false); // No diary found or error
                 const initialState = { canvasData: canvas.toDataURL(), texts: [], images: [] };
                 setHistory([initialState]);
                 setHistoryStep(0);
@@ -169,7 +176,14 @@ const Diary = ({ selectedDate, userId }) => {
 
     const saveDiary = async () => {
         if (!userId) {
-            alert('로그인이 필요합니다.');
+            setPopupMessage('로그인이 필요합니다.');
+            setShowPopup(true);
+            return;
+        }
+
+        if (isDiarySaved) {
+            setPopupMessage('이미 저장된 다이어리입니다.');
+            setShowPopup(true);
             return;
         }
         const canvas = canvasRef.current;
@@ -263,13 +277,17 @@ const Diary = ({ selectedDate, userId }) => {
                 body: JSON.stringify(diaryData),
             });
             if (res.ok) {
-                alert('다이어리가 저장되었습니다.');
+                setPopupMessage('다이어리가 저장되었습니다.');
+                setShowPopup(true);
+                setIsDiarySaved(true); // Mark as saved
             } else {
-                alert('저장에 실패했습니다.');
+                setPopupMessage('저장에 실패했습니다.');
+                setShowPopup(true);
             }
         } catch (error) {
             console.error("Error saving diary:", error);
-            alert('저장 중 오류가 발생했습니다.');
+            setPopupMessage('저장 중 오류가 발생했습니다.');
+            setShowPopup(true);
         }
     };
     
@@ -749,6 +767,17 @@ const Diary = ({ selectedDate, userId }) => {
                     </div>
                 </div>
             </div>
+            {showPopup && (
+                <Modal show={true} onClose={() => setShowPopup(false)}>
+                    <div className="confirmation-modal">
+                        <p>{popupMessage}</p>
+                        <div className="modal-actions">
+                            <button onClick={() => setShowPopup(false)}>확인</button>
+                            <button onClick={() => { setShowPopup(false); navigate('/diary-collection'); }}>모아보기</button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 };

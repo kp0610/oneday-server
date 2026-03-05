@@ -268,7 +268,7 @@ const Calendar = ({
 
             <div className={`calendar-grid ${!isMonthView ? 'week-view' : ''}`}> {/* Conditionally add week-view class */}
                 <div className="calendar-weekdays">
-                    {weekdays.map(day => <div key={day} className={`weekday ${day === '일' ? 'sunday' : ''}`}>{day}</div>)}
+                    {weekdays.map(day => <div key={day} className={`weekday ${day === '일' ? 'sunday' : ''} ${day === '토' ? 'saturday' : ''}`}>{day}</div>)}
                 </div>
                 <div className="calendar-days" ref={calendarDaysRef}>
                                         {days.map((dayInfo, index) => (
