@@ -255,7 +255,7 @@ router.post('/login', jsonParser, async (req, res) => {
     }
 });
 
-import multer from "multer";
+
 import path from "path";
 
 // Multer storage configuration
