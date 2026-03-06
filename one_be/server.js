@@ -4,7 +4,42 @@ dotenv.config();
 import express from "express";
 import session from "express-session";
 import MySQLStore from "express-mysql-session"; // Import express-mysql-session
-// ...
+import passport from "passport";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Strategy as KakaoStrategy } from "passport-kakao";
+import { Strategy as NaverStrategy } from "passport-naver"; // Import NaverStrategy
+import authRoutes from "./routes/auth.js"; // Import auth routes
+import diaryRoutes from "./routes/diary.js";
+import eventsRoutes from "./routes/events.js";
+import foodsRoutes from "./routes/foods.js";
+import healthcareRoutes from "./routes/healthcare.js";
+import mealsRoutes from "./routes/meals.js";
+import stopwatchRoutes from "./routes/stopwatch.js";
+import templatesRoutes from "./routes/templates.js";
+import todosRoutes from "./routes/todos.js";
+import db from "./config/db.js"; // Import the database connection pool
+import bcrypt from "bcrypt"; // Import bcrypt for password hashing
+import crypto from "crypto"; // Import crypto for generating random password
+import fs from "fs"; // Import fs for directory check
+
+// ==================
+// 기본 설정
+// ==================
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const PORT = 3001;
+
+// Ensure the uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
+
 // MySQLStore 설정 (주석 처리 또는 제거)
 const sessionStore = new MySQLStore({
     host: process.env.DB_HOST,
@@ -31,7 +66,7 @@ const sessionStore = new MySQLStore({
 // ==================
 app.use(
   cors({
-    origin: "https://oneday-b9a73.web.app",
+    origin: ["http://localhost:3000", "https://oneday-25046.web.app"],
     credentials: true,
   })
 );
@@ -63,6 +98,9 @@ app.use(
     }
   })
 );
+
+app.set("trust proxy", 1); // Add this line
+
 
 // ==================
 // passport 초기화
@@ -210,7 +248,8 @@ passport.use(
     {
       clientID: process.env.NAVER_CLIENT_ID,
       clientSecret: process.env.NAVER_CLIENT_SECRET,
-                callbackURL: "https://44.220.190.131.nip.io/api/auth/naver/callback",      passReqToCallback: true // Add this line
+      callbackURL: "https://44.220.190.131.nip.io/api/auth/naver/callback",
+      passReqToCallback: true // Add this line
     },
     async (req, accessToken, refreshToken, profile, done) => { // Add req here
       const connection = await db.getConnection();
@@ -285,6 +324,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
+  console.log("deserializeUser: Attempting to deserialize user with ID:", id);
   const connection = await db.getConnection();
   try {
     // Fetch the user from our database using the internal ID
@@ -295,8 +335,10 @@ passport.deserializeUser(async (id, done) => {
       if (!user.profile_image_url || user.profile_image_url === '') {
         user.profile_image_url = '/uploads/default_image.png'; // Assuming a default image exists here
       }
+      console.log("deserializeUser: User found:", user.id);
       done(null, user); // Attach our internal user object to req.user
     } else {
+      console.log("deserializeUser: User not found for ID:", id);
       done(null, false); // Indicate authentication failure, but not an error
     }
   } catch (err) {
@@ -331,7 +373,7 @@ app.get(
   }),
   (req, res) => {
     // 로그인 성공 → React로 이동
-    let redirectUrl = "https://oneday-b9a73.web.app";
+    let redirectUrl = "https://oneday-25046.web.app";
     if (req.session.isNewUser) {
       redirectUrl += "?status=registered";
       req.session.isNewUser = false; // Clear the flag
@@ -360,7 +402,7 @@ app.get(
   }),
   (req, res) => {
     // 로그인 성공 → React로 이동
-    let redirectUrl = "https://oneday-b9a73.web.app";
+    let redirectUrl = "https://oneday-25046.web.app";
     if (req.session.isNewUser) {
       redirectUrl += "?status=registered";
       req.session.isNewUser = false; // Clear the flag
@@ -392,7 +434,7 @@ app.get(
   }),
   (req, res) => {
     // 로그인 성공 → React로 이동
-    let redirectUrl = "https://oneday-b9a73.web.app";
+    let redirectUrl = "https://oneday-25046.web.app";
     if (req.session.isNewUser) {
       redirectUrl += "?status=registered";
       req.session.isNewUser = false; // Clear the flag
