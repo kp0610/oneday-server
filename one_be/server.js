@@ -3,70 +3,35 @@ dotenv.config();
 
 import express from "express";
 import session from "express-session";
-// import MySQLStore from "express-mysql-session"; // Import express-mysql-session
-import passport from "passport";
-import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { Strategy as KakaoStrategy } from "passport-kakao";
-import { Strategy as NaverStrategy } from "passport-naver"; // Import NaverStrategy
-import authRoutes from "./routes/auth.js"; // Import auth routes
-import diaryRoutes from "./routes/diary.js";
-import eventsRoutes from "./routes/events.js";
-import foodsRoutes from "./routes/foods.js";
-import healthcareRoutes from "./routes/healthcare.js";
-import mealsRoutes from "./routes/meals.js";
-import stopwatchRoutes from "./routes/stopwatch.js";
-import templatesRoutes from "./routes/templates.js";
-import todosRoutes from "./routes/todos.js";
-import db from "./config/db.js"; // Import the database connection pool
-import bcrypt from "bcrypt"; // Import bcrypt for password hashing
-import crypto from "crypto"; // Import crypto for generating random password
-import fs from "fs"; // Import fs for directory check
-
-// ==================
-// 기본 설정
-// ==================
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const app = express();
-const PORT = 3001;
-
-// Ensure the uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir);
-}
-
+import MySQLStore from "express-mysql-session"; // Import express-mysql-session
+// ...
 // MySQLStore 설정 (주석 처리 또는 제거)
-// const sessionStore = new MySQLStore(session, {
-//     host: process.env.DB_HOST,
-//     port: process.env.DB_PORT,
-//     user: process.env.DB_USER,
-//     password: process.env.DB_PASSWORD,
-//     database: process.env.DB_NAME,
-//     clearExpired: true, // Clear expired sessions
-//     checkExpirationInterval: 900000, // How frequently to check for expired sessions (in ms)
-//     expiration: 86400000, // The maximum age of a session (in ms)
-//     createDatabaseTable: true, // Create the session table if it doesn't exist
-//     schema: {
-//         tableName: 'sessions',
-//         columnNames: {
-//             session_id: 'session_id',
-//             expires: 'expires',
-//             data: 'data'
-//         }
-//     }
-// });
+const sessionStore = new MySQLStore({
+    host: process.env.DB_HOST,
+    port: 3306, // Assuming default MySQL port
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    clearExpired: true, // Clear expired sessions
+    checkExpirationInterval: 900000, // How frequently to check for expired sessions (in ms)
+    expiration: 86400000, // The maximum age of a session (in ms)
+    createDatabaseTable: true, // Create the session table if it doesn't exist
+    schema: {
+        tableName: 'sessions',
+        columnNames: {
+            session_id: 'session_id',
+            expires: 'expires',
+            data: 'data'
+        }
+    }
+});
 
 // ==================
 // CORS 설정 (React 연동)
 // ==================
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://oneday-b9a73.web.app",
     credentials: true,
   })
 );
@@ -90,9 +55,11 @@ app.use(
     secret: "dev-secret",
     resave: false,
     saveUninitialized: false,
-    // store: sessionStore, // Use MySQLStore for session storage (제거)
+    store: sessionStore, // Use MySQLStore for session storage
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 // 1 day
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      secure: true,
+      sameSite: "none"
     }
   })
 );
@@ -111,8 +78,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3001/auth/google/callback",
-      passReqToCallback: true // Add this line
+                callbackURL: "https://44.220.190.131.nip.io/api/auth/google/callback",      passReqToCallback: true // Add this line
     },
     async (req, accessToken, refreshToken, profile, done) => { // Add req here
       const connection = await db.getConnection();
@@ -178,7 +144,7 @@ passport.use(
               {
                   clientID: process.env.KAKAO_CLIENT_ID,
                   clientSecret: process.env.KAKAO_CLIENT_SECRET,
-                  callbackURL: "http://localhost:3001/auth/kakao/callback",
+                  callbackURL: "https://44.220.190.131.nip.io/api/auth/kakao/callback",
                   passReqToCallback: true // Add this line
               },    async (req, accessToken, refreshToken, profile, done) => { // Add req here
       const connection = await db.getConnection();
@@ -244,18 +210,19 @@ passport.use(
     {
       clientID: process.env.NAVER_CLIENT_ID,
       clientSecret: process.env.NAVER_CLIENT_SECRET,
-      callbackURL: "http://localhost:3001/auth/naver/callback",
-      passReqToCallback: true // Add this line
+                callbackURL: "https://44.220.190.131.nip.io/api/auth/naver/callback",      passReqToCallback: true // Add this line
     },
     async (req, accessToken, refreshToken, profile, done) => { // Add req here
       const connection = await db.getConnection();
       try {
         await connection.beginTransaction(); // START TRANSACTION
+        console.log("NaverStrategy: Profile received:", profile);
 
         // Check if user already exists by naver_id and lock the row
         const [users] = await connection.query('SELECT * FROM users WHERE naver_id = ? FOR UPDATE', [profile.id]);
 
         if (users.length > 0) {
+          console.log("NaverStrategy: User found by naver_id:", users[0].id);
           await connection.commit(); // COMMIT
           return done(null, users[0]);
         }
@@ -263,11 +230,13 @@ passport.use(
         // No user with naver_id, check for existing email
         const rawEmail = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
         const userEmail = rawEmail ? rawEmail.trim().toLowerCase() : null;
+        console.log("NaverStrategy: User email:", userEmail);
 
         if (userEmail) {
           const [existingUsers] = await connection.query('SELECT * FROM users WHERE email = ? FOR UPDATE', [userEmail]);
           if (existingUsers.length > 0) {
             const user = existingUsers[0];
+            console.log("NaverStrategy: User found by email, linking naver_id:", user.id);
             await connection.query('UPDATE users SET naver_id = ? WHERE id = ?', [profile.id, user.id]);
             await connection.commit(); // COMMIT
             return done(null, user);
@@ -276,6 +245,7 @@ passport.use(
 
         // No user found, create a new one
         const finalEmail = userEmail ? userEmail : `naver_${profile.id}@one.day`; // Use placeholder if email is null
+        console.log("NaverStrategy: Creating new user with email:", finalEmail);
 
         const randomPassword = crypto.randomBytes(16).toString('hex');
         const hashedPassword = await bcrypt.hash(randomPassword, 10);
@@ -292,6 +262,7 @@ passport.use(
         
         await connection.commit(); // COMMIT
         req.session.isNewUser = true;
+        console.log("NaverStrategy: New user created:", createdUser[0].id);
         return done(null, createdUser[0]);
 
       } catch (err) {
@@ -360,7 +331,7 @@ app.get(
   }),
   (req, res) => {
     // 로그인 성공 → React로 이동
-    let redirectUrl = "http://localhost:3000";
+    let redirectUrl = "https://oneday-b9a73.web.app";
     if (req.session.isNewUser) {
       redirectUrl += "?status=registered";
       req.session.isNewUser = false; // Clear the flag
@@ -389,7 +360,7 @@ app.get(
   }),
   (req, res) => {
     // 로그인 성공 → React로 이동
-    let redirectUrl = "http://localhost:3000";
+    let redirectUrl = "https://oneday-b9a73.web.app";
     if (req.session.isNewUser) {
       redirectUrl += "?status=registered";
       req.session.isNewUser = false; // Clear the flag
@@ -421,7 +392,7 @@ app.get(
   }),
   (req, res) => {
     // 로그인 성공 → React로 이동
-    let redirectUrl = "http://localhost:3000";
+    let redirectUrl = "https://oneday-b9a73.web.app";
     if (req.session.isNewUser) {
       redirectUrl += "?status=registered";
       req.session.isNewUser = false; // Clear the flag
@@ -452,6 +423,7 @@ app.get("/auth/logout", (req, res, next) => {
 // 로그인 실패 확인용
 // ==================
 app.get("/login-fail", (req, res) => {
+  console.log("Login failed: Redirected to /login-fail");
   res.send("Google Login Failed");
 });
 
