@@ -1,7 +1,8 @@
 import express from "express";
+import db from "../config/db.js";
+
 const router = express.Router();
 router.use(express.json());
-import db from "../config/db.js";
 
 // Helper function to insert/update meal foods
 async function upsertMealFoods(mealId, foods) {

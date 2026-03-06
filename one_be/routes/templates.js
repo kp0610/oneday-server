@@ -1,7 +1,7 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../config/db');
+import express from "express";
+import db from "../config/db.js";
 
+const router = express.Router();
 router.use(express.json());
 
 // @route   POST /api/templates

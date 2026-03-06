@@ -1,9 +1,10 @@
 import express from "express";
-const router = express.Router();
-router.use(express.json({ limit: '50mb' })); // Apply JSON parser to this router
 import db from "../config/db.js";
 import fs from "fs";
 import path from "path";
+
+const router = express.Router();
+router.use(express.json({ limit: "50mb" }));
 
 // @route   GET /api/diaries/:userId
 // @desc    Get all diary entries for a specific user

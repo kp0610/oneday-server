@@ -1,7 +1,8 @@
 import express from "express";
+import pool from "../config/db.js";
+
 const router = express.Router();
 router.use(express.json());
-import pool from "../config/db.js"; // Corrected to use pool
 
 // Helper function to get the current date string in KST
 const getKSTDateString = () => {

@@ -1,6 +1,7 @@
 import express from "express";
-const router = express.Router();
 import db from "../config/db.js";
+
+const router = express.Router();
 
 // Middleware to parse JSON bodies
 const jsonParser = express.json();
