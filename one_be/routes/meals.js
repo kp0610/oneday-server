@@ -1,7 +1,7 @@
-const express = require('express');
+import express from "express";
 const router = express.Router();
 router.use(express.json());
-const db = require('../config/db');
+import db from "../config/db.js";
 
 // Helper function to insert/update meal foods
 async function upsertMealFoods(mealId, foods) {
@@ -174,4 +174,4 @@ router.get('/today_calories/:userId/:date', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

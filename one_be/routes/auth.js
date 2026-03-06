@@ -1,9 +1,17 @@
-const express = require('express');
+import express from "express";
+import bcrypt from "bcrypt";
+import db from "../config/db.js";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const db = require('../config/db'); // Use db.js for consistency
-const crypto = require('crypto'); // Import crypto for generating random password
-const nodemailer = require('nodemailer'); // Import nodemailer
 
 // Nodemailer transporter setup
 const transporter = nodemailer.createTransport({
@@ -247,8 +255,8 @@ router.post('/login', jsonParser, async (req, res) => {
     }
 });
 
-const multer = require('multer');
-const path = require('path');
+import multer from "multer";
+import path from "path";
 
 // Multer storage configuration
 const storage = multer.diskStorage({
@@ -570,4 +578,4 @@ router.delete('/withdraw/:userId', async (req, res) => {
 });
 
 
-module.exports = router;
+export default router;
