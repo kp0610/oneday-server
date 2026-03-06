@@ -208,13 +208,13 @@ const Login = ({ onLogin }) => {
                             <span className="line"></span>
                         </div>
                         <div className="social-login-buttons">
-                            <div className="social-icon-button kakao-button" onClick={() => window.location.href = 'http://localhost:3001/auth/kakao'}>
+                            <div className="social-icon-button kakao-button" onClick={() => window.location.href = "http://13.211.190.145:3001/api/auth/kakao"}>
                                 <img src={kakaoIcon} alt="Kakao Login" />
                             </div>
-                            <div className="social-icon-button google-button" onClick={() => window.location.href = 'http://localhost:3001/auth/google'}>
+                            <div className="social-icon-button google-button" onClick={() => window.location.href = 'http://13.211.190.145:3001/api/auth/google'}>
                                 <img src={googleIcon} alt="Google Login" />
                             </div>
-                            <div className="social-icon-button naver-button" onClick={() => window.location.href = 'http://localhost:3001/auth/naver'}>
+                            <div className="social-icon-button naver-button" onClick={() => window.location.href = 'http://13.211.190.145:3001/api/auth/naver'}>
                                 <img src={naverIcon} alt="Naver Login" />
                             </div>
                         </div>
